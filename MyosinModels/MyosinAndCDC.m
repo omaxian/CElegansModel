@@ -69,7 +69,7 @@ while (er > 1e-10)
     Cc = 1 - sum(C)*dx;
     t = (nIts-1)*dt;
     % Solve for velocity
-    Sigma_active = M./(1+M);
+    Sigma_active = ActiveStress(M);
     v = (speye(N)-LRatio^2*DSq) \ (LRatio*DOneCenter*Sigma_active);
     vHalf = 1/2*(v+circshift(v,-1));
     chk = v-eta/(gamma*L^2)*DSq*v - sqrt(eta/gamma)/L*DOneCenter*Sigma_active;

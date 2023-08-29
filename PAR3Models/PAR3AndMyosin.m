@@ -9,7 +9,7 @@ A10 = 1/(4*Kconst)*(-1+sqrt(1+4*Art*2*Kconst));
 %A1 = A10*(x < 1/2);% 
 A1 = A10*ones(N,1);
 %An =  A10^2*Kp_Hat/Kdp_Hat*(x<1/2);
-An = A10^2*Kp_Hat/Kdp_Hat+0.1*cos(pi*(x+0.25));
+An = A10^2*Kp_Hat/Kdp_Hat+0.01*cos(pi*(x+0.25));
 plot(x,A1+2*An)
 hold on
 
