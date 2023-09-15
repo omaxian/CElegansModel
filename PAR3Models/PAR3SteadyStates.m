@@ -56,7 +56,7 @@ detL=L11*L22-L12*L21;
 function val = RHS(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat)
     Kconst = Kp_Hat/Kdp_Hat;
     A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
-    Feedback = exp(-(Atot-0.8).^2/(2*0.1.^2));
+    Feedback = PAR3FeedbackFcn(Atot);
     val = Kon_Hat*(1+Kf_Hat*Feedback).*(1-Atot)- A1;
 end
 
@@ -64,7 +64,7 @@ function att = Attachment(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac)
     if (Ac < 0)
         Ac = 1-Atot;
     end
-    Feedback = exp(-(Atot-0.8).^2/(2*0.1.^2));
+    Feedback = PAR3FeedbackFcn(Atot);
     att = Kon_Hat*(1+Kf_Hat*Feedback).*Ac;
 end
 
