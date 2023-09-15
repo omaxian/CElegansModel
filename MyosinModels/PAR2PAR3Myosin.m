@@ -12,8 +12,8 @@ kpA = 2/ATot*koffA; % First number is Kp_hat
 kAplus = 60/500; % very unknown
 %PAR-2
 DP = 0.1;
-konP = 3*konA;
-koffP = koffA;
+konP = 0.13;
+koffP = 7.3e-3;
 PTot = ATot;
 kdpP = kdpA;
 kpP = kpA;
@@ -21,13 +21,13 @@ rAP = 0.01; % A inhibiting P
 rPA = rAP; % P inhibiting A
 % Myosin
 DM = 0.05;
-konM = 0.2;
+konM = 4; % high so we recruit myosin
 koffM = 0.12;
 eta = 0.1;
 gamma = 1e-3;
 Mtot = 50;
 Sigma0 = 1.1e-3;
-rPM = 10;
+rPM = 0.01;
 % Dimensionless
 DA_Hat = DA/(L^2*koffA);
 KonA_Hat = konA/(koffA*h);
@@ -55,11 +55,12 @@ x = (0:N-1)'*dx;
 advorder = 1;
 % Start with small zone of PAR-2 on posterior cap
 cap = (x > 0.65 & x < 0.85);
-A1 = ones(N,1).*(~cap);
+A1 = 0.5*ones(N,1).*(~cap);
 A2 = 0.25*ones(N,1).*(~cap);
-P1 = ones(N,1).*cap;
+P1 = 0.5*ones(N,1).*cap;
 P2 = 0.25*ones(N,1).*cap;
 M = 0.5*ones(N,1);
+plot(x,A1+2*A2,x,P1+2*P2,x,M)
 
 er = 1;
 nIts = 0;
@@ -98,10 +99,11 @@ while (er > 1e-10)
     chk = (M-Mprev)/dt- (DM_Hat*DSq*M + RHS_M);
     mv = [P1-P1prev; A1-A1prev; P2-P2prev; A2-A2prev]/dt;
     er = max(abs(mv));
-    nIts=nIts+1;
-    if (mod(nIts,1000)==0)
+    if (mod(nIts,100)==0)
         plot(x,A1,x,2*A2,x,P1,x,2*P2,x,M)
         drawnow
     end
+    nIts=nIts+1;
 end
+%figure
 %plot(x,A1+2*A2,x,P1+2*P2,x,M)
