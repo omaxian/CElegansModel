@@ -1,47 +1,67 @@
 DA = 0.1;
 L = 67.33;
 h = 4.7;
-konA = 0.6; % do not change
 koffA = 3;
-kdpA = 0.1; 
+kdpA = 0.08; 
 ATot = 50;
-kpA = 2/ATot*koffA; % First number is Kp_hat
-kAplus = 60/500; % very unknown
+konA = 1; % First unknown
+kpA = 0.03; % Second unknown
+%kAplus = 100; % Third unknown
+Kf_Hat = 12.5;
 %dets=[];
 %kpluss = 1000;%(1:1000)*0.01;
-% Solve for the steady states
-%for kAplus=kpluss
-D_Hat = DA/(L^2*koffA);
-Kon_Hat = konA/(koffA*h); 
-Kf_Hat = kAplus*ATot/konA;
-Kdp_Hat = kdpA/koffA;
-Kp_Hat = kpA*ATot/koffA;
-RHSfcn = @(x) RHS(x,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat);
-Art = fsolve(RHSfcn,0.77);
+
+%KfHats = [2 4];
+%for iK=1:length(KfHats)
+% Non-dimensionalization
+D_Hat = DA/(L^2*kdpA);
+Kon_Hat = konA/(kdpA*h); 
+%Kf_Hat = KfHats(iK);%kAplus/konA;
+Koff_Hat = koffA/kdpA;
+Kdp_Hat = 1;
+Kp_Hat = kpA*ATot/kdpA;
+RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat);
+Art = 0.82; Astart=Art;
+while (abs(RHSfcn(Art)) > 0.01)
+    Art = fsolve(RHSfcn,Astart);
+    if (imag(Art)>0)
+        Art=0;
+    end
+    Astart = Astart/2;
+end
 Ac0 = 1-Art;
-Atots=(0:0.01:1)';
+Atots=(0:0.01:5)';
 AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,-1);
-DetRate = Detachment(Atots,Kdp_Hat,Kp_Hat);
+DetRate = Detachment(Atots,Koff_Hat,Kdp_Hat,Kp_Hat);
 % plot(Atots,AttRate)
 % hold on
 % plot(Atots,DetRate)
-% % 
-% % % Now plot with fixed Ac at the steady state
-% AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac0);
-% plot(Atots,AttRate)
+ylimlim=ylim;
+ylim([0 ylimlim(2)])
 
-% plot([Atotrt Atotrt],ylim,':k')
-% plot(xlim,[0 0],':k')
-return
-max(abs(Arts-Arts2))
-A10 = Arts(1); An0 = Arts(2);
-Ac0 = 1-A10-2*An0;
+% Now plot with fixed Ac at the steady state
+AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac0);
+%plot(Atots,AttRate)
+% set(gca,'ColorOrderIndex',1)
+% for Ac=[0.15 0.25]
+%     AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac);
+%     plot(Atots,AttRate,':')
+% end
 
-L11 = -1 + Ac0*Kf_Hat*Kon_Hat - 4*A10*Kp_Hat - 4*pi^2*D_Hat;
+%max(abs(Arts-Arts2))
+Kconst = Kp_Hat/Kdp_Hat;
+A10 = 1/(4*Kconst)*(-1+sqrt(1+4*Art*2*Kconst));
+An0 = (Art - A10)/2;
+Ac0 = 1-Art;
+%A1s(iK)=A10;
+%Ans(iK)=An0;
+
+L11 = -Koff_Hat + Ac0*Kf_Hat*Kon_Hat - 4*A10*Kp_Hat - 4*pi^2*D_Hat;
 L12 = 2*(Kdp_Hat + Ac0*Kf_Hat*Kon_Hat);
 L21 = 2*A10*Kp_Hat;
 L22 = -Kdp_Hat;
-detL2 = Kdp_Hat*(1+4*pi^2*D_Hat) - Ac0*Kdp_Hat*Kf_Hat*Kon_Hat - 4*A10*Ac0*Kf_Hat*Kon_Hat*Kp_Hat
+detL2 = Kdp_Hat*(Koff_Hat+4*pi^2*D_Hat) - Ac0*Kdp_Hat*Kf_Hat*Kon_Hat - 4*A10*Ac0*Kf_Hat*Kon_Hat*Kp_Hat
+%detLs(iK)=detL2;
 
 % L11 = -1 + (-1 + Kf_Hat - 2*A10*Kf_Hat - 4*An0*Kf_Hat)*Kon_Hat - 4*A10*Kp_Hat;
 % L12 = 2*(Kdp_Hat + (-1 + Kf_Hat - 2*A10*Kf_Hat - 4*An0*Kf_Hat)*Kon_Hat);
@@ -52,12 +72,13 @@ detL=L11*L22-L12*L21;
 % Kdp_Hat*(1 + Kon_Hat + (-1 + 2*A10 + 4*An0)*Kf_Hat*Kon_Hat + 4*D_Hat*pi^2)
 %dets=[dets;detL2];
 %end
+%end
 
-function val = RHS(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat)
+function val = RHS(Atot,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat)
     Kconst = Kp_Hat/Kdp_Hat;
     A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
     Feedback = PAR3FeedbackFcn(Atot);
-    val = Kon_Hat*(1+Kf_Hat*Feedback).*(1-Atot)- A1;
+    val = Kon_Hat*(1+Kf_Hat*Feedback).*(1-Atot)- Koff_Hat*A1;
 end
 
 function att = Attachment(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac)
@@ -68,10 +89,10 @@ function att = Attachment(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac)
     att = Kon_Hat*(1+Kf_Hat*Feedback).*Ac;
 end
 
-function det = Detachment(Atot,Kdp_Hat,Kp_Hat)
+function det = Detachment(Atot,Koff_Hat,Kdp_Hat,Kp_Hat)
     Kconst = Kp_Hat/Kdp_Hat;
     A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
-    det = A1;
+    det = Koff_Hat*A1;
 end
 
 function att = AttachmentNonUnif(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat)
