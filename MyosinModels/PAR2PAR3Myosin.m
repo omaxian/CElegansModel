@@ -15,7 +15,7 @@ DP = 0.15;
 konP = 0.13;
 koffP = 7.3e-3;
 PTot = 50;
-rAP = 1e-2; % A inhibiting P
+rAP = 2e-3; % A inhibiting P
 rPA = rAP; % P inhibiting A
 % Myosin
 DM = 0.05;
@@ -42,7 +42,7 @@ LRatio = sqrt(eta/gamma)/L;
 
 % Initialization
 dt=1e-2;
-N=100;
+N=1000;
 dx = 1/N;
 DSq = SecDerivMat(N,dx);
 DOneCenter = FirstDerivMatCenter(N,dx);
@@ -57,7 +57,7 @@ M = 0.5*ones(N,1);%+0.4*(rand(N,1)-0.5);
 %plot(x,Ass,':',x,Pss,':',x,Mss,':')
 %hold on
 
-tf=200;
+tf=100;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -65,6 +65,7 @@ AllA1s = zeros(nSave,N);
 AllAns = zeros(nSave,N);
 AllPs = zeros(nSave,N);
 AllMs = zeros(nSave,N);
+BDPos = zeros(nSave,1);
 
 for iT=0:nT
     if (mod(iT,saveEvery)==0)
@@ -73,6 +74,8 @@ for iT=0:nT
         AllAns(iSave,:)=An;
         AllPs(iSave,:)=P;
         AllMs(iSave,:)=M;
+        Locs = find(P > (A1+2*An) & x>0.35);
+        BDPos(iSave) = Locs(1)*dx;
         hold off
         plot(x,A1+2*An,x,P,x,M)
         drawnow
