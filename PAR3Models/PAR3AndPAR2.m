@@ -15,7 +15,7 @@ DP = 0.15;
 konP = 0.13;
 koffP = 7.3e-3;
 PTot = 50;
-rAP = 1e-2; % A inhibiting P
+rAP = 5e-4; % A inhibiting P
 rPA = rAP; % P inhibiting A
 % Dimensionless
 DA_Hat = DA/(L^2*kdpA);
@@ -29,7 +29,7 @@ KoffP_hat = koffP/kdpA;
 
 % Initialization
 dt=1e-2;
-N=100;
+N=1000;
 dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;

@@ -33,15 +33,15 @@ Ac0 = 1-Art;
 Atots=(0:0.01:5)';
 AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,-1);
 DetRate = Detachment(Atots,Koff_Hat,Kdp_Hat,Kp_Hat);
-% plot(Atots,AttRate)
-% hold on
-% plot(Atots,DetRate)
+plot(Atots,AttRate)
+hold on
+plot(Atots,DetRate)
 ylimlim=ylim;
 ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
 AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac0);
-%plot(Atots,AttRate)
+plot(Atots,AttRate)
 % set(gca,'ColorOrderIndex',1)
 % for Ac=[0.15 0.25]
 %     AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac);

@@ -15,7 +15,7 @@ DP = 0.15;
 konP = 0.13;
 koffP = 7.3e-3;
 PTot = 50;
-rAP = 2e-3; % A inhibiting P
+rAP = 6e-4; % A inhibiting P
 rPA = rAP; % P inhibiting A
 % Myosin
 DM = 0.05;
@@ -24,7 +24,7 @@ koffM = 0.12;
 eta = 0.1;
 gamma = 1e-3;
 Sigma0 = 1.1e-3;
-rPM = 1e-2;
+rPM = 5e-3;
 % Dimensionless
 DA_Hat = DA/(L^2*kdpA);
 KonA_Hat = konA/(kdpA*h);
@@ -57,7 +57,7 @@ M = 0.5*ones(N,1);%+0.4*(rand(N,1)-0.5);
 %plot(x,Ass,':',x,Pss,':',x,Mss,':')
 %hold on
 
-tf=100;
+tf=200;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;

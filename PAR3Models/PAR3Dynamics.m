@@ -6,16 +6,16 @@ DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
 Kconst = Kp_Hat/Kdp_Hat;
 %A10 = 1/(4*Kconst)*(-1+sqrt(1+4*Art*2*Kconst));
-A1 = A10*ones(N,1).*(x <0.4);
+A1 = A10*ones(N,1).*(x <0.8);
 %An =  A10^2*Kp_Hat/Kdp_Hat*(x<1/2);
-An = An0*ones(N,1).*(x <0.4);
+An = An0*ones(N,1).*(x <0.8);
 Ac0=1-sum(A1+2*An)*dx
 plot(x,A1+2*An)
 hold on
 
 er = 1;
 tf=20;
-saveEvery=1/dt;
+saveEvery=0.02/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
 AllA1s = zeros(nSave,N);

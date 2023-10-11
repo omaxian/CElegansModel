@@ -24,7 +24,7 @@ nexttile
 h(1)=plot([x 1],[MeanMy MeanMy(1)]);
 hold on
 h(2)=plot([x 1],[MyFilt MyFilt(1)]);
-h(3)=errorbar(xog,mean(MyBright),std(MyBright)/sqrt(10),'-k','LineWidth',1.0);
+h(3)=errorbar(xog,mean(MyBright/1.25),std(MyBright/1.25)/sqrt(10),'-k','LineWidth',2.0);
 title('Myosin intensity')
 xlabel('$\hat x$')
 ylabel('$\hat M$')

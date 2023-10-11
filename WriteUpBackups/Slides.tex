@@ -15,6 +15,7 @@
 \newcommand{\delete}[1]{}
 \newcommand{\change}[1]{\color{black}#1\normalcolor}
 \newcommand{\rev}[1]{\color{black}#1\normalcolor}
+\graphicspath{{PresentationFigsMovies/}}
 
 
 % VECTOR AND MATRIX NOTATION
@@ -160,6 +161,10 @@ Wild type sequence
 \end{frame}
 
 \begin{frame}{Movie: \emph{C elegans} wild type}
+\begin{center}
+\hspace{-0.75 cm} NMY-2::GFP  \phantom{O thou}  mCherry::PAR-2 \phantom{O thouth} Merge
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{WildTypeStill-crop.pdf}}{PresentationFigsMovies/WildType.mp4}
+\end{center}
 \end{frame}
 
 \begin{frame}{The wild-type boundary is stable (the movie)}
@@ -184,7 +189,7 @@ Does ``maintenance'' maintain the current boundary in non wild-type embryos?
 
 \begin{center}
 \hspace{-0.75 cm} NMY-2::GFP  \phantom{O thou}  mCherry::PAR-2 \phantom{O thouth} Merge
-\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{ZoniesFrame1.pdf}}{ZoniesNMYEct2.mov}
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{ZoniesFrame1.pdf}}{PresentationFigsMovies/ZoniesNMYEct2.mov}
 \end{center}
 
 Results in exactly the same boundary position!
@@ -232,6 +237,7 @@ $$\frac{dx}{dt}=\underbrace{f(x)}_\text{On rate}-\underbrace{g(x)}_\text{Off rat
 \begin{center}
 \includegraphics[width=0.6\textwidth]{FluxExample.eps}
 \end{center}
+\vspace{-0.3 cm}
 \begin{itemize}
 \item Stable steady state $f(x_s^+) < g(x_s^+) < 0$,  $f(x_s^-)  > g(x_s^-)$
 \item Perturb off the steady state and get pushed back to it
@@ -260,7 +266,7 @@ M_\text{cyto} =  1 - \int_0^1 M(x) \, dx \\
 
 \begin{frame}{Stable and unstable myosin dynamics}
 \begin{center}
-\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{MyosinStill.eps}}{MyosinDynamics.mp4}
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{MyosinStill.eps}}{PresentationFigsMovies/MyosinDynamics.mp4}
 \end{center}
 Unstable flow patterns characterized by unphysical speeds
 \end{frame}
@@ -272,7 +278,7 @@ Unstable flow patterns characterized by unphysical speeds
 Solve $$\gamma v = \eta \Dx^2 v+ \Dx \sigma_a(M)$$
 to get active stress $\sigma_a(M)$
 
-\blfootnote{\tiny{Sailer et al. \emph{Dev.\ Cell} (2010)}}
+\blfootnote{\tiny{Sailer et al. \emph{Dev.\ Cell} (2015)}}
 \end{frame}
 
 \begin{frame}{Inferred myosin dynamics}
@@ -354,25 +360,106 @@ First model: mutual inhibition of proteins, mass-action kinetics
 \end{center}}
 \end{frame}
 
-\begin{frame}{The Charlie-Ed solution: PAR-3}
-Important experimental observations
+\begin{frame}{PAR-3 dynamics as a possible solution}
+Two important observations
 \begin{itemize}
-\item PAR-3 stable by itself
-\item All asymmetries are lost without it
-\item Higher recruitment rate when more monomers attached
-\item Oligomerization
-\item Evidence that feedback + oligomerization $\rightarrow$ stability
+\item Without PAR-3, all other asymmetries lost
+\item pPAR (RNAi) $\rightarrow$ still get PAR-3 asymmetry
+\item PAR-3 must be the anchor for bistability in a sense
 \end{itemize}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{AnniePAR3.png}
+\end{center}
+\blfootnote{\tiny{Sailer et al. \emph{Dev. Cell} (2015)}}
 \end{frame}
 
-\begin{frame}{PAR-3 model}
-Pinned boundary position
+\begin{frame}{Experiments $\rightarrow$ PAR-3 model}
+\begin{itemize}
+\item Oligomerization
+\item Higher recruitment rate when more monomers attached
+\item \emph{Feedback} model where bound monomers $\rightarrow$ more binding
+\end{itemize}
+\begin{small}
+\begin{align*}
+\Dt \MA & = \A{D} \Dx^2 \MA + \left(\A{\kon}+\underbrace{\A{\kf}\A{f}^+\left(A_\text{tot}\right)}_\text{Feedback}\right)  \MAC + \underbrace{2\A{\kdp}\PA -2\A{\kp} \MA^2}_\text{Oligomerization} - \A{\koff}\MA \\
+\Dt \PA & =\A{\kp}\MA^2- \A{\kdp}\PA \\ \label{eq:Acyto}
+A_\text{cyto} & = 1- \int_0^1 A_\text{tot}(x) \, dx \qquad A_\text{tot}=\MA+\PA
+\end{align*}
+\end{small}
+Feedback function
+\begin{itemize}
+\item Linear with saturation: $f_A^+(x)=\text{min}\left(x,f_\text{max}\right)$
+\end{itemize}
+Cytoplasmic concentration
+\begin{itemize}
+\item $1-A_\text{tot}$ at uniform steady state
+\item Constant when we do stability analysis
+\end{itemize}
+\blfootnote{\tiny{Lang and Munro. \emph{Biophys.\ J.} (2022)}}
 \end{frame}
+
+\begin{frame}{PAR-3 stability analysis}
+What happens when feedback strength is too large?
+\begin{center}
+\includegraphics[width=0.8\textwidth]{PAR3DiagramWrongSat.eps}
+\end{center}
+\end{frame}
+
+\begin{frame}{Smaller feedback saturation $\rightarrow$ stable uniform state}
+Bistability emerges at a fixed cytoplasmic concentration!
+\begin{center}
+\includegraphics[width=0.8\textwidth]{PAR3DiagramSat.eps}
+\end{center}
+\end{frame}
+
+\begin{frame}{Cytoplasmic enrichment $\rightarrow$ larger steady states}
+Why polarized state is roughly 25\% larger than uniform state
+\begin{center}
+\includegraphics[width=0.8\textwidth]{PAR3DiagramSatSides.eps}
+\end{center}
+\end{frame}
+
+\begin{frame}{PAR-3 dynamics}
+Sufficient depletion of PAR-3 $\rightarrow$ bistability
+\begin{center}
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{PAR3MovieFirstFrame.eps}}{PresentationFigsMovies/PAR3Dynamics.mp4}
+\end{center}
+Cytoplasmic enrichment $\rightarrow$ anterior state about 20\% larger
+\end{frame}
+
 
 \begin{frame}{Incorporating PAR-2}
-Mass action kinetics $\rightarrow$ different zones
+Introduce $P$ (PAR-2/PAR-1 complex)
+\begin{itemize}
+\item Inhibits PAR-3 clusters
+\item Inhibited by PAR-3 (through PKC-3)
+\end{itemize}
+\begin{small}
+\begin{align*}
+\Dt A_1 &= D_A \Dx^2 A_1 +\left( \kon_A +\A{\kf}\A{f}^+\left(\MA+2\PA\right)\right) A_\text{cyto} - \koff_A \MA -2\kp_A \MA^2+2\kdp_A \PA,\\
+\Dt \PA &= \kp_A \MA^2 - \kdp_A \PA-\red{r_\text{PA} \PA P}\\
+\Dt P &= D_P \Dx^2 P + \kon_P P_\text{cyto} - \koff_P P -\red{r_\text{AP} P\left(\MA+2\PA\right)},%\\
+%\Dt P_2 &= \kp_P P_1^2 - \kdp_P P_2-r_\text{AP} P_2\left(\MA+2\PA\right).
+\end{align*}
+Tune parameter $r_\text{AP}=r_\text{PA}$ to match experiments ($\approx$ 70\% PAR-3 enrichment no myosin)
+\end{small}
 
-Boundary can only make it so far! Need another piece
+\vspace{-3 cm}
+
+\blfootnote{\tiny{Lang and Munro. \emph{Development} (2017)}}
+\blfootnote{\tiny{Zonies et al. \emph{Development} (2010)}}
+\end{frame}
+
+\begin{frame}{Simulations with PAR-2}
+\begin{center}
+\movie[width=0.8\textwidth,loop]{\includegraphics[width=0.8\textwidth]{PAR2PAR3InFinal.eps}}{PresentationFigsMovies/PAR3PAR2Dynamics.mp4}
+\end{center}
+Initial domain naturally expands, then stops 
+\begin{itemize}
+\item Lots of cytoplasmic PAR-2 $\rightarrow$ higher on flux
+\item Higher flux out-competes PAR-3, driving it lower
+\item Boundary stops when cytoplasmic PAR-2 is too low
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Experimental and modeling program}
@@ -386,52 +473,81 @@ Hypothesis:``rescue'' = pPAR/aPAR competition + pPAR inhibiting myosin
 \begin{frame}{Full model: PAR-2/PAR-3/Myosin}
 Dynamics of myosin
 \begin{itemize}
-\item Inhibited locally by pPARs
-\item Transports everything (including itself!)
+\item Inhibited locally by pPARs through mass-action kinetics $\Dt{M}=\dots -r_\text{PM} M P$
+\item Transports everything (including itself!), $\Dt{P}+\Dx{\left(P v\right)}=\dots$
 \end{itemize}
+\begin{center}
+\movie[width=0.8\textwidth,loop]{\includegraphics[width=0.8\textwidth]{PAR2PAR3MyosinT0.eps}}{PresentationFigsMovies/MyosinPAR2PAR3.mp4}
+\end{center}
 \end{frame}
 
 \begin{frame}{Steady states}
+\includegraphics[width=\textwidth]{P2P3Myosin.eps}
+Too or too much inhibition $\rightarrow$ no movement
 \end{frame}
 
 \begin{frame}{Contractility on/off}
-Start with mutual aPAR/pPAR inhibition. Let equilibrate. Add contractility. Let equilibrate. Turn off contractility. Should go back to first position
+\begin{center}
+\movie[width=0.8\textwidth,loop]{\includegraphics[width=0.8\textwidth]{ContractilityFirstFrame.eps}}{PresentationFigsMovies/Contractility.mp4}
+\end{center}
 \end{frame}
 
 \begin{frame}{Remaining issues}
 What causes boundary to stop?
 \begin{itemize}
-\item This model: 
+\item Model: not enough cyto PAR-2 to outcompete PAR-3
 \item Experiment: something different?
 \end{itemize}
-Clear that flow profiles do not match
+\includegraphics[width=\textwidth]{ExperimentModelMyVel.eps}
+\vspace{-0.5 cm}
+\begin{itemize}
+\item Strange myosin decrease towards anterior cap
+\item Concomitant ``stall zone'' of velocity 
+\end{itemize}
+\blfootnote{\tiny{Sailer et al. \emph{Dev. Cell} (2015)}}
 \end{frame}
 
 \begin{frame}{Branched actin as a brake on contractility}
-Cassandra's movies on arp 2/3 knockout
+Issue: WT myosin peak sits at edge of anterior domain, not at cap
+\begin{itemize}
+\item Hypothesis: branched actin halts myosin constriction
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{MyosinIntensityExpsSim.eps}
+\end{center}
+Myosin profile in \emph{arx-2} (RNAi) looks similar to model
+\begin{itemize}
+\item Why decrease at boundary in \emph{arx-2} (RNAi)? Imaging artifact?
+\end{itemize}
+\blfootnote{\tiny{Cassandra Azeredo-Tseng}}
+\end{frame}
 
-Idea: flow profile here should be same as original model
-
-Then add branched actin to the model to complete the story
-
+\begin{frame}{Branched actin knockout movies}
+Show movie arx2 (RNAi) vs.\ controlled
 \end{frame}
 
 
-
-\iffalse
-\begin{frame}{Computational rheology in dynamic cross-linked networks}
-\centering
-\movie[width=0.48\textwidth]{
- \includegraphics[width=0.48\textwidth]{RelaxationTurnover5_478.png}
-}{ShearTurnover5.mp4}
-\movie[width=0.48\textwidth]{
- \includegraphics[width=0.48\textwidth]{RelaxationTurnover10_478.png}
-}{ShearTurnover10.mp4}
-\newline \phantom{x} \qquad $\tau_f/\tau_c \approx 0.3$ \qquad \qquad \qquad \qquad \quad $\tau_f/\tau_c \approx 0.7$ 
-\newline ``Meshwork'' \qquad \qquad \qquad \qquad \quad ``B-In-M''
+\begin{frame}{Velocity field in \emph{arx-2} (RNAi)}
+Wild deviations in \emph{arx-2} embryos $\rightarrow$ hard to tell for sure
+\includegraphics[width=\textwidth]{FlowProfilesWTArx2WMod.eps}
+Appearance of flow profile that matches model
 \end{frame}
-\fi
 
-
+\begin{frame}{Conclusions and future work}
+Maintenance phase ``rescue'' $\approx$ same pathway as establishment
+\begin{itemize}
+\item PAR-3 intrinsically bistable
+\item PAR-2 ``invades'' based on excess cytoplasmic
+\item Myosin inhibition by PAR-2 $\rightarrow$ further expansion
+\item Boundary pinned when run low on PAR-2
+\end{itemize}
+Flow and myosin profiles out of whack in WT vs.\ model
+\begin{itemize}
+\item Better match: \emph{arx-2} (RNAi) embryos 
+\item Need better velocity field to confirm
+\item Branched actin inhibits contractility
+\item Incorporate into model; match WT?
+\end{itemize} 
+\end{frame}
 
 \end{document}
