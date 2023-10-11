@@ -14,7 +14,7 @@ eta = 0.1;
 gamma = 1e-3;
 Mtot = 50;
 Ctot = 50;
-Sigma0 = 1.1e-3;
+Sigma0 = 1.1e-2;
 
 %% Dimensionless parameters
 SigmaHat =Sigma0/sqrt(eta*gamma)/(L*koffM);
@@ -25,7 +25,7 @@ konC_Hat = konC/(h*koffM);
 koffM_Hat = 1;
 koffC_Hat = koffC/koffM;
 LRatio = sqrt(eta/gamma)/L;
-Krecruit_CM = 100000;
+Krecruit_CM = 100;
 
 %% Expected stability
 % Find steady states
@@ -45,8 +45,8 @@ end
 find(detSM < 0)
 
 %% Numerical stuff
-dt = 1e-3;
-N = 128;
+dt = 1e-4;
+N = 1000;
 dx = 1/N;
 x = (0:N-1)'*dx;
 advorder = 1;
@@ -59,8 +59,8 @@ rC=C0/10*randn(N,1);
 C = C0*ones(N,1)+(rC-mean(rC));
 rM=M0/10*randn(N,1);
 M = M0*ones(N,1)+(rM-mean(rM));
-plot(x,C,x,M)
-hold on
+%plot(x,M,x,v)
+%hold on
 nIts = 1;
 er = 1;
 while (er > 1e-10)
@@ -85,7 +85,7 @@ while (er > 1e-10)
     mv = [(M-Mprev)/dt; (C-Cprev)/dt];
     er = max(abs(mv))/max(abs(M));
     nIts=nIts+1;
-%     plot(x,C,x,M,x,R,x,v)
-%     drawnow
+    plot(x,M,x,v)
+    drawnow
 end
-plot(x,C,x,M)
+plot(x,M,x,v)

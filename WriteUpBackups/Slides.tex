@@ -133,7 +133,7 @@
 \end{frame}
 
 \begin{frame}{\emph{C elegans} model system}
-\begin{columns}[t]
+\begin{columns}
 \begin{column}{0.6\textwidth}
 Ingredients
 \begin{itemize}
@@ -151,10 +151,10 @@ Wild type sequence
 \item Expansion of boundary to stable point (``establishment'')
 \item ``Maintenance:'' boundary stays
 \end{itemize}
-
 \end{column}
+
 \begin{column}{0.5\textwidth}
-Diagrams
+\includegraphics[width=\textwidth]{CElegansScheme-crop.pdf}
 \end{column}
 \end{columns}
 \end{frame}
@@ -181,7 +181,13 @@ Does ``maintenance'' maintain the current boundary in non wild-type embryos?
 \item Alternative: ECT-2 knockdown (GEF that activates Rho)
 \item Both cases: local zone of PAR-2 enrichment remains
 \end{itemize}
-Results in exactly the same boundary position! (MOVIE)
+
+\begin{center}
+\hspace{-0.75 cm} NMY-2::GFP  \phantom{O thou}  mCherry::PAR-2 \phantom{O thouth} Merge
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{ZoniesFrame1.pdf}}{ZoniesNMYEct2.mov}
+\end{center}
+
+Results in exactly the same boundary position!
 \begin{itemize}
 \item Requires PAR-2, MRCK
 \end{itemize}
@@ -222,30 +228,68 @@ Hypothesis 2: ``rescue'' = pPAR/aPAR competition + pPAR inhibiting myosin
 $$\frac{dx}{dt}=\underbrace{f(x)}_\text{On rate}-\underbrace{g(x)}_\text{Off rate}$$
 \begin{itemize}
 \item Steady states: $f(x_s)=g(x_s)$
-\item Stable steady state $f(x_s^+)-g(x_s^+) < 0$,  $f(x_s^-)-g(x_s^-) < 0$
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{FluxExample.eps}
+\end{center}
+\begin{itemize}
+\item Stable steady state $f(x_s^+) < g(x_s^+) < 0$,  $f(x_s^-)  > g(x_s^-)$
 \item Perturb off the steady state and get pushed back to it
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Model of the \emph{C elegans} embryo}
-1D periodic model
+\centering
+\includegraphics[width=0.7\textwidth]{ModelGeo.eps}
 
 \end{frame}
 
 \begin{frame}{Myosin dynamics}
+\begin{gather*}
+\Dt M + \underbrace{\Dx \left(v M\right)}_\text{Advection} = \underbrace{D_M \Dx^2 M}_\text{Diffusion} +\underbrace{\My{\kon}M_\text{cyto}}_\text{On flux} - \underbrace{\My{\koff} M}_\text{Off flux} \\
+M_\text{cyto} =  1 - \int_0^1 M(x) \, dx \\
+\underbrace{\gamma v}_\text{Drag force} = \underbrace{\eta \Dx^2 v}_\text{Viscous stress} + \underbrace{\Dx \sigma_a(M)}_\text{Active stress}
+\end{gather*}
 \begin{itemize}
-\item The steady state is
-\item Key unknown: stress vs.\ myosin relationship 
-\item Infer from experiments!
+\item Strong enough flows $\rightarrow$ self patterning
+\item Only unknown: stress vs.\ myosin relationship 
 \end{itemize}
+
+\blfootnote{\tiny{Bois et al. \emph{PRL} (2011)}}
+\end{frame}
+
+\begin{frame}{Stable and unstable myosin dynamics}
+\begin{center}
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{MyosinStill.eps}}{MyosinDynamics.mp4}
+\end{center}
+Unstable flow patterns characterized by unphysical speeds
+\end{frame}
+
+\begin{frame}{Inferred myosin velocity}
+\begin{center}
+\includegraphics[width=\textwidth]{MyosinFittingPres.eps}
+\end{center}
+Solve $$\gamma v = \eta \Dx^2 v+ \Dx \sigma_a(M)$$
+to get active stress $\sigma_a(M)$
+
+\blfootnote{\tiny{Sailer et al. \emph{Dev.\ Cell} (2010)}}
 \end{frame}
 
 \begin{frame}{Inferred myosin dynamics}
-The steady state is stable!
+\begin{center}
+\includegraphics[width=\textwidth]{MyosinStressPres.eps}
+\end{center}
+Active stress roughly proportional to myosin intensity
 \begin{itemize}
-\item Makes sense; we never see myosin peaks in random places
+\item $\sigma_a \approx \left(1.1 \times 10^{-3}\right) M$ 
+\item Not even close to strong enough for instability! 
+\item Never see sharp peaks in arbitrary places
+\item Despite appearances, \emph{no spontaneous symmetry breaking}
+\item System has 2 steady states
 \end{itemize}
 \end{frame}
+
+
 
 \begin{frame}{Experimental and modeling program}
 \st{Hypothesis 1: maintenance phase ``rescue'' = actomyosin instability (self-patterning) + mutual inhibition of PARs}
@@ -259,21 +303,55 @@ Hypothesis 2: ``rescue'' = pPAR/aPAR competition + pPAR inhibiting myosin
 \end{itemize}
 \end{frame}
 
-\begin{frame}{PAR competition model}
-PAR asymmetries stable by themselves without competition
-\begin{itemize}
-\item Wild-type embryos: MRCK knockout $\rightarrow$ boundary expands, but still asymmetric
-\item ECT-2 (RNAi) embryos: MLC-1 (RNAi) produces mutually inhibitory zones of PAR-2 and PAR-3
-\end{itemize}
+\begin{frame}{PAR competition gives contracted boundary}
+PAR asymmetries stable by themselves without flows
 
+\begin{columns}
+\begin{column}[T]{0.49\textwidth}
+\begin{itemize}
+\item Wild-type embryos with MRCK knockout $\rightarrow$ boundary expands, but still asymmetric
+\item ECT-2 (RNAi) embryos: MLC-1 (RNAi) produces mutually inhibitory zones of PAR-2 and PAR-3
+\item Suggests that mutual antagonism encodes one steady state
+\end{itemize}
+\end{column}
+\begin{column}[T]{0.49\textwidth}
+\includegraphics[width=0.9\textwidth]{ZoniesNoMyosin.png}
+\end{column}
+\end{columns}
+
+\blfootnote{\tiny{Zonies et al. \emph{Development} (2010)}}
+\end{frame}
+
+\begin{frame}{First model for mutual inhibition}
 First model: mutual inhibition of proteins, mass-action kinetics
+\begin{align*}
+\Dt A &= D_P \Dx^2 A + \kon_A A_\text{cyto} - \koff_A A -r_\text{AP} AP \\
+\Dt P &= \underbrace{D_P \Dx^2 P}_\text{Diffusion} + \underbrace{\kon_P P_\text{cyto} - \koff_P P}_\text{Binding/unbinding} \underbrace{-r_\text{AP} AP}_\text{Mutual inhibition}
+\end{align*}
 \begin{itemize}
 \item \emph{One} stable steady state!
+\item Need a way to generate \emph{bistability}
 \end{itemize}
 \end{frame}
 
 \begin{frame}{The Grill workaround}
+\begin{center}
+ \includegraphics[width=\textwidth]{GrillTitle.png}
+\end{center}
+\end{frame}
 
+\begin{frame}{The Grill workaround}
+
+\begin{center}
+\vspace{-3 cm}
+ \includegraphics[width=\textwidth]{GrillRxn.png}
+\end{center}
+
+\visible<2->{
+\vspace{-7 cm}
+\begin{center}
+ \includegraphics[width=\textwidth]{GrillChoice.png}
+\end{center}}
 \end{frame}
 
 \begin{frame}{The Charlie-Ed solution: PAR-3}
