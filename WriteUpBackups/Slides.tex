@@ -131,9 +131,44 @@
 \end{frame}
 
 \begin{frame}{Cell polarization}
+Spatial differences in protein concentration
+
+\begin{columns}
+
+\begin{column}[T]{0.5\textwidth}
+\begin{itemize}
+\item Encode cell fate decisions
+\item Vital for proper development
+\end{itemize}
+\end{column}
+
+\begin{column}[T]{0.3\textwidth}
+    \includegraphics[width=\textwidth,trim={0 16cm 0 0},clip]{CElegansCellFates.png}
+\end{column}
+
+\end{columns}
+
+\blfootnote{\tiny{Dewey et.\ al, \textit{J. Dev. Biol.}, 2015.}}
 \end{frame}
 
-\begin{frame}{\emph{C elegans} model system}
+
+\begin{frame}{Cell polarization}
+Spatial differences in protein concentration
+
+\begin{itemize}
+\item Encode cell fate decisions
+\item Vital for proper development
+\end{itemize}
+
+\begin{center}
+    \includegraphics[width=\textwidth]{MouseEmbryo.png}
+\end{center}
+
+
+\blfootnote{\tiny{Mihajlovic et.\ al, \textit{Open Biol.}, 2017.}}
+\end{frame}
+
+\begin{frame}{One-cell \emph{C.\ elegans} model system}
 \begin{columns}
 \begin{column}{0.6\textwidth}
 Ingredients
@@ -160,22 +195,27 @@ Wild type sequence
 \end{columns}
 \end{frame}
 
-\begin{frame}{Movie: \emph{C elegans} wild type}
+\begin{frame}{Movie: \emph{C.\ elegans} wild type}
 \begin{center}
 \hspace{-0.75 cm} NMY-2::GFP  \phantom{O thou}  mCherry::PAR-2 \phantom{O thouth} Merge
 \movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{WildTypeStill-crop.pdf}}{PresentationFigsMovies/WildType.mp4}
 \end{center}
+
+\blfootnote{\tiny{Zonies et al. \emph{Development} (2010)}}
 \end{frame}
 
 \begin{frame}{The wild-type boundary is stable (the movie)}
 Use CDK-1 (RNAi) to expand maintenance phase; boundary just sits there
 
-This slide: movie
+\vspace{1 cm}
+\begin{center}
+\movie[width=0.7\textwidth,loop]{\includegraphics[width=0.7\textwidth]{CDK1.png}}{PresentationFigsMovies/cdk-1RNAi_NMY2gfp.avi}
+\end{center}
 
 \end{frame}
 
 \begin{frame}{The wild-type boundary is stable (the book)}
-Plot of boundary position vs.\ time
+\includegraphics[width=0.3\textwidth]{Kymo_cdk-1RNAi_nmy2gfp.jpg}
 \end{frame}
 
 \begin{frame}{``Maintenance phase''}
@@ -507,11 +547,26 @@ What causes boundary to stop?
 \blfootnote{\tiny{Sailer et al. \emph{Dev. Cell} (2015)}}
 \end{frame}
 
-\begin{frame}{Branched actin as a brake on contractility}
+\begin{frame}{Branched actin knockout movies}
 Issue: WT myosin peak sits at edge of anterior domain, not at cap
 \begin{itemize}
 \item Hypothesis: branched actin halts myosin constriction
 \end{itemize}
+
+\begin{center}
+Wild type
+
+\movie[width=0.52\textwidth,loop]{\includegraphics[width=0.52\textwidth]{CDK1.png}}{PresentationFigsMovies/cdk-1RNAi_NMY2gfp.avi}
+
+
+\emph{arx-2} (RNAi)
+
+\movie[width=0.52\textwidth,loop]{\includegraphics[width=0.52\textwidth]{Arx2RNAi.png}}{PresentationFigsMovies/arxRNAi_NMY2gfp.avi}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Branched actin as a brake on contractility}
 \begin{center}
 \includegraphics[width=0.6\textwidth]{MyosinIntensityExpsSim.eps}
 \end{center}
@@ -519,12 +574,8 @@ Myosin profile in \emph{arx-2} (RNAi) looks similar to model
 \begin{itemize}
 \item Why decrease at boundary in \emph{arx-2} (RNAi)? Imaging artifact?
 \end{itemize}
-\blfootnote{\tiny{Cassandra Azeredo-Tseng}}
 \end{frame}
 
-\begin{frame}{Branched actin knockout movies}
-Show movie arx2 (RNAi) vs.\ controlled
-\end{frame}
 
 
 \begin{frame}{Velocity field in \emph{arx-2} (RNAi)}
