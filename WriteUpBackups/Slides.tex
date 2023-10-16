@@ -71,6 +71,7 @@
 \newcommand{\blue}[1]{\color{blue}#1\normalcolor}
 \newcommand{\white}[1]{\color{white}#1\normalcolor}
 \newcommand{\red}[1]{\color{red}#1\normalcolor}
+\newcommand{\lightgray}[1]{\color{lightgray}#1\normalcolor}
 \definecolor{ForestGreen}{RGB}{34,200,34}
 \newcommand{\green}[1]{\color{ForestGreen}#1\normalcolor}
 
@@ -109,7 +110,7 @@
 \usepackage[english]{babel}
 \usepackage[utf8x]{inputenc}
 
-\title[Cell polarity dynamical system]{Maintenance phase biochemistry and contractility combine to encode a dynamically stable polarity state in the \emph{C elegans} zygote \vspace{-0.5 cm}}
+\title[Cell polarity dynamical system]{Maintenance phase biochemistry and contractility combine to encode a dynamically stable polarity state in the \emph{C.\ elegans} zygote \vspace{-0.5 cm}}
 \author[Ondrej Maxian, Cassandra Azeredo-Tseng, Ed Munro \& Others]{Ondrej Maxian, Cassandra Azeredo-Tseng, Ed Munro \& Others \vspace{-0.5 cm}}
 %\institute[Courant Institute, NYU]{NYU MSG}
 \date{Munro Lab Group Meeting \\ October 16, 2023}
@@ -180,6 +181,8 @@ Ingredients
 \end{itemize}
 \item Actomyosin flows 
 \end{itemize}
+
+\pause
 Wild type sequence
 \begin{itemize}
 \item Centrosomes $\rightarrow$ PAR-2 localized
@@ -209,14 +212,26 @@ Use CDK-1 (RNAi) to expand maintenance phase; boundary just sits there
 
 \vspace{1 cm}
 \begin{center}
+NMY-2::GFP
+
 \movie[width=0.7\textwidth,loop]{\includegraphics[width=0.7\textwidth]{CDK1.png}}{PresentationFigsMovies/cdk-1RNAi_NMY2gfp.avi}
 \end{center}
 
 \end{frame}
 
 \begin{frame}{The wild-type boundary is stable (the book)}
-\includegraphics[width=0.3\textwidth]{Kymo_cdk-1RNAi_nmy2gfp.jpg}
+\begin{center}
+\includegraphics[width=0.48\textwidth]{WTKymo.png}
+\includegraphics[width=0.48\textwidth]{CDK1Kymo.png}
+\end{center}
 \end{frame}
+
+\begin{frame}{The wild-type boundary is stable (the data)}
+\centering
+\includegraphics[width=0.8\textwidth]{BdoverTime.png}
+\end{frame}
+
+
 
 \begin{frame}{``Maintenance phase''}
 Does ``maintenance'' maintain the current boundary in non wild-type embryos? 
@@ -227,6 +242,7 @@ Does ``maintenance'' maintain the current boundary in non wild-type embryos?
 \item Both cases: local zone of PAR-2 enrichment remains
 \end{itemize}
 
+\pause
 \begin{center}
 \hspace{-0.75 cm} NMY-2::GFP  \phantom{O thou}  mCherry::PAR-2 \phantom{O thouth} Merge
 \movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{ZoniesFrame1.pdf}}{PresentationFigsMovies/ZoniesNMYEct2.mov}
@@ -242,12 +258,15 @@ Results in exactly the same boundary position!
 
 \begin{frame}{The main questions}
 How do the aPARs (PAR-3), pPARs (PAR-2) and actomyosin flows combine to yield a dynamically stable boundary position?
+
+\pause
 \begin{itemize}
 \item Hypothesis 1: maintenance phase ``rescue'' = actomyosin instability (self-patterning) + mutual inhibition of PARs
 \begin{itemize}
 \item Uniform state is unstable
 \item Fundamentally different from wild type
 \end{itemize}
+\pause
 \item Hypothesis 2: ``rescue'' = pPAR/aPAR competition + pPAR inhibiting myosin 
 \begin{itemize}
 \item Uniform state stable
@@ -266,7 +285,7 @@ Hypothesis 1: maintenance phase ``rescue'' = actomyosin instability (self-patter
 \item Infer parameters from experiments
 \item Do we see self-amplification/instability?
 \end{itemize}
-Hypothesis 2: ``rescue'' = pPAR/aPAR competition + pPAR inhibiting myosin 
+\lightgray{Hypothesis 2: ``rescue'' = pPAR/aPAR competition + pPAR inhibiting myosin}
 \end{frame}
 
 \begin{frame}{Mathematics of stability}
@@ -274,6 +293,7 @@ $$\frac{dx}{dt}=\underbrace{f(x)}_\text{On rate}-\underbrace{g(x)}_\text{Off rat
 \begin{itemize}
 \item Steady states: $f(x_s)=g(x_s)$
 \end{itemize}
+\pause
 \begin{center}
 \includegraphics[width=0.6\textwidth]{FluxExample.eps}
 \end{center}
@@ -299,6 +319,7 @@ M_\text{cyto} =  1 - \int_0^1 M(x) \, dx \\
 \begin{itemize}
 \item Strong enough flows $\rightarrow$ self patterning
 \item Only unknown: stress vs.\ myosin relationship 
+\item Say $\sigma_a \propto M$, then $v \propto \Dx{M}$ + viscosity 
 \end{itemize}
 
 \blfootnote{\tiny{Bois et al. \emph{PRL} (2011)}}
@@ -317,7 +338,7 @@ Unstable flow patterns characterized by unphysical speeds
 \end{center}
 Solve $$\gamma v = \eta \Dx^2 v+ \Dx \sigma_a(M)$$
 to get active stress $\sigma_a(M)$
-
+% NOTE: THESE PLOTS ARE SCALED SO MYOSIN IS ON [0,1] FIX!
 \blfootnote{\tiny{Sailer et al. \emph{Dev.\ Cell} (2015)}}
 \end{frame}
 
@@ -338,14 +359,14 @@ Active stress roughly proportional to myosin intensity
 
 
 \begin{frame}{Experimental and modeling program}
-\st{Hypothesis 1: maintenance phase ``rescue'' = actomyosin instability (self-patterning) + mutual inhibition of PARs}
+\lightgray{\st{Hypothesis 1: maintenance phase ``rescue'' = actomyosin instability (self-patterning) + mutual inhibition of PARs}}
 
 \vspace{0.5 cm}
 
 Hypothesis 2: ``rescue'' = pPAR/aPAR competition + pPAR inhibiting myosin 
 \begin{itemize}
 \item Start with model of aPAR/pPAR competition
-\item Add myosin on top
+\item \lightgray{Add myosin on top}
 \end{itemize}
 \end{frame}
 
@@ -356,12 +377,12 @@ PAR asymmetries stable by themselves without flows
 \begin{column}[T]{0.49\textwidth}
 \begin{itemize}
 \item Wild-type embryos with MRCK knockout $\rightarrow$ boundary expands, but still asymmetric
-\item ECT-2 (RNAi) embryos: MLC-1 (RNAi) produces mutually inhibitory zones of PAR-2 and PAR-3
-\item Suggests that mutual antagonism encodes one steady state
+\visible<2-> {\item ECT-2 (RNAi) embryos: MLC-1 (RNAi) produces mutually inhibitory zones of PAR-2 and PAR-3
+\item Suggests that mutual antagonism encodes one steady state}
 \end{itemize}
 \end{column}
 \begin{column}[T]{0.49\textwidth}
-\includegraphics[width=0.9\textwidth]{ZoniesNoMyosin.png}
+\visible<2->{ {\includegraphics[width=0.9\textwidth]{ZoniesNoMyosin.png}}}
 \end{column}
 \end{columns}
 
@@ -406,6 +427,7 @@ Two important observations
 \item Without PAR-3, all other asymmetries lost
 \item pPAR (RNAi) $\rightarrow$ still get PAR-3 asymmetry
 \item PAR-3 must be the anchor for bistability in a sense
+\item Ed's ``favorite protein?''
 \end{itemize}
 \begin{center}
 \includegraphics[width=0.8\textwidth]{AnniePAR3.png}
@@ -419,6 +441,7 @@ Two important observations
 \item Higher recruitment rate when more monomers attached
 \item \emph{Feedback} model where bound monomers $\rightarrow$ more binding
 \end{itemize}
+\pause
 \begin{small}
 \begin{align*}
 \Dt \MA & = \A{D} \Dx^2 \MA + \left(\A{\kon}+\underbrace{\A{\kf}\A{f}^+\left(A_\text{tot}\right)}_\text{Feedback}\right)  \MAC + \underbrace{2\A{\kdp}\PA -2\A{\kp} \MA^2}_\text{Oligomerization} - \A{\koff}\MA \\
@@ -505,7 +528,7 @@ Initial domain naturally expands, then stops
 \begin{frame}{Experimental and modeling program}
 Hypothesis:``rescue'' = pPAR/aPAR competition + pPAR inhibiting myosin 
 \begin{itemize}
-\item Start with model of aPAR/pPAR competition
+\item \lightgray{Start with model of aPAR/pPAR competition}
 \item Add myosin on top
 \end{itemize}
 \end{frame}
@@ -595,7 +618,6 @@ Maintenance phase ``rescue'' $\approx$ same pathway as establishment
 Flow and myosin profiles out of whack in WT vs.\ model
 \begin{itemize}
 \item Better match: \emph{arx-2} (RNAi) embryos 
-\item Need better velocity field to confirm
 \item Branched actin inhibits contractility
 \item Incorporate into model; match WT?
 \end{itemize} 
