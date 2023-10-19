@@ -15,7 +15,7 @@ DP = 0.15;
 konP = 0.13;
 koffP = 7.3e-3;
 PTot = 50;
-rAP = 5e-4; % A inhibiting P
+rAP = 6e-4; % A inhibiting P
 rPA = rAP; % P inhibiting A
 % Dimensionless
 DA_Hat = DA/(L^2*kdpA);
@@ -34,10 +34,10 @@ dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
 % Start with small zone of PAR-2 on posterior cap
-cap = (x > 0.9);
-A1 = 0.5*ones(N,1).*(~cap);
-An = 0.25*ones(N,1).*(~cap);
-P = ones(N,1).*cap;
+InitialSize = 0.9;
+A1 = 0.5*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+An = 0.25*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+P = ones(N,1).*~(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %if (rAP==0)
 plot(x,A1+2*An,':',x,P,':')
 hold on
@@ -50,6 +50,7 @@ nSave = (nT-1)/saveEvery;
 AllA1s = zeros(nSave,N);
 AllAns = zeros(nSave,N);
 AllPs = zeros(nSave,N);
+PAR3Size = zeros(nSave,1);
 
 er = 1;
 for iT=0:nT-1
@@ -58,6 +59,12 @@ for iT=0:nT-1
         AllA1s(iSave,:)=A1;
         AllAns(iSave,:)=An;
         AllPs(iSave,:)=P;
+        Locs = find((A1+2*An) > P);
+        try
+        PAR3Size(iSave) = (Locs(end)-Locs(1)+1)*dx;
+        catch
+        PAR3Size(iSave)=0;
+        end
 %         hold off
 %         plot(x,A1+2*An,x,P)
 %         drawnow

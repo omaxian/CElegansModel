@@ -36,8 +36,8 @@ DetRate = Detachment(Atots,Koff_Hat,Kdp_Hat,Kp_Hat);
 plot(Atots,AttRate)
 hold on
 plot(Atots,DetRate)
-ylimlim=ylim;
-ylim([0 ylimlim(2)])
+% ylimlim=ylim;
+% ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
 AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac0);
@@ -73,6 +73,7 @@ detL=L11*L22-L12*L21;
 %dets=[dets;detL2];
 %end
 %end
+xlim([0 1])
 
 function val = RHS(Atot,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat)
     Kconst = Kp_Hat/Kdp_Hat;
