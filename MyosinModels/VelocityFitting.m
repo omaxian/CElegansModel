@@ -1,8 +1,7 @@
 load('LateMaintenanceFlowBright.mat')
 MicronsPerPixel = 1/10;
 xFlows = n2*MicronsPerPixel; % in microns/second
-MyBright = OneBrt2;
-MyBright = MyBright-min(mean(MyBright));
+MyBright = OneBrt2/2;%-min(mean(MyBright));
 % Periodic versions
 PerMy = [MyBright fliplr(MyBright(:,2:end-1))];
 PerMy = [PerMy(:,end-9:end) PerMy(:,1:end-10)];
@@ -24,7 +23,7 @@ nexttile
 h(1)=plot([x 1],[MeanMy MeanMy(1)]);
 hold on
 h(2)=plot([x 1],[MyFilt MyFilt(1)]);
-h(3)=errorbar(xog,mean(MyBright/1.25),std(MyBright/1.25)/sqrt(10),'-k','LineWidth',2.0);
+h(3)=errorbar(xog,mean(MyBright),std(MyBright)/sqrt(10),'-k','LineWidth',1.0);
 title('Myosin intensity')
 xlabel('$\hat x$')
 ylabel('$\hat M$')

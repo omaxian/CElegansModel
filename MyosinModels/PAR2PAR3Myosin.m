@@ -54,8 +54,8 @@ A1 = 0.5*ones(N,1).*(~cap);
 An = 0.25*ones(N,1).*(~cap);
 P = ones(N,1).*cap;
 M = 0.5*ones(N,1);%+0.4*(rand(N,1)-0.5);
-%plot(x,Ass,':',x,Pss,':',x,Mss,':')
-%hold on
+plot(x,Ass,':',x,Pss,':',x,Mss,':')
+hold on
 
 tf=200;
 saveEvery=1/dt;
