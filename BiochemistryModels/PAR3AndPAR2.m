@@ -1,7 +1,7 @@
 % Rxn-diffusion model of PAR-2 and PAR-3 with dimerization on cortex
 % Parameters 
-L = 67.33;
-h = 4.7;
+L = 134.6;
+h = 9.5;
 % PAR-3
 DA = 0.1;
 konA = 1; 
@@ -15,7 +15,7 @@ DP = 0.15;
 konP = 0.13;
 koffP = 7.3e-3;
 PTot = 50;
-rAP = 6e-4; % A inhibiting P
+rAP = 0; % A inhibiting P
 rPA = rAP; % P inhibiting A
 % Dimensionless
 DA_Hat = DA/(L^2*kdpA);

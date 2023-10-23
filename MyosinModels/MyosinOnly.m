@@ -1,20 +1,20 @@
 % Single species advection-diffusion coupled
 % to active fluid dynamics
 %% Parameters
-L = 67.33;
-h = 4.7;
-DM = 0.1;
+L = 134.6;
+h = 9.5;
+DM = 0.05;
 koffM = 0.12;
-konM = 2;
+konM = 0.5;
 eta = 0.1;
 gamma = 1e-3;
-Sigma0 = 1.1e-2;
+Sigma0 = 4.2e-3;
 
 %% Dimensionless parameters
 DM_Hat = DM/(koffM*L^2);
 KonM_Hat = konM/(h*koffM);
 LRatio = sqrt(eta/gamma)/L;
-Sigma0_Hat =Sigma0/sqrt(eta*gamma)/(L*koffM);
+Sigma0_Hat = Sigma0/sqrt(eta*gamma)/(L*koffM);
 
 
 %% Numerical parameters
@@ -33,9 +33,12 @@ DOneCenter = FirstDerivMatCenter(N,dx);
 % Initial guess
 r = 0.05*randn(N,1);
 r = r-mean(r);
-M = KonM_Hat/(1+KonM_Hat)*ones(N,1)+r;
-%lambda_1=sigma0_Hat*4*pi^2*k.^2*M0*LRatio*SigPrime./(1+4*pi^2*k.^2*LRatio^2)-DM_Hat*4*pi^2*k.^2-1;
-%lambda_1(1)
+M0 = KonM_Hat/(1+KonM_Hat);
+M = M0*ones(N,1)+r;
+ks=1:20;
+lambda_1=Sigma0_Hat*4*pi^2*ks.^2*M0*LRatio./(1+4*pi^2*ks.^2*LRatio^2)...
+    -DM_Hat*4*pi^2*ks.^2-1;
+max(lambda_1)
 plot(x,M)
 hold on
 nIts = 1;

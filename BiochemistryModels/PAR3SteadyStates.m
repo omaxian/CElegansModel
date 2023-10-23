@@ -1,13 +1,14 @@
+%% TO DO: Go back and rework this with correct parameters
 DA = 0.1;
-L = 67.33;
-h = 4.7;
+L = 134.6;
+h = 9.5;
 koffA = 3;
 kdpA = 0.08; 
-ATot = 50;
-konA = 1; % First unknown
+ATot = 1500;
+konA = 0.2; % First unknown
 kpA = 0.03; % Second unknown
 %kAplus = 100; % Third unknown
-Kf_Hat = 12.5;
+Kf_Hat = 10;
 %dets=[];
 %kpluss = 1000;%(1:1000)*0.01;
 

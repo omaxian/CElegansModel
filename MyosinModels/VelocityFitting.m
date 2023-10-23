@@ -11,6 +11,10 @@ MeanMy = mean(PerMy);
 MeanVel = mean(PerVel);
 xog = 0.25:0.025:0.75;
 x = 0:0.025:0.975;
+Factor = 1/(sum(MeanMy)*0.025)*0.3;
+MyBright = MyBright*Factor;
+PerMy = PerMy*Factor;
+MeanMy = MeanMy*Factor;
 % Filter high-frequency stuff (2 fourier modes)
 MyHat = fft(MeanMy);
 nModes = 40;
@@ -31,28 +35,42 @@ VelHat = fft(MeanVel);
 VelHat(nnz+2:end-nnz)=0;
 VelFilt = ifft(VelHat);
 nexttile
-h(1)=plot([x 1],[MeanVel MeanVel(1)]);
+h(1)=plot([x 1],60*[MeanVel MeanVel(1)]);
 hold on
-h(2)=plot([x 1],[VelFilt VelFilt(1)]);
-h(3)=errorbar(xog,mean(xFlows),std(xFlows)/sqrt(10),'-k','LineWidth',1.0);
+h(2)=plot([x 1],60*[VelFilt VelFilt(1)]);
+h(3)=errorbar(xog,mean(xFlows*60),std(xFlows*60)/sqrt(10),'-k','LineWidth',1.0);
 legend(h([3 1 2]), {'Raw data', 'Periodized','Fourier (2) fit'},'Location','Northwest')
-title('Velocity $\mu$m/s')
+title('Velocity')
 xlabel('$\hat x$')
-ylabel('$v$')
+ylabel('$v$ ($\mu$m/min)')
 
 % Extract active stress
 gamma = 1e-3;
 eta = 0.1;
-L = 67.33;
+L = 134.6;
 StressHat = (gamma + eta/L^2*kvals.^2)./(1i*kvals/L).*VelHat;
 StressHat(1) = 0;
 SmoothStr = ifft(StressHat);
 SmoothStr = SmoothStr-min(SmoothStr); % shift so on [0,1]
-Sigma0=max(SmoothStr);
-SmoothStr = SmoothStr/Sigma0;
 figure
-plot(x,SmoothStr)
+tiledlayout(1,2, 'Padding', 'none', 'TileSpacing', 'compact');
+nexttile
+plot([x 1],[SmoothStr SmoothStr(1)])
+xlabel('$\hat x$')
+title('Recovered stress')
+ylabel('$\sigma_a$ (Pa)')
+% Now shift so it matches the myosin
+MeanMySc = mean(MeanMy);
+Rng = max(MeanMy)-min(MeanMy);
+Sigma0 = max(SmoothStr)/Rng;
+SmoothStr = SmoothStr/Sigma0+MeanMySc-mean(SmoothStr/Sigma0);
+nexttile
+plot([x 1],[SmoothStr SmoothStr(1)])
 hold on
-plot(x,MyFilt)
+plot([x 1],[MyFilt MyFilt(1)])
+xlabel('$\hat x$')
+legend('$\sigma_a/(0.0042)$+Shift','$\hat M$','Location','Southwest')
+ylabel('$\hat \sigma_a$')
+title('Normalized stress')
 %figure
 %plot(MyFilt,SmoothStr./MyFilt)
