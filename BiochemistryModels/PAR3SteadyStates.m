@@ -1,27 +1,19 @@
-%% TO DO: Go back and rework this with correct parameters
 DA = 0.1;
 L = 134.6;
 h = 9.5;
 koffA = 3;
 kdpA = 0.08; 
-ATot = 1500;
-konA = 0.2; % First unknown
-kpA = 0.03; % Second unknown
-%kAplus = 100; % Third unknown
-Kf_Hat = 10;
-%dets=[];
-%kpluss = 1000;%(1:1000)*0.01;
+Kp_Hat = 75; % Correct distribution of mon/polys
+konA = 0.6; % First unknown
+Kf_Hat = 10.5;
+Ansat = 0.4;
 
-%KfHats = [2 4];
-%for iK=1:length(KfHats)
 % Non-dimensionalization
 D_Hat = DA/(L^2*kdpA);
 Kon_Hat = konA/(kdpA*h); 
-%Kf_Hat = KfHats(iK);%kAplus/konA;
 Koff_Hat = koffA/kdpA;
 Kdp_Hat = 1;
-Kp_Hat = kpA*ATot/kdpA;
-RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat);
+RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ansat);
 Art = 0.82; Astart=Art;
 while (abs(RHSfcn(Art)) > 0.01)
     Art = fsolve(RHSfcn,Astart);
@@ -32,17 +24,17 @@ while (abs(RHSfcn(Art)) > 0.01)
 end
 Ac0 = 1-Art;
 Atots=(0:0.01:5)';
-AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,-1);
+AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ansat,-1);
 DetRate = Detachment(Atots,Koff_Hat,Kdp_Hat,Kp_Hat);
-plot(Atots,AttRate)
-hold on
-plot(Atots,DetRate)
+%plot(Atots,AttRate)
+%hold on
+%plot(Atots,DetRate)
 % ylimlim=ylim;
 % ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
-AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac0);
-plot(Atots,AttRate)
+AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ansat,Ac0);
+%plot(Atots,AttRate)
 % set(gca,'ColorOrderIndex',1)
 % for Ac=[0.15 0.25]
 %     AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac);
@@ -76,18 +68,22 @@ detL=L11*L22-L12*L21;
 %end
 xlim([0 1])
 
-function val = RHS(Atot,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat)
+function val = RHS(Atot,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat)
     Kconst = Kp_Hat/Kdp_Hat;
     A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
-    Feedback = PAR3FeedbackFcn(Atot);
+    An = 1/2*(Atot-A1);
+    Feedback = PAR3FeedbackFcn(An,Asat);
     val = Kon_Hat*(1+Kf_Hat*Feedback).*(1-Atot)- Koff_Hat*A1;
 end
 
-function att = Attachment(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac)
+function att = Attachment(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,Ac)
     if (Ac < 0)
         Ac = 1-Atot;
     end
-    Feedback = PAR3FeedbackFcn(Atot);
+    Kconst = Kp_Hat/Kdp_Hat;
+    A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
+    An = 1/2*(Atot-A1);
+    Feedback = PAR3FeedbackFcn(An,Asat);
     att = Kon_Hat*(1+Kf_Hat*Feedback).*Ac;
 end
 
@@ -96,12 +92,6 @@ function det = Detachment(Atot,Koff_Hat,Kdp_Hat,Kp_Hat)
     A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
     det = Koff_Hat*A1;
 end
-
-function att = AttachmentNonUnif(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat)
-    dx = 1/length(Atot);
-    att = Kon_Hat*(1+Kf_Hat*Atot).*(1-sum(Atot)*dx);
-end
-
 
 function rts = QuarticRootsA1(Kon,Kf,Kdp,Kp)
     Kpratio = Kp/Kdp;

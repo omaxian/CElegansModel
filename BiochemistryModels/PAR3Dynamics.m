@@ -6,18 +6,18 @@ DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
 Kconst = Kp_Hat/Kdp_Hat;
 %A10 = 1/(4*Kconst)*(-1+sqrt(1+4*Art*2*Kconst));
-iSizes = 0.99;
+iSizes = 0.7;%[0.2:0.1:0.9 0.99];
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
 A1 = A10*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %An =  A10^2*Kp_Hat/Kdp_Hat*(x<1/2);
-An = An0*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+An = 2*An0*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 Ac0=1-sum(A1+2*An)*dx
 plot(x,A1+2*An)
 hold on
 
 er = 1;
-tf=500;
+tf=200;
 saveEvery=0.1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -29,7 +29,7 @@ for iT=0:nT
         iSave = iT/saveEvery+1;
         AllA1s(iSave,:)=A1;
         AllAns(iSave,:)=An;
-        Locs = find(A1+2*An > 0.5);
+        Locs = find(A1+2*An > 0.2);
         EnrichSize(iSave)=(Locs(end)-Locs(1)+1)*dx;
 %         hold off
 %         plot(x,A1+2*An)
@@ -38,7 +38,7 @@ for iT=0:nT
     A1prev=A1; Anprev=An;
     Atot = A1+2*An;
     Ac = 1 - sum(Atot)*dx;
-    Feedback = PAR3FeedbackFcn(Atot);
+    Feedback = PAR3FeedbackFcn(An,Ansat);
     RHS_1 = Kon_Hat*(1+Kf_Hat*Feedback).*Ac + 2*Kdp_Hat*An-2*Kp_Hat*A1.^2-Koff_Hat*A1;
     RHS_n = Kp_Hat*A1.^2 - Kdp_Hat*An;
     An = An + dt*RHS_n;

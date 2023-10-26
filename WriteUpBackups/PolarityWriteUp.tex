@@ -146,13 +146,14 @@ $h$ & Cytoplasmic ``thickness'' & 9.5 & $\mu$m &  \cite{goehring2011polarization
 $\My{D}$ & Myosin diffusivity & 0.05 & $\mu$m$^2$/s &\cite{gross2019guiding} & \\
 $\My{\kon}$ & Myosin attachment rate & 0.5 & $\mu$m/s & & Fit to get 30\% bound myosin\\
 $\My{\koff} $ & Myosin detachment rate & 0.12 & 1/s & \cite{gross2019guiding}& \\
-$\Tot{M}$ & Maximum bound myosin density & 2600 & $\#/\mu$m &\cite{gross2019guiding} & $3.5 \times 10^5$ molecules/(134.6 $\mu$m) \\ \hline
+%$\Tot{M}$ & Maximum bound myosin density & 2600 & $\#/\mu$m &\cite{gross2019guiding} & $3.5 \times 10^5$ molecules/(134.6 $\mu$m) \\ \hline
+$\Tot{M}$ & Maximum bound myosin density & -- & $\#/\mu$m & & Scales out of equations \\ \hline
 $\eta$ & Cytoskeletal fluid viscosity & 0.1 & Pa$\cdot$s & &100 $\times$ water \\
-$\gamma$ & Myosin drag coefficient & $10^{-3}$ & Pa$\cdot$s/$\mu$m$^2$ &  & $\ell=\sqrt{\eta/\gamma}=10 \, \mu$m \cite{gross2019guiding}\\ 
+$\gamma$ & Myosin drag coefficient & $10^{-3}$ & Pa$\cdot$s/$\mu$m$^2$ &  & $\ell=\sqrt{\eta/\gamma}=10 \, \mu$m \cite{saha2016determining}\\ 
 $\sigma_0$ & Stress coefficient and form& 0.0042 & Pa & & Fit in Sec.\ \ref{sec:MyVelFit}\\
 $\hat \sigma_a(\hat M)$ & Stress function of myosin& $\hat M$ & & & Fit in Sec.\ \ref{sec:MyVelFit}\\ \hline
 \end{tabular}
-\caption{\label{tab:paramsMy} Parameter values for myosin model. All of these parameters listed with a citation are lifted directly from the corresponding paper. Remaining parameters: the on rate $\My{\kon}$ is chosen to give 30\% bound myosin \cite[Fig.~S3]{gross2019guiding}, as opposed to exact repitition of the value in \cite[Fig.~1(d)]{gross2019guiding}. Later this rate will change in the presence of CDC-42. We make an assumption about the fluid viscosity $\eta$, which then gives us the drag coefficient $\gamma$ from $\ell=10$ $\mu$m \cite{gross2019guiding}. The remaining parameters are fit in Section\ \ref{sec:MyVelFit} from the wild-type data of \cite{sailer2015dynamic}. \red{These parameters are all checked.} }
+\caption{\label{tab:paramsMy} Parameter values for myosin model. All of these parameters listed with a citation are lifted directly from the corresponding paper. Remaining parameters: the on rate $\My{\kon}$ is chosen to give 30\% bound myosin \cite[Fig.~S3]{gross2019guiding}. Later this rate will change in the presence of CDC-42. We make an assumption about the fluid viscosity $\eta$, which then gives us the drag coefficient $\gamma$ from $\ell=10$ $\mu$m \cite{gross2019guiding}. The remaining parameters are fit in Section\ \ref{sec:MyVelFit} from the wild-type data of \cite{sailer2015dynamic}. }
 \end{small}
 \end{table}
 
@@ -163,13 +164,14 @@ We now introduce a single species model of myosin with turnover,
 \begin{gather}
 \Dt M + \Dx \left(v M\right) = D_M \Dx^2 M +\My{\kon}M_\text{cyto} - \My{\koff} M \\
 \label{eq:veleqndim}
-\gamma v = \eta \Dx^2 v + \Dx \sigma_a(M)
+\gamma v = \eta \Dx^2 v + \Dx \sigma_a(M)\\
+M_\text{cyto} = \frac{1}{hL}\left(\Tot{M}L-\int_0^L M(x) \, dx\right)
 \end{gather}
 \end{subequations}
 It will be useful to nondimensionalize this equation, using the scalings
 \begin{equation}
 \label{eq:NDD}
-x = \hat{x} L \qquad t= \hat{t}/\My{\koff} \qquad Y= \hat{Y}\Tot{Y} \qquad v = \hat{v} \frac{\sigma_0}{\sqrt{\eta \gamma}}
+x = \hat{x} L \qquad t= \hat{t}/\My{\koff} \qquad M= \hat{M}\Tot{M} \qquad v = \hat{v} \frac{\sigma_0}{\sqrt{\eta \gamma}}
 \end{equation}
 The resulting equations are 
 \begin{subequations}
@@ -192,14 +194,21 @@ Recalling that $1/\My{\koff}$ is the residence time, these dimensionless paramet
 \item $\hat{K}^\text{on}_M$ is the ratio of the binding rate to unbinding rate when all the molecules are cytoplasmic. The uniform steady state of the model is given by $\hat{M}_0= \hat{K}^\text{on}_M/\left(1+\hat{K}^\text{on}_M\right)$.
 \item $\hat{\ell}$ is the ratio of the hydrodynamic lengthscale to the domain length.
 \end{enumerate}
-Prior to performing linear stability analysis, we need to first determine the function $\sigma_a$. We do this in the next section by fitting experimental data.
+Prior to performing linear stability analysis, we need to first determine the function $\sigma_a$ and the other parameters. We do this in the next section by fitting experimental data.
+
+\subsubsection{Parameter estimation}
+Table\ \ref{tab:paramsMy} lists the parameters for the myosin model. According to \cite{goehring2011polarization}, the \emph{C.\ elegans} embryo has a roughly ellipsoidal shape, with half-axis lengths $27 \times 15 \times 15$ $\mu$m. As such, our model will be a $27 \times 15$ ellipse, which has perimeter $L=134.6$ $\mu$m. In our one-dimensional model, the cytoplasm has a ``thickness'' which is just the area of the ellipse $1272$ $\mu$m$^2$ divided by the perimeter $L$, which gives $h=9.5$ $\mu$m.
+
+The next category of parameters relates to the myosin kinetics. The in-membrane diffusivity of myosin, as well as the detachment rate, have both been measured in \cite{gross2019guiding}. For the attachment rate, it was estimated in \cite[Fig.~S3m]{gross2019guiding} that roughly 30\% of myosin is bound to the cortex in wild-type embryos. Recalling that the uniform steady state is $\hat M_0=\hat{K}^\text{on}_M/\left(1+\hat{K}^\text{on}_M\right)$, this gives $\hat{K}^\text{on}_M=0.43$, or $\kon_M = 0.43h\koff_M=0.5$ $\mu$m/s. The last parameter, the total amount of myosin, scales out of the equations. This is fortunate for us because it is difficult to think about a total amount over a cross-section. 
+
+For the fluid parameters, we assume that the viscosity of the cytoskeletal fluid on the cortex is 100 times water, which gives 0.1 Pa$\cdot$s. The ``hydrodynamic length scale'' of $\ell=\sqrt{\eta/\gamma}=10$ $\mu$m, measured in \cite{saha2016determining}, then gives the myosin drag coefficient $\gamma$. But more important than either of these is the stress as a function of myosin concentration. We fit this from the wild-type data of \cite{sailer2015dynamic} in the next section.
 
 \subsubsection{Inferring flow profile from experiments \label{sec:MyVelFit}}
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{VelocityProfile.eps}
 \includegraphics[width=\textwidth]{StressFromVelocityProfile.eps}
-\caption{\label{fig:VelProf} Extracting the velocity profile and active stress from wild-type embryos. Top: the experimental data for myosin intensity (left) and velocity in $\mu$m/min (right). We show the raw data in black (which goes from anterior to posterior), the periodized version in blue, and a two-term (three terms if we include the constant) Fourier series representation in red. Bottom left: the recovered stress profile $\sigma_a(\hat x)$ in dimensional units. Bottom right: comparing the recovered stress to the myosin intensity, after normalizing by $\sigma_0=0.0011$ Pa. It is clear that, roughly speaking, $\hat \sigma_a = \hat M$, or at least that this is a reasonable approximation.}
+\caption{\label{fig:VelProf} Extracting the velocity profile and active stress from wild-type embryos. Top: the experimental data for myosin intensity (left) and velocity in $\mu$m/min (right). We show the raw data in black (which goes from anterior to posterior), the periodized version in blue, and a two-term (three terms if we include the constant) Fourier series representation in red. Bottom left: the recovered stress profile $\sigma_a(\hat x)$ in dimensional units. Bottom right: comparing the recovered stress to the myosin intensity, after normalizing by $\sigma_0=0.0011$ Pa. It is clear that $\hat \sigma_a = \hat M$ is a reasonable approximation.}
 \end{figure}
 
 
@@ -222,7 +231,7 @@ The $k=0$ mode is undefined because $\sigma_a$ only appears differentiated; we t
 \centering
 \includegraphics[width=\textwidth]{VelocityProfileArx2.eps}
 \includegraphics[width=\textwidth]{StressFromVelocityProfileArx2.eps}
-\caption{\label{fig:VelProfArx2} Same plot as Fig.\ \ref{fig:VelProf}, but in \emph{arx-2} (RNAi) embryos. In the bottom right plot, we normalize by $\sigma_0=1.1 \times 10^{-3}$ Pa. This makes the stress (when shifted by an arbitrary constant) roughly the same as the myosin profile (also normalized so its maximum is 1). \red{COME BACK TO THIS LATER, SEEING IF WE CAN GET CORRECT $\hat M$.}}
+\caption{\label{fig:VelProfArx2} Same plot as Fig.\ \ref{fig:VelProf}, but in \emph{arx-2} (RNAi) embryos. In the bottom right plot, we normalize by $\sigma_0=1.1 \times 10^{-3}$ Pa. This makes the stress (when shifted by an arbitrary constant) roughly the same as the myosin profile (also normalized so its maximum is 1).}
 \end{figure}
 
 We plug the parameters from Table\ \ref{tab:paramsMy} into\ \eqref{eq:SigmaAF} and show the resulting real space stress in the bottom left panel of Fig.\ \ref{fig:VelProf}. This is the dimensional stress $\sigma_a$. In the right panel of Fig.\ \ref{fig:VelProf}, we normalize and shift the stress so that it has the same mean and range as the myosin profile $\hat M$. Obtaining the same range allows us to read off the constant $\sigma_0=4.2 \times 10^{-3}$ Pa that controls the magnitude of the advective flows. In particular, the dimensionless parameter $\hat{\sigma}_0$ defined in\ \eqref{eq:NDparams} is seen to be equal to
@@ -235,11 +244,11 @@ In additiom, the bottom right panel of Fig.\ \ref{fig:VelProf}, also shows that 
 \end{equation}
 as a good approximation to the stress. The function itself is ambiguous, since $\hat M=0.3$ defines two different values of the stress depending on the side of the domain, but $\hat \sigma_a=\hat M$ appears to be a good approximation.
 
-\red{We confirm this in Fig.\ \ref{fig:VelProfArx2}, where we repeat the velocity fitting procedure in \emph{arx-2} (RNAi) embryos, which lack branched actin and consequently have a simpler velocity profile. We extract the stress profile in the bottom left plot in exactly the same way as in wild-type. Then, to compute normalize stress we divide out by $\hat{\sigma}_0=1.1 \times 10^{-3}$ Pa (obtained from wild-type). The normalize stress, when shifted by an arbitrary constant, lines up almost perfectly with the smoothed myosin profile, demonstrating that our rough approach from wild-type embryos extends to other embryos as well. Thus, this section gives us $\sigma_a = \left(1.1 \times 10^{-3}\right) \hat M$.}
+We confirm this in Fig.\ \ref{fig:VelProfArx2}, where we repeat the velocity fitting procedure in \emph{arx-2} (RNAi) embryos, which lack branched actin and consequently have a simpler velocity profile. To compute the myosin profile, we assume that the experimentally-measured intensity can be converted to the dimensionless concentration $\hat M$ via the same factor (0.21) as wild-type embryos. Consequently, the myosin profile we obtain is in the top left of Fig.\ \ref{fig:VelProfArx2}. The velocity is shown in the top right panel, and we extract the stress profile in the bottom left in exactly the same way as in wild-type. Then, to compute normalize stress we divide out by $\hat{\sigma}_0=4.2 \times 10^{-3}$ Pa (obtained from wild-type). The normalized stress, when shifted by an arbitrary constant, lines up almost perfectly with the smoothed myosin profile, demonstrating that our rough approach from wild-type embryos extends to other embryos as well. Thus, this section gives us $\sigma_a = \left(4.2 \times 10^{-3}\right) \hat M$.
 
 
 \subsubsection{Linear stability analysis \label{sec:StabMy}}
-We now perform linear stability analysis using the experimentally-fitted stress profile. The uniform steady state is $\hat{M}_0= \hat{K}^\text{on}_M/\left(1+\hat{K}^\text{on}_M\right)$. We consider a perturbation around that state $\hat M=\hat \hat{M}_0+\delta \hat M$, where $\delta \hat M = \delta \hat M_0 e^{\lambda(k) \hat{t}+2 \pi i k \hat{x}}$. Plugging this into\ \eqref{eq:MVND}, we get the velocity \cite[Eq.~(11)]{bois2011pattern}
+Now that all the parameters are known, we can perform linear stability analysis to see if the system could spontaneously polarize. The uniform steady state is $\hat{M}_0= \hat{K}^\text{on}_M/\left(1+\hat{K}^\text{on}_M\right)$. We consider a perturbation around that state $\hat M=\hat{M}_0+\delta \hat M$, where $\delta \hat M = \delta \hat M_0 e^{\lambda(k) \hat{t}+2 \pi i k \hat{x}}$. Plugging this into\ \eqref{eq:MVND}, we get the velocity \cite[Eq.~(11)]{bois2011pattern}
 \begin{equation}
 \hat v = \frac{2 \pi i k \hat{\ell} \hat{\sigma}'_a(\hat M_0)}{1 + \left(2 \pi k \hat \ell\right)^2} \hat \delta M. 
 \end{equation}
@@ -248,13 +257,13 @@ Substituting this velocity into\ \eqref{eq:MND}, and considering only the first 
 \label{eq:DispRel}
 \lambda(k) = \frac{4\pi^2 k^2 \hat{\ell} \hat{M}_0 \hat{\sigma}_0 \hat \sigma_a'(\hat{M}_0)}{1+4\pi^2 k^2 \hat{\ell}^2} - \hat{D}_M 4 \pi^2 k^2 -1
 \end{equation}
-Using the parameters in Table\ \ref{tab:paramsMy}, we have the following known values for the dimensionless groups
+Using the parameters we have obtained, we have the following values for the dimensionless groups
 \begin{equation}
 \hat{D}_M = 2.3 \times 10^{-5} \qquad \hat{M}_0 \approx 0.3 \qquad \hat \sigma_a'=1 \qquad \hat{\ell} \approx 0.07
 \end{equation}
-This gives the dispersion relation shown in Fig.\ \ref{fig:DispRelMy} for different values of $\hat{\sigma}_0$. We observe strong flow coupling required for instability; with $\hat{\sigma}_0=0.2$ (flow transports myosins around 20\% of the cell before they come off), we still do not see any instability. 
+This gives the dispersion relation shown in Fig.\ \ref{fig:DispRelMy} for different values of $\hat{\sigma}_0$. We observe strong flow coupling required for instability; with $\hat{\sigma}_0=0.2$ (flow transports myosins around 20\% of the cell before they come off), we still do not see any instability. Considering that we already have seen wild-type embryos have $\sigma_0 \approx 0.004$, it is clear that myosin cannot self-polarize in the zygote.
 
-Importantly, the $-1$ in the dispersion relation\ \eqref{eq:DispRel} comes from the unbinding kinetics; thus, unbinding, which happens proportional to the number of bound myosins, makes it \emph{harder} to leave the steady state. Indeed, without the $-1$, the instability occurs at $\hat{\sigma}_0 \approx 10^{-3}$, which is pretty weak coupling to the flow. When we account for unbinding, diffusion becomes so small as to be irrelevant, as for the $k=1$ mode the coefficient in\ \eqref{eq:DispRel} is $\hat{D}_M 4 \pi^2 \approx 10^{-3}$. \textbf{Thus, the real balance here (to generate the instability) is not between advection and diffusion, but between advection and \emph{unbinding}}. Specifically, the advective flow must be strong enough to overcome the increase in unbinding that happens in areas enriched in myosin. Considering that we already have seen wild-type embryos have $\sigma_0 \approx 0.004$, it is clear that myosin cannot self-polarize in the zygote.
+Importantly, the large value of $\sigma_0$ needed for instability is a consequence of the $-1$ in the dispersion relation\ \eqref{eq:DispRel}, which comes from the unbinding kinetics. Thus, unbinding makes it \emph{harder} to destabilize the uniform steady state. Indeed, without the $-1$, the instability occurs at $\hat{\sigma}_0 \approx 10^{-3}$, which is pretty weak coupling to the flow. When we account for unbinding, diffusion becomes so small as to be irrelevant, as for the $k=1$ mode the coefficient in\ \eqref{eq:DispRel} is $\hat{D}_M 4 \pi^2 \approx 10^{-3}$. \textbf{Thus, the real balance here (to generate the instability) is not between advection and diffusion, but between advection and \emph{unbinding}}. Specifically, the advective flow must be strong enough to overcome the increase in unbinding that happens in areas enriched in myosin. 
 
 \begin{figure}
 \centering
@@ -267,9 +276,9 @@ We are motivated first by the experimental observations that asymmetries in the 
 
 Unlike in budding yeast cells \cite{mogilner2012cell}, there is no experimental evidence that \emph{C.\ elegans} cells can spontaneously polarize, which means that the system is truly bistable. Traditionally, it has been speculated that the bistability comes from mutual inhibition of the aPAR and pPAR proteins \cite{halatek2018self, trong2014parameter}. But translating this idea into equations becomes much harder than might be expected! Indeed, ODEs based on first-order mass action kinetics of aPAR-pPAR inhibition \emph{do not} yield bistable dynamics under any choice of parameters \cite{dawes20113}. Attempts to overcome this have used stoichiometric coefficients for the biochemical equations that guarantee bistability \cite{goehring2011polarization, gross2019guiding} or included actomyosin flows designed to transport the aPARs \cite{TH2008}. Both of these approaches are grounded more in intuition than in biological evidence, as there is no reason to doubt mass action kinetics, and recent experiments have shown that both aPARs and pPARs are transported by myosin \cite{illukkumbura2023design}. 
 
-Recent experimental observations about PAR-3 provide a potential way out of this conundrum. Indeed, it was recently shown that PAR-3 asymmetries are stable even in the absence of all posterior inhibitors, which suggest that the dynamics of PAR-3 \emph{by itself} are intrinsically bistable \cite{lang2023oligomerization}. Experimental evidence has shown that the bistability occurs via a mechanism in which membrane-bound PAR-3 recruits additional cytoplasmic monomers to the membrane. One goal of this section is to translate these observations into equations which demonstrate how PAR-3 can set up and maintain an asymmetry in the absence of posterior inhibition. We then incorporate posterior PAR proteins and show how their inclusion modifies the dynamics of PAR-3, potentially shifting the boundary between the two protein domains. 
+Recent experimental observations about PAR-3 provide a potential way out of this conundrum. Indeed, it was recently shown that PAR-3 asymmetries are stable even in the absence of its posterior inhibitor PAR-1, which suggest that the dynamics of PAR-3 \emph{by itself} are intrinsically bistable \cite{lang2023oligomerization}. Experimental evidence has shown that the bistability occurs via a mechanism in which membrane-bound PAR-3 recruits additional cytoplasmic monomers to the membrane. One goal of this section is to translate these observations into equations which demonstrate how PAR-3 can set up and maintain an asymmetry in the absence of posterior inhibition. We then incorporate posterior PAR proteins and show how their inclusion modifies the dynamics of PAR-3, potentially shifting the boundary between the two protein domains. 
 
-\subsection{Basic equations and framework for PAR-3}
+\subsection{Basic equations and framework for PAR-3 \label{sec:Par3}}
 We first formulate our model of PAR-3 dynamics, which is based loosely on that of Lang and Munro \cite{lang2022oligomerization}. The key property of PAR-3 that makes it different from other proteins is its ability to form \emph{oligomers} on the membrane. Unlike monomers, these oligomers do not diffuse in the membrane, and are not found in high concentrations in the cytoplasm. Based on these experimental observations, we will consider a model in which there are two species of PAR-3, 
 \begin{enumerate}
 \item Monomeric PAR-3, which can be found in cytoplasmic form $(\MAC)$ or membrane bound $(\MA)$ form.
@@ -279,79 +288,105 @@ Given these assumptions, the model equations in dimensional form are as follows
 \begin{subequations}
 \label{eq:P3model}
 \begin{align}
-\Dt \MA & = \A{D} \Dx^2 \MA + \left(\A{\kon}+\A{\kf}\A{f}^+\left(\MA+2\PA\right)\right)  \MAC + 2\A{\kdp}\PA -2\A{\kp} \MA^2 - \A{\koff}\MA \\
+\Dt \MA & = \A{D} \Dx^2 \MA + \left(\A{\kon}+\A{\kf}\A{f}^+\left(\MA,\PA\right)\right)  \MAC + 2\A{\kdp}\PA -2\A{\kp} \MA^2 - \A{\koff}\MA \\
 \Dt \PA & =\A{\kp}\MA^2- \A{\kdp}\PA \\ \label{eq:Acyto}
 A_\text{cyto} & = \frac{1}{h L} \left(\Tot{A} L - \int_0^L \left(A_1(x)+2A_n(x)\right) \, dx \right)
 \end{align}
 \end{subequations}
-A complete list of parameters with units and values is given in Table\ \ref{tab:params}, but it will be helpful to point out the important ones in our model. First, the feedback strength $k_A^+$, which has units of length/time, gives the rate at which cytoplasmic PAR-3 is recruited to the membrane. It is multiplied by the dimensionless flux function $f_A^+$, which gives the dimensionless strength of recruitment as a function of the total bound PAR-3. The overall on rate is proportional to the cytoplasmic concentration, which is defined in\ \eqref{eq:Acyto}. There $\Tot{A}$ expresses the density of bound PAR-3 when all molecules are bound to the membrane (units 1/length). Subtracting the amount of bound PAR-3 and dividing by the membrane area gives
+A complete list of parameters with units and values is given in Table\ \ref{tab:params}, but it will be helpful to point out the important ones in our model. First, the feedback strength $k_A^+$, which has units of length$^2$/time, gives the rate at which cytoplasmic PAR-3 is recruited to the membrane. It is multiplied by the flux function $f_A^+$, which gives the strength of recruitment (in units of inverse length; this could be as simple as $f_A^+(x,y)=x+2y$). The overall on rate is proportional to the cytoplasmic concentration, which is defined in\ \eqref{eq:Acyto}. There $\Tot{A}$ expresses the density of bound PAR-3 when all molecules are bound to the membrane (units 1/length). Subtracting the amount of bound PAR-3 and dividing by the membrane area gives
 the cytoplasmic concentration in units of 1/area.
 
 \subsubsection{Dimensionless form}
 A sensible timescale for the system is the time a given PAR-3 molecule spends on the membrane. Because about 80\% of the bound PAR-3 molecules are in oligomer form, and since the depolymerization reaction is much slower than the unbinding reaction, we nondimensionalize time by $1/\A{\kdp}$. This gives the dimensionless (hatted) variables defined by
 \begin{equation*}
-x = \hat{x} L \qquad t= \hat{t}/\A{\kdp} \qquad Y= \hat{Y}\Tot{Y}.
+x = \hat{x} L \qquad t= \hat{t}/\A{\kdp} \qquad A= \hat{A}\Tot{A}.
 \end{equation*}
 Substituting into\ \eqref{eq:P3model} gives the rewritten dynamics
 \begin{subequations}
 \label{eq:PAR3gen}
 \begin{align}
 \nonumber
-\Dthat \hat{\MA} & = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \A{f}^+\left(\hat{\MA}+2\hat{\PA}\right)\right)\left(1 - \int_0^1 \left(\hat{\MA}(x) + 2\hat{\PA}(x)\right) \, d\hat{x} \right) \\ 
+\Dthat \hat{\MA} & = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \hat F_A^+(\hat \MA, \hat \PA) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right) \\ 
 \label{eq:Amono} &+ 2\KhatdpA \hat{\PA}-2\KhatpA \hat{\MA}^2 - \KhatoffA \hat{\MA} \\
 \label{eq:Apoly}
 \Dthat \hat{\PA} & =\KhatpA \hat{\MA}^2- \KhatdpA \hat{\PA} \\ 
 \label{eq:paramsND}
-\DhatA &=\frac{\A{D}}{L^2 \A{\kdp}}, \quad \KhatonA=\frac{\A{\kon}}{\A{\kdp} h }, \quad \KhatfA = \frac{\A{\kf}}{\A{\kon}}, \quad  \KhatoffA = \frac{\A{\koff}}{\A{\kdp}}, \quad \KhatpA = \frac{\A{\kp} \Tot{A}}{\A{\kdp}}, \quad \KhatdpA=1
+\DhatA &=\frac{\A{D}}{L^2 \A{\kdp}}, \quad \KhatonA=\frac{\A{\kon}}{\A{\kdp} h }, \quad \KhatfA = \frac{\A{\kf}\Tot{A}}{\A{\kon}}, \quad  \KhatoffA = \frac{\A{\koff}}{\A{\kdp}}, \\ \nonumber \KhatpA &= \frac{\A{\kp} \Tot{A}}{\A{\kdp}}, \quad \KhatdpA=1, \quad \hat F_A^+(\hat \MA,\hat \PA) =\frac{\A{f}^+(\MA,\PA)}{\Tot{A}}
 \end{align}
 \end{subequations}
+and we have used the convenient shorthand $A=\MA + 2 \PA$ and likewise for the hatted variables. 
 
-\subsubsection{Linear feedback model}
-We first look at the dynamics of PAR-3 with the linear feedback model $$f_A^+(x)=x,$$ similar to what was used by Lang and Munro \cite{lang2022oligomerization}. The uniform steady state for $A_1$ can be found by first solving\ \eqref{eq:Apoly} at steady state to obtain
-\begin{equation}
-	\PA = \frac{\KhatpA}{\KhatdpA} \hat{\MA}^2.
-\end{equation}
-Substituting this into\ \eqref{eq:Amono}, we get a quartic equation for $A_1$ at steady state
-\begin{equation}
-\nonumber
-0 =\KhatonA \left(1+\KhatfA \left(\hat{\MA}+2\frac{\KhatpA}{\KhatdpA} \hat{\MA}^2\right)\right)\left(1 - \left(\hat{\MA} + 2\frac{\KhatpA}{\KhatdpA} \hat{\MA}^2\right)\right)  - \KhatoffA \hat{\MA},
-\end{equation}
-which is just a polynomial and can be solved numerically. This quartic equation is controlled by three parameters: $\KhatonA/\KhatoffA$, $\KhatpA/\KhatdpA$, and $\KhatfA$. A simple scan of these three parameters on the range $[0.01,100]$ shows that this equation has a single real root in the range $[0,1]$. We denote the steady state as $\bar{\hat{\MA}}$ and $\bar{\hat{\PA}}$.
+\subsubsection{Known parameters}
+Recent experimental measurements \cite{lang2023oligomerization} give accurate measurements for three of the parameters: the diffusion coefficient $D_A$, the detachment rate of monomers $\koff_A$, and the depolymerization rate $\kdp_A$. The values of these parameters are summarized in Table\ \ref{tab:params}, and determine the dimensionless parameters $\DhatA$ and $\KhatoffA$. We determine $\KhatonA$, $\KhatpA$, $\KhatfA$, and the form of the feedback function via a systematic fitting procedure as detailed next.
 
-\subsubsection{Linear stability analysis}
-We now need to determine if the uniform steady state is stable. To do this, we consider a perturbation $\delta \hat{\MA}$ and $\delta \hat{\PA}$ with $\int_0^1 \delta \hat{\MA}(x) \, dx =\int_0^1 \delta \hat{\PA}(x) \, dx=0$. The resulting linearized equations for the $k$th Fourier mode of $\MA$ and $\PA$ can be written as 
-\begin{gather*}
-\frac{d}{d t}\begin{pmatrix} \hat{\MA}^{(k)} \\ \hat{\PA}^{(k)} \end{pmatrix} =
- \begin{pmatrix} 
--\KhatoffA + \bar{\hat{A}}_c \KhatfA \KhatonA - 4\bar{\hat{\MA}}\KhatpA - 4\pi^2 k^2 \DhatA
-& 2\left(\KhatdpA + \bar{\hat{A}}_c \KhatfA \KhatonA\right) \\
- 2  \bar{\hat{\MA}}\KhatpA & -\KhatdpA 
-\end{pmatrix}
- \begin{pmatrix} 
-\hat{\MA}^{(k)} \\ \hat{\PA}^{(k)} 
-\end{pmatrix} \\ 
-\bar{\hat{A}}_c  = 1-\bar{\hat{\MA}}-2\bar{\hat{\PA}}
-\end{gather*}
- As such, the uniform steady state is unstable when the determinant of this matrix (with $k=1$)
-\begin{gather}
-\nonumber
-\KhatdpA (\KhatoffA+4 \pi^2 \DhatA) - \bar{\hat{\MA}} \KhatdpA \KhatfA  \KhatonA - 4 \bar{\hat{\MA}}\bar{\hat{A}}_c \KhatfA \KhatonA \KhatpA < 0 \\  \label{eq:StabCond}
-\KhatfA \KhatonA\left( \bar{\hat{\MA}} \KhatdpA  + 4 \bar{\hat{\MA}}\bar{\hat{A}}_c  \KhatpA \right) > \KhatdpA (\KhatoffA+4 \pi^2 \DhatA) 
-\end{gather}
-Although this equation is somewhat misleading because $ \bar{\hat{\MA}}$ is a function of the other parameters, it gives us the following observations, some of which are immediate, and some of which we determined numerically:
+\subsubsection{Fitting the polymerization rate}
+The first parameter we need to fit the polymerization rate is the percentage of PAR-3 bound to the membrane in the uniform state. The uniform state can be realized by considering mutants which lack a functional sperm cue and thus do not polarize \cite[Fig.~S1]{lang2023oligomerization}. These mutants show a peak PAR-3 concentration in late interphase; late maintenance phase then gives a bound concentration that is roughly 50\% of this peak. We will assume that almost all of the PAR-3 is bound in late interphase, so that the uniform state is at $\hat A_u:=\hat{\MA}+2\hat{\PA} \approx 0.5$. The observation that these embryos do not polarize implies that the uniform state is stable, and the estimate for the percentage of bound protein is similar to that obtained for PAR-2 at the end of maintenance phase in \cite[Fig.~S3]{gross2019guiding}. 
+
+When there is no posterior inhibitor, the concentration of bound PAR-3 during late maintenance phase in the anterior is roughly $\hat A_a=1.2u \approx 0.6$ (this comes from comparing flourescence in PAR-1 mutant and spd-5 mutant embryos shown in Figs.\ 2 and S1 of \cite{lang2023oligomerization}). In PAR-1 mutants, the concentration in the posterior is then roughly 10\% of the anterior, or $\hat A_p=0.06$. 
+
+These measurements allow us firstly to determine the relative polymerization rate $\KhatpA$. The distribution of oligomer sizes in PAR-1 mutant embryos was measured in \cite{lang2023oligomerization} on both the anterior and posterior side. There it was shown that the distribution is roughly exponential, so that $a_n$, the number of size $n$ is $a_n=\alpha^{n-1} a_1$. This implies that the fraction in monomer form is $\left(1-\alpha\right)^2$. Using the measurements in \cite{lang2023oligomerization}, we have $\alpha=0.42$ on the posterior side (30\% in monomer form), and $\alpha=0.73$ on the anterior side (10\% in monomer form) by solving \eqref{eq:Apoly} at steady state to obtain the relationship
+\begin{equation}
+\frac{\hat A_1}{\hat A} = \frac{1}{4 \hat A \KhatpA}\left(-1+\sqrt{1+8 \hat A \KhatpA}\right).
+\end{equation}
+We then insist that $\hat A=0.6 \rightarrow \hat A_1=0.06$ and solve for $\KhatpA$, which gives $\KhatpA=75$. The corresponding value on the posterior side is $\hat A = 0.06$ and $\hat A_1=0.017$, which is roughly 28\% of the protein in monomer form, matching the experimental observation.
+
+\subsubsection{The form of the feedback strength -- linear feedback models}
+Before we get into fitting the feedback parameters, it is important to consider the nature of the feedback model. Our model is based strongly on that of Lang and Munro \cite{lang2022oligomerization}, who used the linear feedback model $$f_A^+(\MA,\PA)=\MA+2\PA=A.$$ 
+To analyze the characteristics of this model, we consider two representative examples in Fig.\ \ref{fig:P3Linear}, where we look at the attachment and detachment fluxes as a function of $\hat A$. The detachment flux is simply $\KhatoffA \hat \MA$, and is therefore set by the red line. The attachment flux varies depending on the model considered. If we consider a uniform state, then the cytoplasmic concentration is simply $1-\hat A$, and there is a single uniform steady state (intersection of dotted blue and red lines). In polarized states, the concentration is not necessarily uniform, and so we analyze the stability of the steady state by taking the cytoplasmic concentration as constant. This results in the darker blue line in Fig.\ \ref{fig:P3Linear}. There we see that the linear feedback model admits only two possibilities: a stable uniform state (when feedback is small relative to the on-rate), and an unstable uniform state which leads to spontaneous polarization (when the feedback is larger). This contradicts our experimental observation of \emph{bistability}.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FluxAnalysisLinFeed.eps}
+\caption{\label{fig:P3Linear}Flux plane analysis for linear feedback in the stable (left) and unstable (right) case. The stability analysis is determined by how the attachment rate (solid blue line, with constant cytoplasmic concentration) compares to the detachment rate (red) near the steady state.}
+\end{figure}
+
+For the uniform steady state to be stable, the attachment rate at constant cytoplasmic concentration has to be smaller than the detachment rate, as shown in the left panel of Fig.\ \ref{fig:P3Linear}. At the same time, for bistability, the attachment flux at constant cytoplasmic concentration has to intersect the detachment curve three times (two stable fixed points and one unstable fixed point in between). A simple way to accomplish this is by setting
+\begin{equation}
+f_A^+(\MA,\PA) =\min\left(\MA+2\PA,A_\text{sat}\right) \rightarrow F_A^+(\hat \MA, \hat \PA) = \min\left(\hat \MA+2\hat \PA, \hat A_\text{sat}\right). 
+\end{equation}
+The uniform steady state is stable if $\hat A_\text{sat} < u = 0.5$, which provides one constraint on the saturation. The second constraint comes from bistability; the system is only locally bistable at fixed cytoplasmic concentration when $\hat A_\text{sat}$ is close to the uniform state (if $\hat A_\text{sat}$ is too small the feedback becomes essentially constant and cannot generate bistability). Based on these considerations, we set $\hat A_\text{sat}=0.45$. 
+
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FluxAnalysisLinFeedCap.eps}
+\caption{\label{fig:P3Cap}Flux plane analysis for capped linear feedback in the stable (left) and bistable (right) case. The stability analysis is determined by how the attachment rate (solid blue line, with constant cytoplasmic concentration) compares to the detachment rate (red) near the steady state. Linear feedback typically gives large A/P flux ratios when bistable.}
+\end{figure}
+
+
+We can now determine the strength of the feedback $\KhatfA$ based on the recruitment rate of PAR-3 in PAR-1 mutant embryos. In \cite[Fig.~5A]{lang2023oligomerization}, it is reported that the rate of monomer recruitment is 2 times larger in the anterior than the posterior. The rate of recruitment of monomers is proportional to $1+\KhatfA  F_A^+(\hat A)$, which implies
+\begin{equation}
+\frac{1+\KhatfA  F_A^+(\hat A_a)}{1+\KhatfA  F_A^+(\hat A_p)}=\frac{1+\KhatfA \hat A_\text{sat}}{1+\KhatfA (0.06)}=2 \rightarrow \KhatfA = \frac{1}{A_\text{sat}-0.12}=3
+\end{equation}
+The on rate $\KhatonA$ is then set to ensure $u=0.5$ is a steady state. The left panel in Fig.\ \ref{fig:P3Cap} shows the flux plane in this case, where we observe that the steady state is stable, and that for any cytoplasmic concentration, there is only one uniform state. So bistability is not possible with this feedback function, if it is constrained on the amount of feedback on both sides. On the other hand, relaxing the constraint in the right plot of Fig.\ \ref{fig:P3Cap} gives bistability at a small set of cytoplasmic concentrations, but it does not match the experimentally-measured flux ratio, instead giving a difference of a factor of about 5 between the posterior and anterior state. Thus the capped linear feedback model is not the correct one.
+
+\subsubsection{Feedback model as a function of oligomers}
+Our analysis therefore shows that neither linear feedback nor capped linear feedback can explain the experimental behavior. The basic problem with the linear feedback is that correct fluxes on the anterior give too low of a flux on the posterior. We therefore need a feedback strength which increases more slowly in the posterior half. Since feedback is intimately tied to the ability of PAR-3 to oligomerize (indeed, asymmetries are not maintained if PAR-3 cannnot oligomerize) \red{(need citation)}, a logical feedback model is 
+\begin{equation}
+f_A^+(\MA,\PA) =\min\left(2\PA,A_\text{psat}\right) \rightarrow F_A^+(\hat \MA, \hat \PA) = \min\left(2\hat \PA, \hat A_\text{psat}\right).
+\end{equation}
+Since the saturation level is now based on the number of oligomers (which is 90\% of the total PAR-3), we simply set $\hat A_\text{psat}=0.4$, which ensures that the feedback will saturate before hitting the spatially uniform state, making it stable. We then look for a choice of parameters which
 \begin{enumerate}
-\item The uniform steady state can always be made stable by making the diffusion sufficiently fast.
-\item Conversely, the uniform steady state can be made unstable by increasing the feedback $\KhatfA$.
-\item In contrast to how it appears in\ \eqref{eq:StabCond}, it turns out that the steady state is stable for \emph{higher} values of $ \KhatonA $, because of cytoplasmic depletion. Specifically, if there is so much protein bound at the uniform steady state, there will not be any more to be recruited to destabilize it. So the uniform steady state is actually unstable when $\KhatonA$ is sufficiently \emph{small} so as to leave enough cytoplasmic protein. As such, this parameter is not really that interesting to study going forward.
-\item For a fixed amount of membrane-bound protein, having more in the oligomerized state (either by increasing $\KhatpA$ or decreasing $\KhatdpA$) assists in making the uniform state unstable because oligomers can't diffuse and thus diffusion is effectively slower.
+\item Exhibits a stable uniform steady state at $\hat A = 0.5$
+\item Exhibits a bistable state in a range of cytoplasmic concentrations, with $\hat A_p \approx 0.06$ and $\hat A_a \approx 0.6$. 
 \end{enumerate}
+We find $\kon_A = 0.6$ $\mu$m/s and $\KhatfA=10.5$ satisfy these two criterion. Figure\ \ref{fig:P3OCap} shows the resulting flux plane. Once again, there is a single uniform steady state which occurs when the dotted blue line meets the red detachment line at $\hat A=0.5$. However, at the uniform cytoplasmic concentration, there exists another stable steady state around $\hat A \approx 0.05$, which corresponds to the posterior side of the embryo. The ratio of A/P flux in this case is roughly 4, which is larger than the experimental measurement. Still, it is closer than in the linear feedback case.
 
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{FluxAnalysisOligFeedCap.eps}
+\caption{\label{fig:P3OCap}Flux plane analysis for oligomer-based feedback. The red line shows the detachment rate, while the dotted blue line shows the attachment rate when the steady state is uniform. There is a single uniform steady state. The blue line shows the attachment rate when the cytoplasmic concentration is fixed at 0.5, and the yellow line shows what happens when we slightly increase the cytoplasmic concentration.}
+\end{figure}
 
+The bistable solution exists for a narrow range of cytoplasmic concentration -- when the cytoplasmic concentration is too small or too large, the attachment flux only crosses the detachment flux once, which means that there is no stable state for these cytoplasmic concentrations. Suppose we have the cytoplasmic concentration $A_c$, and let $\hat A_1$ and $\hat A_2$ be the two stable states at this concentration. Then in the absence of diffusion, if the equation 
+\begin{equation}
+\label{eq:NoDiffEqn}
+(1-y)\hat{A}_1\left(A_c\right)+y \hat{A}_2\left(A_c\right)=1-A_c
+\end{equation}
+has a solution, then $y$ defines the boundary position. Otherwise, there will be a uniform state.
 
-\subsubsection{Parameters}
-To effectively constrain the model, we need values for at least some of the parameters. Table\ \ref{tab:params} provides a start to this by listing the parameters which are known definitively from experimental observations. It leaves three parameters which are not directly known: the on rate $\A{\kon}$, the polymerization rate $\A{\kp}$, and the feedback strength $k_A^+$. This is of course in addition to the feedback function $f_A^+$, which we here assume to be linear.
+This completes our parameter selection for the PAR-3 model. The parameters we use going forward are summarized in Table\ \ref{tab:paramsP3}.
 
-To obtain parameters which are unknown, we will first assume that the feedback is small, and fit the observations to the posterior side of wild-type embryos. If we assume that the total PAR-3 concentration is roughly maximum in the anterior half, then the posterior side will have $\hat A_1+2 \hat A_n=0.2$ \cite[Fig.~2]{lang2023oligomerization}, and roughly 30\% of the PAR-3 is in oligomer form \cite{lang2023oligomerization} (this comes from $\alpha=0.42$ as the expononent for the exponential distribution on the posterior side). We then look for values of $\A{\kon}$ and $\A{\kp}$ that give these values, finding $\A{\kon} = 1$ $\mu$m/s and $\A{\kp}=0.03$ $\mu$m/s. These leaves us $k_A^+$ as a control knob for the dynamics.
 
 \begin{table}
 \begin{small}
@@ -359,111 +394,38 @@ To obtain parameters which are unknown, we will first assume that the feedback i
 \begin{tabular}{|c|c|c|c|c|c|}\hline
 Parameter & Description & Value & Units & Ref & Notes \\ \hline
 $\A{D} $ & Monomeric PAR-3 diffusivity & 0.1 & $\mu$m$^2$/s & \cite{lang2023oligomerization} & \\
-$D_P$ & PAR-2 diffusivity & 0.15 & $\mu$m$^2$/s & \cite{goehring2011polarization}&  \\  \hline
-$\A{\kon}$ & Monomeric PAR-3 attachment rate & 1 & $\mu$m/s & FIT & 20\% attached no feedback \cite[Fig.\ 2]{lang2023oligomerization}\\
-$\kon_P$ & Monomeric PAR-2 attachment rate & 0.13 & $\mu$m/s &  \cite{gross2019guiding}&\\ \hline
+$\A{\kon}$ & Monomeric PAR-3 attachment rate & 0.6 & $\mu$m/s & & Fit for uniform state $\hat A=0.5$ \\
 $\A{\koff}$ & Monomeric PAR-3 detachment rate &  3& 1/s & \cite{lang2023oligomerization} & (Fig.\ 3K)\\
-$\koff_P$ & PAR-2 detachment rate & $7.3 \times 10^{-3}$ & 1/s & \cite{gross2019guiding}&  \\  \hline
-$\A{\kf}$ & PAR-3 self recruitment rate &? & $\mu$m$$/s & & Control knob for PAR-3\\
-$\A{\kp}$ & PAR-3 polymerization rate & 0.03 & $\mu$m/s & \cite{lang2023oligomerization}& 30\% monomers no feedback \cite[Fig.\ 3G]{lang2023oligomerization} \\
-$\A{\kdp}$ & PAR-3 depolymerization rate & 0.08 & 1/s & \cite{lang2023oligomerization} & Fig.\ 4E therein \\ \hline
-$r_\text{AP}$ & Rate of PAR-2 inhibition by PAR-3 & $6 \times 10^{-4}$ & $\mu$m/s & & Match experiments \cite[Fig.~5B]{zonies2010symmetry}\\
-$r_\text{PA}$ & Rate of PAR-3 inhibition by PAR-2 &$6 \times 10^{-4}$  & $\mu$m/s & \ & Same as $r_\text{AP}$\\ \hline
-$\Tot{A}$ & Maximum bound PAR-3 density & 1500 & $\#/\mu$m & \cite{gross2019guiding} & Same for all PARs \\
-$\Tot{P}$ & Maximum bound PAR-2 density & 1500 & $\#/\mu$m& &  Same for all PARs\\ \hline
+$\A{\kdp}$ & PAR-3 depolymerization rate & 0.08 & 1/s & \cite{lang2023oligomerization} & (Fig.\ 4E) \\
+$\KhatpA$ & PAR-3 polymerization rate & 75 & & & Fit for correct \% monomers \cite{lang2023oligomerization}  \\
+$\KhatfA$ & PAR-3 self recruitment rate &10.5 & & & Fit for bistability\\
+$F_A^+$ & PAR-3 feedback function &$\text{min}\left(2\hat \PA,0.4\right)$ &  &&  Fit for A/P proportion\\
+$\Tot{A}$ & Maximum bound PAR-3 density & -- & $\#/\mu$m & & Contained in other unknowns \\ \hline
 \end{tabular}
-\caption{\label{tab:params}Additional parameter values for PAR-3 and PAR-2 model. \red{Update the code to reflect this! And check every parameter again}}
+\caption{\label{tab:paramsP3}Additional parameter values for the PAR-3 model. }
 \end{small}
 \end{table}
-
-To obtain the total amount of each PAR protein and myosin (or at least the correct range), we work off the measurements in \cite[Fig.~S3]{gross2019guiding}. There it was reported that there are roughly $350 \times 10^3$ molecules of myosin in the cell, and about $200 \times 10^3$ PAR proteins (150,000 PAR-2 and 250,000 PAR-3, but we will average these together and assume all proteins are in the same amount). To obtain a ``maximum'' from these values, we divide by the domain length of 134.6 $\mu$m. For the PAR proteins, we obtain 1486/$\mu$m, which we round to 1500/$\mu$m. For myosin, we obtain 2600/$\mu$m.
-
-\subsubsection{Results}
-With these parameters set, the dimensionless parameters in\ \eqref{eq:paramsND} are given as
-\begin{gather*}
-\DhatA =2.8 \times 10^{-4}, \quad \KhatonA=2.7, \quad \KhatfA = \frac{\A{\kf}}{\A{\kon}}, \quad  \KhatoffA = 37.5, \quad \KhatpA = 18.8, \quad \KhatdpA=1
-\end{gather*}
-and so the parameter $\KhatfA$ provides a control knob by which we can study the system.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.6\textwidth]{PAR3FeedbackSS.eps}
-\includegraphics[width=\textwidth]{FluxAnalysisLinFeed.eps}
-\caption{\label{fig:PAR3FeedSS}Steady states for the PAR-3 model \textbf{with linear feedback} as a function of dimensionless feedback strength. (Top:) The steady state bound monomer and oligomer proportion as a function of the feedback strength $K_f^+$. The blue line is the concentration of monomeric PAR-3, while the red is the concentration of oligomers. The solid lines represent stable steady states, while the dotted lines are unstable ones. (Bottom:) Flux plane analysis for the stable (left) and unstable (right) case. The stability analysis is determined by how the attachment rate (solid blue line, with constant cytoplasmic concentration) compares to the detachment rate (red) near the steady state.}
-\end{figure}
-
-We begin our study by looking at the stability of the uniform state. In Fig.\ \ref{fig:PAR3FeedSS} (top plot), we examine the steady states and their stability as a function of the feedback parameter $K_A^+$. As the feedback increases, more oligomers are found in steady state. The limit to this is when there are about 75\% oligomers, at which point the steady state becomes unstable. The bottom plot shows a further analysis of the stability. When the feedback is small enough ($\hat K_A^+=2$), perturbations around the steady state tend to drive the dynamics back to it, while for larger feedback ($\hat K_A^+=4$) perturbations are amplified. We note that what has to be considered for the stability analysis is \emph{not} the absolute attachment rate (dotted blue), but the attachment rate \emph{with the steady state cytoplasmic concentration.} This is because perturbations do not affect the cytoplasmic concentration (or do so only weakly).
-
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{PAR3FeedbackStable.eps}
-\caption{\label{fig:PAR3Dyn}Dynamics of the PAR-3 model with linear feedback. We plot the dynamics using the same initial condition and two different choices of the feedback strength: $K_A^+=2$ (left) and $K_A^+=4$ (right). We plot time in units of $\kdp_A$, so $\hat t =1$ corresponds to 12.5 seconds of real time (thus $\hat t = 30$ corresponds to about 10 minutes).}
-\end{figure}
-
-What do the dynamics look like when we perturb around the steady state for different feedback strengths? In Fig.\ \ref{fig:PAR3Dyn}, we plot the dynamics using different colored lines with the same initial condition and two different choices of the feedback strength: $\hat K_A^+=2$ (which is expected to be stable) and $\hat K_A^+=4$ (unstable). We plot time in units of $\kdp_A$, so $\hat t =1$ corresponds to 12.5 seconds of real time (thus $\hat t = 30$ corresponds to 10 minutes). We observe stable dynamics when $\hat K_A^+=2$ as expected, as the initially perturbed profile decays down to the uniform steady state. When $\hat K_A^+=4$, however, the dynamics are extreme, as the steady state is a very narrow peak which is limited by diffusion and depletion of the cytoplasmic pool. Since most of the monomers are in oligomer form, diffusion is almost zero, which makes the peak grow until the cytoplasmic pool is depleted.
-
-We note that the growth of the peak is a point of disagreement between this work and that of Lang and Munro \cite{lang2022oligomerization}. In that study, it was argued that the shift in the boundary is relatively slow, on the order of a hundred seconds per micron. So how can we explain the observations in Fig.\ \ref{fig:PAR3Dyn}, which show a more rapid shift in the boundary? The answer lies in the amount of available cytoplasmic protein. Our experiments are based on perturbations from \emph{steady state}, where some 40\% of the PAR-3 is bound and 60\% is available in the cytoplasm. But the numerical experiments in \cite[Fig.~4D]{lang2022oligomerization} begin with a state where all of the protein is bound at time zero, which prevents the feedback from kicking in as rapidly, and gives a slower movement of the boundary.
-
-No matter the initial condition, it is clear that the linear feedback model with large enough feedback strength develops a polarized state spontaneously, and in this case the region that contains more PAR-3 always outcompetes the region that contains less. This results in pulse-like shocks which don't slow down until the cytoplasmic pool is depleted. This contradicts the main experimental observation we want to explain, which is that PAR-3 can be stably enriched in half of the cortex, without contractility and without posterior PARs. The main reason for the contradiction is the feedback model: because we assume feedback proportional to monomer concentration, the feedback can only increase once the state is unstable. In the next section, we experiment with a nonlinear feedback model which gives results closer to the experiments.
-
-\subsection{PAR-3 model with feedback fit to experimental results}
-In the previous section, we saw that a linear feedback model for PAR-3 cannot explain the experimental data that shows stable enrichment of PAR-3 on one side of the cortex. The reason for this is that there is no cap to the feedback, and so it continues to concentrate protein until the cytoplasmic pool is depleted. 
-
-There are really three key experimental observations that give us a hint as to the stability portrait of the PAR-3 dynamics: 
-\begin{enumerate}
-\item The spatially uniform state is stable (for at least 10 minutes) in the absence of contractility. 
-\item The polarized state is stable once set up, even without contractility. That is, \emph{at constant cytoplasmic concentration there are two stable steady states.}
-\item Let $u$ be the concentration of the uniform state. Then, at the polarized state, without pPAR inhibition the concentration at the anterior end is (roughly) $1.25u$ and $0.125u$ at the posterior end. 
-\end{enumerate}
-The key here is observation 2, which gives us important information about the flux plane. In particular, it tells us that the attachment rate has to equal the detachment rate (at constant cytoplasmic concentration) \emph{three times}, with two giving stable steady states (and necessarily a middle one giving an unstable steady state). Since the detachment rate in this model is fixed, this observation essentially tells us what the feedback function should look like. 
-
-Let's see if a feedback function with a cap can match these observations. Specifically, we suppose that $$f_A^+(x)=\text{min}\left(x,f_\text{max}\right),$$ which should limit the growth of unstable boundaries. Figure\ \ref{fig:P3FB1} provides an example of how this might work, where we set the feedback $\hat K_A^+=8$ so that the steady state sits near $\hat A = 0.8$, and $f_\text{max}=1$. The uniform steady state is unstable (because the attachment flux exceeds the detachment flux near it), but the cap on the feedback makes the instability self-limiting, so that advances in the concentration will stall near $\hat A=1.3$ (solid blue line meets solid red line). Unfortunately, because the feedback cap sits at 1, the uniform steady state will always be unstable. Because the uniform state is limited by 1, the attachment will always grow linearly there, which exceeds the rate of growth of detachment. 
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{FeedbackWithCapAt1.eps}
-\caption{\label{fig:P3FB1}Flux plane with $f_\text{max}=1$ and $\hat K_A+=8$. We plot the attachment flux (assuming uniform concentration) as dotted blue, the detachment flux as solid red, and the attachment flux at the steady state cytoplasmic concentrated in solid blue. The dashed-dotted lines show different values of the cytoplasmic concentration. The black dot shows the uniform steady state.}
-\end{figure}
-
-To remedy this problem, we need \emph{the feedback to be saturated at the uniform steady state.} To do this, we adjust the parameters slightly so that $f_\text{max}=0.7$. To get a uniform steady state around $\hat A = 0.8$, we set $\KhatfA=12.5$. The resulting flux plane is shown in Fig.\ \ref{fig:P3FB08}. There we see a \emph{stable} steady state with $\hat A = 0.8$, and this is the only uniform steady state (dotted blue line and solid red line meet exactly once). The purple line shows what happens when we adjust the cytoplasmic concentration upwards to $\hat{A}_c=0.25$; in this case there emerge two steady states, one with $\hat{A}\approx 1.25$ and one with $\hat A \approx 0.1$. These new steady states are a consequence of the increased cytoplasmic concentration.
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{FeedbackWithCapAt08.eps}
-\caption{\label{fig:P3FB08}Flux plane with $f_\text{max}=0.7$ and $\hat K_A+=12.5$. We plot the attachment flux (assuming uniform concentration) as dotted blue, the detachment flux as solid red, and the attachment flux at the steady state cytoplasmic concentrated in solid blue. The dashed-dotted lines show different values of the cytoplasmic concentration. The black dot shows the uniform steady state.}
-\end{figure}
-
-In order for these to be truly steady states, then we let $y$ be the position of the boundary. Then in the absence of diffusion, if the equation 
-\begin{equation}
-\label{eq:NoDiffEqn}
-(1-y)\hat{A}_1\left(A_c\right)+y \hat{A}_2\left(A_c\right)=1-A_c
-\end{equation}
-has a solution, then $y$ defines the boundary position. Otherwise, there will be a uniform state.
-
 
 \subsubsection{Results}
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{PAR3Boundary.eps}
-\caption{\label{fig:P3FBBd}Simulating the PAR-3 feedback model with $\KhatfA=12.5$ and $f_\text{max}=0.7$. Top plot: steady states from initial profiles. The initial states are shown in blue, and the final states are shown in red. The system can maintain an asymmetry for cytoplasmic concentration in a range near the uniform state. }
+\caption{\label{fig:P3FBBd}Simulating the PAR-3 feedback model with the parameters in Table\ \ref{tab:paramsP3}. The initial conditions are shown in blue, and the distribution at $\hat t = 200$ is in red. In the top row, we make a continuous perturbation from the uniform state, finding that large enough perturbations induce bistability. In the bottom row, we start with a peaked initial profile of large and small size, finding that only larger (than 0.5) initial profiles can lead to bistability.}
 \end{figure}
 
-Let's now see how the model performs when we fix $\KhatfA=12.5$ and $f_\text{max}=0.7$, so that the stability portrait is as shown in Fig.\ \ref{fig:P3FB08}. In Figure\ \ref{fig:P3FBBd}, we show initial and final distributions of PAR-3. In the top left plot, we see that the uniform steady state is stable, as expected from the stability diagram. By contrast, when we introduce an asymmetry into the system by depleting PAR-3 in part of the domain, we see bistable dynamics where the small part gravitates to one steady state, while the larger end goes to another. In the bistable region, we observe a posterior concentration which is always roughly 5\% of the anterior concentration. This is within the range reported by Sailer et al.\ for embryos lacking posterior PAR inhibition (3--15\%) \cite[Fig.~4C]{sailer2015dynamic}.
+We now look at the results of the PAR-3 model. In Figure\ \ref{fig:P3FBBd}, we show initial and final distributions of PAR-3. In the top left plot, we see that the uniform steady state is stable, as expected from the stability diagram. But when the perturbation to the uniform state is too large, or when we introduce an asymmetry into the system by depleting PAR-3 in part of the domain, we see bistable dynamics where the small part gravitates to one steady state, while the larger end goes to another. In the bistable region, we observe a posterior concentration which is always roughly 10\% of the anterior concentration, as desired.
 
-This bistability, however, only happens when the initial domain size is sufficiently large. To demonstrate this, we repeat the simulations in Fig.\ \ref{fig:P3FBBd} (where we start each profile at the uniform steady state at some places and zero in others), with a variety of initial domain sizes. We find that when the initial PAR-3 domain of enrichment is 50\% of the domain or larger, the system tends to the bistable state, with about 85\% of the domain enriched in PAR-3 and 15\% at the lower state. When the initial domain of PAR-3 enrichment is too low, however, we find that the flux into the depleted regions is too large, and those regions tend to surpass the smaller uniform steady state and be attracted to the larger one. The higher flux happens because of a larger cytoplasmic concentration (which could result from the initial condition, or from unbinding from the enriched domain if we try to deplete the cytoplasm initially). In any case, the conclusion of Fig.\ \ref{fig:P3FBBd} is that there is a uniform steady state, which is the attractor when most of the PAR-3 is initially in the cytoplasm, and a bistable state, which is an attractor when most of the PAR-3 is initially bound. 
+The bistable behavior only happens when the initial domain size is sufficiently large. To demonstrate this, we repeat the simulations in Fig.\ \ref{fig:P3FBBd} (where we start each profile at the uniform steady state at some places and zero in others), with a variety of initial domain sizes. We find that when the initial PAR-3 domain of enrichment is 50\% of the domain or larger, the system tends to the bistable state, with about 80\% of the domain enriched in PAR-3 and 20\% at the lower state (this corresponds to the purple flux curve in Fig.\ \ref{fig:P3OCap}). When the initial domain of PAR-3 enrichment is too low, however, we find that the flux into the depleted regions is too large, and those regions tend to surpass the smaller uniform steady state and be attracted to the larger one. The higher flux happens because of a larger cytoplasmic concentration (which could result from the initial condition, or from unbinding from the enriched domain if we try to deplete the cytoplasm initially). In any case, the conclusion of Fig.\ \ref{fig:P3FBBd} is that there is a uniform steady state, which is the attractor when most of the PAR-3 is initially in the cytoplasm, and a bistable state, which is an attractor when most of the PAR-3 is initially bound. 
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{PAR3DomainSizes.eps}
-\caption{\label{fig:WWoDiff}Size of PAR-3 domain over time without (left) and with (right) diffusion of monomeric PAR-3. Without diffusion, any boundary position with more than 50\% enriched PAR-3 is stable, because there exists a solution to\ \eqref{eq:NoDiffEqn} where the on rate balances the off rate in both the enriched and depleted regions. When we introduce diffusion, there is an additional constraint in the boundary layer, as shown in the inset (which shows the steady state fluxes). This additional constraint specifies a unique boundary position.}
+\caption{\label{fig:WWoDiff}Size of PAR-3 domain over time without (left) and with (right) diffusion of monomeric PAR-3. Without diffusion, any boundary position with 50\% or more enriched PAR-3 is stable, because there exists a solution to\ \eqref{eq:NoDiffEqn} where the on rate balances the off rate in both the enriched and depleted regions. When we introduce diffusion, there is an additional constraint in the boundary layer which specifies a unique boundary position.}
 \end{figure}
 
-Let us now try to understand the position of the boundary. In Fig.\ \ref{fig:WWoDiff}, we plot the size of the enriched PAR-3 domain over time for various initial boundary positions. We recall that, without diffusion, the solution is given by\ \eqref{eq:NoDiffEqn}. Thus, for sizes of the enriched PAR-3 domain larger than 0.6, the cytoplasmic concentration is sufficiently low that a bistable solution exists (left panel of Fig.\ \ref{fig:WWoDiff}). When the PAR-3 domain is initially too small, the cytoplasmic concentration at steady state would be too high for bistability, and so the uniform state is the only stable one. If the bistable solution exists, then the boundary position does not move in time; any domain size greater than 0.6 appears to be stable.
+Let us now try to understand the position of the boundary. In Fig.\ \ref{fig:WWoDiff}, we plot the size of the enriched PAR-3 domain over time for various initial boundary positions. We start without diffusion, observing that, for sizes of the enriched PAR-3 domain 0.5 or larger, the cytoplasmic concentration is sufficient low for a bistable solution to exist (left panel of Fig.\ \ref{fig:WWoDiff}). When the PAR-3 domain is initially too small, the cytoplasmic concentration at steady state would be too high for bistability, and so the uniform state is the only stable one. If the bistable solution exists, then the boundary position does not move in time; any domain size 0.5 or larger appears to be stable.
 
-This is not the case when we add diffusion into the model, which provides an additional constraint. Recall that the cytoplasm has to be sufficiently depleted for bistability to exist. Thus, without diffusion, the density of PAR-3 in the enriched zone grows when the boundary shrinks. But this increases the diffusive flux in the boundary layer between the enriched and depleted domains. The increased diffusive flux spreads the boundary back out. In the reverse case, when the boundary is too large, the binding rate plus diffusion in the boundary layer is not enough to compensate for the unbinding rate. The boundary then has to contract to enrich the cytoplasm more, and balance the two out. The unique boundary position occurs when the additional flux in the boundary layer from diffusion balances small differences in the binding and unbinding rates, as shown in the right panel of Fig.\ \ref{fig:WWoDiff}. The dimensionless feedback strength $\KhatfA$ gives some control over the intrinsic boundary -- when $\KhatfA=12.5$, we obtain roughly 85\% enriched PAR-3. When $\KhatfA=25$, we get roughly 90\%, and when $\KhatfA=7$ we get about 75\%. Of course we cannot make $\KhatfA$ too small, because then the uniform state becomes the only stable one.
-
-Another way to think about diffusion in the boundary layer is the following: suppose that we set up the system at its steady state without diffusion. Then, when we turn on diffusion, there is diffusion of monomers away from the enrichment zone, and consequently local depletion of monomers at the edge of the enrichment zone (oligomers are not depleted, so the on flux is basically unchanged). There is then an imbalance of flux where the flux from binding is larger than the unbinding flux at the edge of the enrichment zone. If the on rate dominates diffusion (this is the case when the cytoplasm is enriched), then the boundary will tend to expand. On the other hand, if diffusive fluxes are sufficiently large (cytoplasmic depletion or larger zone of enrichment), then the boundary will contract if diffusive flux outwards overcomes the increased local binding. Figure\ \ref{fig:ExpContrBd} shows examples of this.
+This is not the case when we add diffusion into the model, which provides an additional constraint. In this case, the right panel of Fig.\ \ref{fig:WWoDiff} shows that there is a \emph{unique} boundary position that the system tends to, when the diffusive flux in the \emph{boundary layer} balances the net unbinding and binding fluxes. Indeed, when we turn on diffusion, there is diffusion of monomers away from the enrichment zone, and consequently local depletion of monomers at the edge of the enrichment zone (oligomers are not depleted, so the on flux is basically unchanged). There is then an imbalance of flux where the flux from binding is larger than the unbinding flux at the edge of the enrichment zone. If the on rate dominates diffusion (this is the case when the cytoplasm is enriched), then the boundary will tend to expand. On the other hand, if diffusive fluxes are sufficiently large (cytoplasmic depletion or larger zone of enrichment), then the boundary will contract if diffusive flux outwards overcomes the increased local binding. Figure\ \ref{fig:ExpContrBd} shows examples of this.
 
 \begin{figure}
 \centering
@@ -472,11 +434,11 @@ Another way to think about diffusion in the boundary layer is the following: sup
 \end{figure}
 
 \subsection{PAR-3 / PAR-2 bistable model \label{sec:P2P3}}
-Let's now add posterior PARs (PAR-2) to the model of PAR-3, so that the equations are 
+Let's now add posterior PARs (a single variable $P$ which represents the PAR-1/PAR-2 conglomerate) to the model of PAR-3, so that the equations are 
 \begin{subequations}
 \label{eq:P32}
 \begin{align}
-\Dt A_1 &= D_A \Dx^2 A_1 +\left( \kon_A +\A{\kf}\A{f}^+\left(\MA+2\PA\right)\right) A_\text{cyto} - \koff_A \MA -2\kp_A \MA^2+2\kdp_A \PA,\\
+\Dt A_1 &= D_A \Dx^2 A_1 +\left( \kon_A +\A{\kf}\A{f}^+\left(\MA,\PA\right)\right) A_\text{cyto} - \koff_A \MA -2\kp_A \MA^2+2\kdp_A \PA,\\
 \Dt \PA &= \kp_A \MA^2 - \kdp_A \PA-r_\text{PA} \PA P\\
 \Dt P &= D_P \Dx^2 P + \kon_P P_\text{cyto} - \koff_P P -r_\text{AP} P\left(\MA+2\PA\right),%\\
 %\Dt P_2 &= \kp_P P_1^2 - \kdp_P P_2-r_\text{AP} P_2\left(\MA+2\PA\right).
@@ -484,66 +446,81 @@ Let's now add posterior PARs (PAR-2) to the model of PAR-3, so that the equation
 \end{subequations}
 Here we have assumed that PAR-3 inhibits PAR-2 (by activating PKC-3, which is not included here for simplicity) \cite{lang2017proteins}. It is possible here to model PAR-2 in terms of both dimers and monomers \cite{bland2023optimized}; however, because PKC-3 acts on both monomers and dimers, the two are really only separated by kinetics of dimerization. Furthermore, a single species model of PAR-2 has already been made in \cite{gross2019guiding}, and the parameters for such a model were already fit there. As such, we will use a single species model for PAR-2. 
 
+\begin{table}
+\begin{small}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+Parameter & Description & Value & Units & Ref & Notes \\ \hline
+$D_P$ & PAR-2 diffusivity & 0.15 & $\mu$m$^2$/s & \cite{goehring2011polarization}&  \\ 
+$\kon_P$ & PAR-2 attachment rate & 0.13 & $\mu$m/s &\cite{gross2019guiding} & \\ 
+$\koff_P$ & PAR-2 detachment rate & $7.3 \times 10^{-3}$ & 1/s & \cite{goehring2011polarization}&  \\  
+$\hat{R}_\text{AP}$ & Rate of PAR-2 inhibition by PAR-3 & $6 \times 10^{-4}$ & $\mu$m/s & & Match experiments \cite[Fig.~5B]{zonies2010symmetry}\\
+$\hat{R}_\text{PA}$ & Rate of PAR-3 inhibition by PAR-2 &$6 \times 10^{-4}$  & $\mu$m/s & \ & Same as $r_\text{AP}$\\
+$\Tot{P}$ & Maximum bound PAR-2 density & -- & $\#/\mu$m& &  Included in $\hat{R}_\text{PA}$ \\ \hline
+\end{tabular}
+\caption{\label{tab:paramsP2}Additional parameter values for the PAR-3 model when PAR-2  is also included.}
+\end{small}
+\end{table}
+
 Repeating our non-dimensionalization from\ \eqref{eq:PAR3gen}, the dimensionless form of the equations\ \eqref{eq:P32} is
 \begin{subequations}
 \label{eq:PAR2PAR3}
 \begin{align}
 \nonumber
-\Dthat \hat{\MA} & = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \A{f}^+\left(\hat{\MA}+2\hat{\PA}\right)\right)\left(1 - \int_0^1 \left(\hat{\MA}(x) + 2\hat{\PA}(x)\right) \, d\hat{x} \right) \\ 
+\Dthat \hat{\MA} & = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \A{f}^+\left(\hat{\MA},2\hat{\PA}\right)\right)\left(1 - \int_0^1 \hat{A}(x) \, d\hat{x} \right) \\ 
 &+ 2\KhatdpA \hat{\PA}-2\KhatpA \hat{\MA}^2 - \KhatoffA \hat{\MA} \\ 
-\Dthat \hat{\PA} & =\KhatpA \hat{\MA}^2- \KhatdpA \hat{\PA}-\frac{r_\text{PA} \Tot{P}}{\kdp_A}\hat{P} \hat{\PA} \\ 
-\Dthat \hat{P} & =\DhatP \Dxhat^2 \hat{P} +\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \hat{P}-\frac{r_\text{AP} \Tot{A}}{\kdp_A}\left(\hat A_1 + 2\hat \PA\right)\hat{P} \\ 
+\Dthat \hat{\PA} & =\KhatpA \hat{\MA}^2- \KhatdpA \left(1+\hat{R}_\text{PA}\hat{P}\right) \hat{\PA} \\ 
+\Dthat \hat{P} & =\DhatP \Dxhat^2 \hat{P} +\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \left(1+\hat{R}_\text{AP}\hat{A}\right)\hat{P} \\ 
 \label{eq:paramsNDFB}
-\DhatA &=\frac{\A{D}}{L^2 \A{\kdp}}, \quad \KhatonA=\frac{\A{\kon}}{\A{\kdp} h }, \quad \KhatfA = \frac{\A{\kf}}{\A{\kon}}, \quad  \KhatoffA = \frac{\A{\koff}}{\A{\kdp}}, \quad \KhatpA = \frac{\A{\kp} \Tot{A}}{\A{\kdp}}, \quad \KhatdpA=1\\
-\DhatP &=\frac{D_P}{L^2 \A{\kdp}} \quad \KhatonP=\frac{{\kon_P}}{\A{\kdp} h },\quad \KhatoffP = \frac{\koff_P}{\kdp_A}
+\hat{R}_\text{PA}&=\frac{r_\text{PA} \Tot{P}}{\kdp_A},\quad \hat{R}_\text{AP}=\frac{r_\text{AP} \Tot{A}}{\koff_P},\quad \DhatP =\frac{D_P}{L^2 \A{\kdp}}, \quad \KhatonP=\frac{{\kon_P}}{\A{\kdp} h },\quad \KhatoffP = \frac{\koff_P}{\kdp_A}
 \end{align}
 \end{subequations}
-Using the parameters in Table\ \ref{tab:params}, there are three unknown parameters here: the feedback strength $K_A^+$, which we will fix at $K_A^+=12.5$ to obtain bistability of the intrinsic PAR-3 dynamics, and the inhibition parameters $r_\text{AP}$ and $r_\text{PA}$. For simplicity, we will assume $r_\text{AP}=r_\text{PA}$. 
+The additional dimensionless parameters are in\ \eqref{eq:paramsNDFB}. All other dimensionless parameters have already been defined and determined in Section\ \ref{sec:Par3}.
+
+\subsubsection{Parameters}
+There are therefore five parameters that are unknown in the model\ \eqref{eq:PAR2PAR3}. The diffusion, association, and dissociation rates of PAR-2 have been measured in \cite{goehring2011polarization} and \cite{gross2019guiding}, and are reported in Table\ \ref{tab:paramsP2}. The mutual inhibition parameters can be fit with the following three experimental observations:
+\begin{enumerate}
+\item In embryos without myosin flows, the steady state boundary is at 70--75\% PAR-3 enrichment \cite[Fig.~5B]{zonies2010symmetry}.
+\item In embryos without myosin flows, roughly 25--30\% of the available PAR-2 is bound at steady state \cite[Fig.~S3]{gross2019guiding}. 
+\item The level of PAR-3 at the posterior in embryos with PAR-1 inhibition is about 2\% of the anterior level \cite[Fig.~4C]{sailer2015dynamic}.
+\end{enumerate}
 
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{PAR3PAR2FixedBd.eps}
-\caption{\label{fig:P32FixBd}Dynamics of the PAR-2/PAR-3 model\ \eqref{eq:PAR2PAR3} with an initial small zone of PAR-2 enrichment and PAR-3 depletion. The dotted lines show the initial conditions (90\% PAR-3 enrichment), while the solid lines show the steady state, both for PAR-3 in blue and PAR-2 in red.}
+\caption{\label{fig:P32FixBd}Steady states of the PAR-2/PAR-3 model\ \eqref{eq:PAR2PAR3} with various values of $\hat R_\text{AP}$ ($A$ inhibits $P$) and $\hat R_\text{PA}$ ($P$ inhibits $A$).}
 \end{figure}
 
-As an illustration of how this model behaves, in Figs.\ \ref{fig:P32FixBd} and \ref{fig:P32FixBdEq} we examine how initial zones of mutually excluded PAR-3 and PAR-2 enrichment evolve to steady state. The key here is the dynamics of PAR-3, which we recall switches between a small steady state (typically associated with the posterior half), and a larger steady state (typically associated with the anterior half). When there is no inhibition, PAR-3 develops its bistable state naturally, and PAR-2 is spread uniformly. Increasing the mutual inhibition then causes the boundary to shift, as depletion of PAR-2 in the interior leads to more cytoplasmic PAR-2, which increases the on rate in the inhibited zone. The attaching PAR-2 then diffuses, out-competing the PAR-3 and driving it to a lower steady state. This shifts the boundary. When mutual inhibition goes back up, PAR-2 simply can't do anything because the mutual inhibition is too strong. We note also the shape of the peak in PAR-2 is more broad than for PAR-3, since we assume that PAR-2 can diffuse in the membrane with a higher diffusion coefficient than even monomeric PAR-3, and since PAR-3 is mostly in the non-diffusive oligomer form. 
+As an illustration of how this model behaves, in Figs.\ \ref{fig:P32FixBd} and \ref{fig:P32FixBdEq} we examine how initial zones of mutually excluded PAR-3 and PAR-2 enrichment evolve to steady state. The key here is the dynamics of PAR-3, which we recall switches between a small steady state (typically associated with the posterior half), and a larger steady state (typically associated with the anterior half). When there is no inhibition (top left), PAR-3 develops its bistable state naturally, and PAR-2 is spread uniformly. Increasing the mutual inhibition then causes the boundary to shift, as depletion of PAR-2 in the interior leads to more cytoplasmic PAR-2, which increases the on rate in the inhibited zone. The attaching PAR-2 then diffuses, out-competing the PAR-3 and driving it to a lower steady state. This shifts the boundary, as previously observed by others \cite{goehring2011polarization}. 
 
-\subsubsection{Parameters encode a unique boundary position}
+Figure\ \ref{fig:P32FixBd} shows the position of the boundary as a function of the inhibition parameters $\hat R_\text{AP}$ and $\hat R_\text{PA}$. When the mutual inhibition is too large (top right), the boundary shifts too much. Decreasing the mutual inhibition gives a good boundary position, but an excess of PAR-2 where it should be depleted. Thus we increase the inhibition of PAR-2 by PAR-3 in the bottom row, settling finally on $\hat R_\text{AP}=16.5$ and $\hat R_\text{PA}=0.3$, telling us that the inhibition of $P$ by $A$ is stronger than inhibition of $A$ by $P$. This is because PAR-3 can be bistable without the inhibitor, whereas PAR-2 \emph{needs} the inhibitor to be enriched on one side. PAR-2 also has a much longer lifetime, and so its unbinding has to be dominated by getting kicked off by PAR-3. 
+
+\subsubsection{Boundary position}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.6\textwidth]{PAR3SizePAR2Comp.eps}
-\caption{\label{fig:P32FixBdEq}Size of the PAR-3 enrichment zone over time. Simulations use $r_\text{AP}=10^{-3}$ and start with PAR-3 at its uniform steady state value in an enrichment zone (e.g., the simulations in Fig.\ \ref{fig:P32FixBd} start at 0.9). We then watch the size of the domain evolve over time. If there is sufficient cytoplasmic depletion of PAR-3, then mutual inhibition by PAR-2 shifts the intrinsic boundary.}
+\caption{\label{fig:P32FixBdEq}Size of the PAR-3 enrichment zone over time. Simulations use $\hat R_\text{AP}=16.5$ and $\hat R_\text{PA}=0.3$ and start with PAR-3 at its uniform steady state value in an enrichment zone. We then watch the size of the domain evolve over time. If there is sufficient cytoplasmic depletion of PAR-3, then mutual inhibition by PAR-2 shifts the intrinsic boundary.}
 \end{figure}
 
-We now zero in on one particular parameter set to demonstrate that the steady state boundary position is set uniquely by the parameters. When $r_\text{AP}=10^{-3}$, Fig.\ \ref{fig:P32FixBd} shows that the domain of PAR-3 enrichment at steady state is roughly 70\%. We confirm that this is a unique steady state in Fig.\ \ref{fig:P32FixBdEq} by changing length of the region initially enriched in PAR-3. We find that, as long as the domain size is larger than 0.2, we see a unique steady state where PAR-3 and PAR-2 mutually exclude each other. By contrast, when the initial domain of enrichment is too small, there is sufficient cytoplasmic PAR-3 for the uniform steady state to be the only stable one. These dynamics are similar to the case of PAR-3 alone (Fig.\ \ref{fig:WWoDiff}), except that PAR-2 shifts the boundary by driving PAR-3 down to the smaller steady state in some regions.
+We now demonstrate that the steady state boundary position is set uniquely by the parameters. When $\hat R_\text{AP}=16.5$ and $\hat R_\text{PA}=0.3$, Fig.\ \ref{fig:P32FixBd} shows that the domain of PAR-3 enrichment at steady state is roughly 70\%. We confirm that this is a unique steady state in Fig.\ \ref{fig:P32FixBdEq} by changing length of the region initially enriched in PAR-3. We find that, as long as the domain size is larger than 0.2, we see a unique steady state where PAR-3 and PAR-2 mutually exclude each other. By contrast, when the initial domain of enrichment is too small, there is sufficient cytoplasmic PAR-3 for the uniform steady state to be the only stable one. These dynamics are similar to the case of PAR-3 alone (Fig.\ \ref{fig:WWoDiff}), except that PAR-2 shifts the boundary by driving PAR-3 down to the smaller steady state in some regions.
 
-
-\subsubsection{Finding the inhibition strength $r_\text{AP}$ \label{sec:RAP}}
-We have two main experimental observations to constrain the inhibition strength $r_\text{AP}$:
-\begin{enumerate}
-\item In embryos depleted of myosin (whether wild-type or ECT-2 (RNAi)), the PAR-3 domain takes up about 75\% of the embryo \cite[Fig.~5B]{zonies2010symmetry}.
-\item In wild-type embryos, the level of PAR-3 at the posterior is roughly 2\% of the anterior level \cite[Fig.~4C]{sailer2015dynamic}.
-\end{enumerate}
-In the case when $r_\text{AP}=6 \times 10^{-4}$, we obtain a PAR-3 domain which takes up 75\% of the embryo and a ratio of $0.04/1.03 \approx 0.04$. This falls roughly within the experimental parameter range, and so this is the parameter we will use going forward.
 
 \subsection{Model of PAR-2 and PAR-3 with myosin  \label{sec:P2P3My}}
-Let's now add myosin to the model of PAR-2 and PAR-3 that we formulated in\ \eqref{eq:PAR2PAR3}. Myosin enters here as an advective flow for each of the proteins, then has its own constitutive equation. The full dimensionless model is given by
+\red{Try this with posterior inhibition or anterior promotion. Anterior promotion won't work because of the PAR-3 gradient never going away.} Let's now add myosin to the model of PAR-2 and PAR-3 that we formulated in\ \eqref{eq:PAR2PAR3}. Myosin enters here as an advective flow for each of the proteins, then has its own constitutive equation. The full dimensionless model is given by
 \begin{subequations}
 \label{eq:PAR2PAR3My}
-\begin{gather}
+\begin{align}
 \nonumber
-\Dthat \hat{A}_1 +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\MA} \right)   =\DhatA \Dxhat^2 \hat{A}_1 +\KhatonA\left(1+\hat{K}_A^+ f_A^+\left(\hat{\MA}(x) + 2\hat{\PA}(x)\right)\right)\left(1 - \int_0^1 \left(\hat{\MA}(x) + 2\hat{\PA}(x)\right) \, d\hat{x} \right) \\  
- -\KhatoffA \hat{A}_1 +2\KhatdpA \hat{\PA}-2 \KhatpA \hat{A}_1^2 \\ 
-\Dthat \hat{\PA} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\PA} \right)  =\KhatpA \hat{\MA}^2- \KhatdpA \hat{\PA}-\frac{r_\text{PA} \Tot{P}}{\kdp_A}\hat{P}\hat{\PA} \\ 
-\Dthat \hat{P} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{P} \right)  =\DhatP \Dxhat^2 \hat{P}+\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \hat{P}-\frac{r_\text{AP} \Tot{A}}{\kdp_A}\left(\hat A_1 + 2\hat \PA\right)\hat{P} \\ 
-\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) =\hat{D}_M \Dxhat^2 \hat{M} +\KhatonM \left(1-\int_0^1  \hat{M}(x) \, dx\right)- \left(\KhatoffM+\frac{r_\text{PM}\Tot{P}}{\kdp_A}\hat{P} \right) \hat{M}\\
-\hat{v} = \hat{\ell}^2 \Dxhat^2 v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M})\\ \nonumber
-\DhatA =\frac{\A{D}}{L^2 \A{\kdp}}, \quad \KhatonA =\frac{\A{\kon}}{\A{\kdp} h }, \KhatoffA = \frac{\koff_A}{\kdp_A}, \quad \KhatdpA =1, \quad \KhatpA = \frac{\A{\kp} \Tot{A}}{\A{\kdp}}, \quad \KhatfA = \frac{\A{\kf}}{\A{\kon}} \\
-\DhatP =\frac{D_P}{L^2 \A{\kdp}}, \quad \KhatonP =\frac{{\kon_P}}{\A{\kdp} h }, \quad \KhatoffP = \frac{\koff_P}{\kdp_A}, \quad \hat{\sigma}_0 = \left(\frac{\sigma_0/ \sqrt{\eta \gamma} }{L {\kdp_A}}\right)   \\ \nonumber
- \hat{D}_M =\frac{D_M}{{\kdp_A}  L^2}, \quad \KhatonM= \frac{\My{\kon}}{h {\kdp_A}}, \quad \KhatoffM = \frac{\koff_M}{\kdp_A}, \quad  \hat{\ell} = \frac{\sqrt{\eta/\gamma}}{L} \quad v = \hat{v} \frac{\sigma_0}{\sqrt{\eta \gamma}}.
-\end{gather}
+\Dthat \hat{A}_1 +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\MA} \right)  &=\DhatA \Dxhat^2 \hat{A}_1 +\KhatonA\left(1+\hat{K}_A^+ \hat F_A^+\left(\hat{\MA},\hat{\PA}\right)\right)\left(1 - \int_0^1 \hat{A}(x) \, d\hat{x} \right) \\  
+ &-\KhatoffA \hat{A}_1 +2\KhatdpA \hat{\PA}-2 \KhatpA \hat{A}_1^2 \\ 
+\Dthat \hat{\PA} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\PA} \right)  &=\KhatpA \hat{\MA}^2- \KhatdpA \left(1+\hat{R}_\text{PA}\hat{P}\right)\hat{\PA} \\ 
+\Dthat \hat{P} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{P} \right) & =\DhatP \Dxhat^2 \hat{P}+\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP\left(1+\hat{R}_\text{PA} \hat{A}\right)\hat{P} \\ 
+\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) &=\hat{D}_M \Dxhat^2 \hat{M} +\KhatonM \left(1+\hat R_\text{AM} \hat{A}\right)\left(1-\int_0^1  \hat{M}(x) \, dx\right)\\ \nonumber &- \KhatoffM\left(1+\hat{R}_\text{PM} \hat{P} \right) \hat{M}\\
+\hat{v} &= \hat{\ell}^2 \Dxhat^2 v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M})\\
+\hat{R}_\text{AM} &=\frac{r_\text{AM}\Tot{A}}{\kon_M} \quad \hat{R}_\text{PM}=\frac{r_\text{PM}\Tot{P}}{\koff_M}
+\end{align}
 \end{subequations}
 Our key assumption here is that the posterior PAR-2 inhibits myosin activity through the reaction coefficient $r_\text{PM}$ (units $\mu$m/s). Recalling our previous study of PAR-2 and PAR-3 in Section\ \ref{sec:P2P3}, we saw there that for strong enough mutual inhibition of the two proteins, the intrinsic bistability of PAR-3 can combine with mutual inhibition of PAR-2 to set up two mutually exclusive domains of enriched PAR-2 and PAR-3 (respectively). 
 
