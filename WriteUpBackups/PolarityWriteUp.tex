@@ -84,7 +84,7 @@
 This project is about understanding the design principles by which cells combine mechanics (the actomyosin network) and biochemistry to robustly polarize. 
 
 
-\section{Myosin and CDC-42}
+\section{Dynamics of myosin in the embryo}
 We begin by considering a model of myosin by itself, to determine if it can spontaneously polarize. Spontaneous polarization of myosin, if possible, would explain the maintenance-phase rescue experiments that we observe.
 
 \subsection{Myosin as a self-patterning material} 
@@ -271,7 +271,7 @@ Importantly, the large value of $\sigma_0$ needed for instability is a consequen
 \caption{\label{fig:DispRelMy}Dispersion relation\ \eqref{eq:DispRel} for myosin for different values of $\hat{\sigma}_0$. Positive eigenvalues indicate instability of the steady state. Dotted black line at $\lambda=-1$ reflects the axis of instability \emph{without} unbinding kinetics.}
 \end{figure}
 
-\section{Biochemistry of PAR-3 and PAR-2 \label{sec:Biochem}}
+\section{PAR-3 as the anchor for asymmetries \label{sec:Biochem}}
 We are motivated first by the experimental observations that asymmetries in the PAR proteins are stable once set up, even in the absence of contractility. This experimental observation tells us that there is an intrinsic bistability in the biochemical circuit, which switches from a uniform state to a polarized state. In later sections, the switch will occur under the influence of actomyosin flows, while in this section the initial conditions will be the only way to switch the steady profiles.
 
 Unlike in budding yeast cells \cite{mogilner2012cell}, there is no experimental evidence that \emph{C.\ elegans} cells can spontaneously polarize, which means that the system is truly bistable. Traditionally, it has been speculated that the bistability comes from mutual inhibition of the aPAR and pPAR proteins \cite{halatek2018self, trong2014parameter}. But translating this idea into equations becomes much harder than might be expected! Indeed, ODEs based on first-order mass action kinetics of aPAR-pPAR inhibition \emph{do not} yield bistable dynamics under any choice of parameters \cite{dawes20113}. Attempts to overcome this have used stoichiometric coefficients for the biochemical equations that guarantee bistability \cite{goehring2011polarization, gross2019guiding} or included actomyosin flows designed to transport the aPARs \cite{TH2008}. Both of these approaches are grounded more in intuition than in biological evidence, as there is no reason to doubt mass action kinetics, and recent experiments have shown that both aPARs and pPARs are transported by myosin \cite{illukkumbura2023design}. 
@@ -296,7 +296,7 @@ A_\text{cyto} & = \frac{1}{h L} \left(\Tot{A} L - \int_0^L \left(A_1(x)+2A_n(x)\
 A complete list of parameters with units and values is given in Table\ \ref{tab:params}, but it will be helpful to point out the important ones in our model. First, the feedback strength $k_A^+$, which has units of length$^2$/time, gives the rate at which cytoplasmic PAR-3 is recruited to the membrane. It is multiplied by the flux function $f_A^+$, which gives the strength of recruitment (in units of inverse length; this could be as simple as $f_A^+(x,y)=x+2y$). The overall on rate is proportional to the cytoplasmic concentration, which is defined in\ \eqref{eq:Acyto}. There $\Tot{A}$ expresses the density of bound PAR-3 when all molecules are bound to the membrane (units 1/length). Subtracting the amount of bound PAR-3 and dividing by the membrane area gives
 the cytoplasmic concentration in units of 1/area.
 
-\subsubsection{Dimensionless form}
+\subsection{Dimensionless form}
 A sensible timescale for the system is the time a given PAR-3 molecule spends on the membrane. Because about 80\% of the bound PAR-3 molecules are in oligomer form, and since the depolymerization reaction is much slower than the unbinding reaction, we nondimensionalize time by $1/\A{\kdp}$. This gives the dimensionless (hatted) variables defined by
 \begin{equation*}
 x = \hat{x} L \qquad t= \hat{t}/\A{\kdp} \qquad A= \hat{A}\Tot{A}.
@@ -316,7 +316,7 @@ Substituting into\ \eqref{eq:P3model} gives the rewritten dynamics
 \end{subequations}
 and we have used the convenient shorthand $A=\MA + 2 \PA$ and likewise for the hatted variables. 
 
-\subsubsection{Known parameters}
+\subsection{Parameters}
 Recent experimental measurements \cite{lang2023oligomerization} give accurate measurements for three of the parameters: the diffusion coefficient $D_A$, the detachment rate of monomers $\koff_A$, and the depolymerization rate $\kdp_A$. The values of these parameters are summarized in Table\ \ref{tab:params}, and determine the dimensionless parameters $\DhatA$ and $\KhatoffA$. We determine $\KhatonA$, $\KhatpA$, $\KhatfA$, and the form of the feedback function via a systematic fitting procedure as detailed next.
 
 \subsubsection{Fitting the polymerization rate}
@@ -406,7 +406,7 @@ $\Tot{A}$ & Maximum bound PAR-3 density & -- & $\#/\mu$m & & Contained in other 
 \end{small}
 \end{table}
 
-\subsubsection{Results}
+\subsection{Results}
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{PAR3Boundary.eps}
@@ -433,6 +433,7 @@ This is not the case when we add diffusion into the model, which provides an add
 \caption{\label{fig:ExpContrBd}Local depletion by diffusion and consequent expansion/contraction of boundary. These figures show the positive fluxes due to binding (blue) and the negative fluxes due to diffusion and unbinding (red). When the boundary is narrow (left figure), the binding rate is higher due to enriched cytoplasm, and the boundary expands. On the other hand, when the boundary is wider (right figure), the binding rate is locally lower than the off rate + diffusion (note diffusion makes the difference in this case), and the boundary contracts. }
 \end{figure}
 
+\iffalse
 \subsection{PAR-3 / PAR-2 bistable model \label{sec:P2P3}}
 Let's now add posterior PARs (a single variable $P$ which represents the PAR-1/PAR-2 conglomerate) to the model of PAR-3, so that the equations are 
 \begin{subequations}
@@ -489,12 +490,12 @@ There are therefore five parameters that are unknown in the model\ \eqref{eq:PAR
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{PAR3PAR2FixedBd.eps}
-\caption{\label{fig:P32FixBd}Steady states of the PAR-2/PAR-3 model\ \eqref{eq:PAR2PAR3} with various values of $\hat R_\text{AP}$ ($A$ inhibits $P$) and $\hat R_\text{PA}$ ($P$ inhibits $A$).}
+\caption{\label{fig:P32FixBd}Steady states ($\hat t=500$) of the PAR-2/PAR-3 model\ \eqref{eq:PAR2PAR3} with various values of $\hat R_\text{AP}$ ($A$ inhibits $P$) and $\hat R_\text{PA}$ ($P$ inhibits $A$).}
 \end{figure}
 
-As an illustration of how this model behaves, in Figs.\ \ref{fig:P32FixBd} and \ref{fig:P32FixBdEq} we examine how initial zones of mutually excluded PAR-3 and PAR-2 enrichment evolve to steady state. The key here is the dynamics of PAR-3, which we recall switches between a small steady state (typically associated with the posterior half), and a larger steady state (typically associated with the anterior half). When there is no inhibition (top left), PAR-3 develops its bistable state naturally, and PAR-2 is spread uniformly. Increasing the mutual inhibition then causes the boundary to shift, as depletion of PAR-2 in the interior leads to more cytoplasmic PAR-2, which increases the on rate in the inhibited zone. The attaching PAR-2 then diffuses, out-competing the PAR-3 and driving it to a lower steady state. This shifts the boundary, as previously observed by others \cite{goehring2011polarization}. 
+We try to tune the inhibition parameters in Figs.\ \ref{fig:P32FixBd} and \ref{fig:P32FixBdEq} to achieve these outcomes at steady state. The key here is the dynamics of PAR-3, which we recall switches between a small steady state (typically associated with the posterior half), and a larger steady state (typically associated with the anterior half). When there is no inhibition (top left), PAR-3 develops its bistable state naturally, and PAR-2 is spread uniformly. Increasing the mutual inhibition then causes the boundary to shift, as depletion of PAR-2 in the interior leads to more cytoplasmic PAR-2, which increases the on rate in the inhibited zone. The attaching PAR-2 then diffuses, out-competing the PAR-3 and driving it to a lower steady state. This shifts the boundary, as previously observed by others \cite{goehring2011polarization}. 
 
-Figure\ \ref{fig:P32FixBd} shows the position of the boundary as a function of the inhibition parameters $\hat R_\text{AP}$ and $\hat R_\text{PA}$. When the mutual inhibition is too large (top right), the boundary shifts too much. Decreasing the mutual inhibition gives a good boundary position, but an excess of PAR-2 where it should be depleted. Thus we increase the inhibition of PAR-2 by PAR-3 in the bottom row, settling finally on $\hat R_\text{AP}=16.5$ and $\hat R_\text{PA}=0.3$, telling us that the inhibition of $P$ by $A$ is stronger than inhibition of $A$ by $P$. This is because PAR-3 can be bistable without the inhibitor, whereas PAR-2 \emph{needs} the inhibitor to be enriched on one side. PAR-2 also has a much longer lifetime, and so its unbinding has to be dominated by getting kicked off by PAR-3. 
+Figure\ \ref{fig:P32FixBd} shows the position of the boundary as a function of the inhibition parameters $\hat R_\text{AP}$ and $\hat R_\text{PA}$. When the mutual inhibition is too large (top right), the boundary shifts too much. Decreasing the mutual inhibition gives a good boundary position, but an excess of PAR-2 where it should be depleted. Thus we increase the inhibition of PAR-2 by PAR-3 in the bottom row, settling finally on $\hat R_\text{AP}=16.5$ and $\hat R_\text{PA}=0.3$, telling us that the inhibition of $P$ by $A$ is stronger than inhibition of $A$ by $P$. This is because PAR-3 can be bistable without the inhibitor, whereas PAR-2 \emph{needs} the inhibitor to be enriched on one side. PAR-2 also has a much longer lifetime, and so its unbinding has to be dominated by getting kicked off by PAR-3. At steady state, the PAR-3 domain takes up 70\% of the embryo, the amount of bound PAR-2 29\%, and the PAR-3 ratio between posterior and anterior is $0.04/0.6 \approx 6.7$\%. This model is not able to capture lower ratios (without making PAR-2 too low), and \red{it is not able to capture PAR-2 being essentially non-existent on the anterior (there is about 10\% of the posteior level on the anterior).}
 
 \subsubsection{Boundary position}
 
@@ -508,7 +509,7 @@ We now demonstrate that the steady state boundary position is set uniquely by th
 
 
 \subsection{Model of PAR-2 and PAR-3 with myosin  \label{sec:P2P3My}}
-\red{Try this with posterior inhibition or anterior promotion. Anterior promotion won't work because of the PAR-3 gradient never going away.} Let's now add myosin to the model of PAR-2 and PAR-3 that we formulated in\ \eqref{eq:PAR2PAR3}. Myosin enters here as an advective flow for each of the proteins, then has its own constitutive equation. The full dimensionless model is given by
+Let's now add myosin to the model of PAR-2 and PAR-3 that we formulated in\ \eqref{eq:PAR2PAR3}. \red{We can't have $A$ promoting $M$ because there's nothing to stop the flow. Just do posterior inhibition and move on.} Myosin enters here as an advective flow for each of the proteins, then has its own constitutive equation. The full dimensionless model is given by
 \begin{subequations}
 \label{eq:PAR2PAR3My}
 \begin{align}
@@ -517,12 +518,11 @@ We now demonstrate that the steady state boundary position is set uniquely by th
  &-\KhatoffA \hat{A}_1 +2\KhatdpA \hat{\PA}-2 \KhatpA \hat{A}_1^2 \\ 
 \Dthat \hat{\PA} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\PA} \right)  &=\KhatpA \hat{\MA}^2- \KhatdpA \left(1+\hat{R}_\text{PA}\hat{P}\right)\hat{\PA} \\ 
 \Dthat \hat{P} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{P} \right) & =\DhatP \Dxhat^2 \hat{P}+\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP\left(1+\hat{R}_\text{PA} \hat{A}\right)\hat{P} \\ 
-\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) &=\hat{D}_M \Dxhat^2 \hat{M} +\KhatonM \left(1+\hat R_\text{AM} \hat{A}\right)\left(1-\int_0^1  \hat{M}(x) \, dx\right)\\ \nonumber &- \KhatoffM\left(1+\hat{R}_\text{PM} \hat{P} \right) \hat{M}\\
-\hat{v} &= \hat{\ell}^2 \Dxhat^2 v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M})\\
-\hat{R}_\text{AM} &=\frac{r_\text{AM}\Tot{A}}{\kon_M} \quad \hat{R}_\text{PM}=\frac{r_\text{PM}\Tot{P}}{\koff_M}
+\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) &=\hat{D}_M \Dxhat^2 \hat{M} +\KhatonM \left(1+\hat R_\text{AM} \hat{A}\right)\left(1-\int_0^1  \hat{M}(x) \, dx\right)\\ \nonumber &- \KhatoffM\left(1+\hat{R}_\text{PM} \hat{P} \right) \hat{M},\qquad \hat{R}_\text{PM}=\frac{r_\text{PM}\Tot{P}}{\koff_M}\\
+\hat{v} &= \hat{\ell}^2 \Dxhat^2 v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M})
 \end{align}
 \end{subequations}
-Our key assumption here is that the posterior PAR-2 inhibits myosin activity through the reaction coefficient $r_\text{PM}$ (units $\mu$m/s). Recalling our previous study of PAR-2 and PAR-3 in Section\ \ref{sec:P2P3}, we saw there that for strong enough mutual inhibition of the two proteins, the intrinsic bistability of PAR-3 can combine with mutual inhibition of PAR-2 to set up two mutually exclusive domains of enriched PAR-2 and PAR-3 (respectively). 
+In this model, we allow for either PAR-3 to promote myosin via the dimensionless ratio $\hat{R}_\text{AM}$, or PAR-2 to inhibit myosin via the dimensionless ratio $\hat{R}_\text{PM}$. Recalling our previous study of PAR-2 and PAR-3 in Section\ \ref{sec:P2P3}, we saw there that for strong enough mutual inhibition of the two proteins, the intrinsic bistability of PAR-3 can combine with mutual inhibition of PAR-2 to set up two mutually exclusive domains of enriched PAR-2 and PAR-3 (respectively). 
 
 But can we use myosin as a means to shift the boundary? Figure\ \ref{fig:P2P3My} shows that indeed we can. Here we consider the same parameters as given in Table\ \ref{tab:params}, but add myosin with the parameters given in Table\ \ref{tab:paramsMy}. In order to get more bound myosin, we increase to $\kon_M=2$ $\mu$m/s (a factor of 10 relative to the value reported in \cite{gross2019guiding}, which is based on fitting a different model). The dotted lines in each plot show the steady state with $r_\text{PM}=0$, so that we can see how adding PAR-2 inhibition of myosin shifts the boundary. Starting with $r_\text{PM}=10^{-4}$ up to $r_\text{PM}=0.1$, we see a PAR-3 domain which shrinks with increasing $r_\text{PM}$, until the inhibition is so high that no flow is generated at all. 
 
@@ -547,24 +547,10 @@ We now attempt an honest comparison with the experimental data. Section\ \ref{se
 
 Figure\ \ref{fig:ModelExp} provides a comparison between the model and experimental data in NMY-2::GFP embryos (we are tracking myosin in fluorescence microscopy). The top plot shows the myosin intensity profile, comparing wild-type (black), branched actin knockdown via \emph{arx-2} (RNAi) (pink), and the model (red). The intensity profile in the \emph{arx-2} (RNAi) embryos compares favorably with the model; as there is a zone of low intensity in the posterior half and transitioning to zone of high intensity at the anterior half.
 
+\fi 
 
-\section{CDC-42 as the master regulator of myosin and branched actin}
+\section{Biochemistry circuit}
 Our model in the previous section demonstrates that we can account for the behavior \emph{without} branched actin with a simple three species model of PAR-3, posterior PARs (PAR-2 specifically, but $P$ stands for all of them), and myosin. With branched actin, our model has to change to account for the stalling contractility and decrease in myosin concentration at the anterior pole. We do this by introducing a new species, called $C$, which represents the ``other'' aPARs, in particular CDC-42. Once we have access to the profile of CDC-42, we will be able to test different assumptions about myosin and branched actin. 
-
-\begin{table}
-\begin{small}
-\centering
-\begin{tabular}{|c|c|c|c|c|c|}\hline
-Parameter & Description & Value & Units & Ref & Notes \\ \hline
-$\C{D}$ & CDC-42 diffusivity & 0.1 & $\mu$m$^2$/s & \cite{robin2014single} &\\
-$\C{\kon}$ & CDC-42/PAR-6 attachment rate & 0.02 & $\mu$m/s & \cite{gross2019guiding} & \\
-$\C{\koff} $ & PAR-6/CDC-42 detachment rate & 0.01 & 1/s & \cite{robin2014single}& \\
-$\Tot{C}$ & Maximum bound CDC-42 density & 1500 & $\#/\mu$m &\cite{gross2019guiding} & Same for all PARs \\ \hline
-\end{tabular}
-\caption{\label{tab:paramsC} Parameter values for new species $C$.}
-\end{small}
-\end{table}
-
 
 \subsection{Biochemistry without contractility}
 As in the previous section, let's start by just considering the biochemistry without myosin. We introduce a variable $C$ to represent CDC-42, and generally any anterior PAR proteins that are not PAR-3. Adding this to the previous biochemistry model\ \eqref{eq:P32} gives 
@@ -593,80 +579,97 @@ Repeating our non-dimensionalization from\ \eqref{eq:PAR2PAR3}, the dimensionles
 \label{eq:PCND}
 \begin{align}
 \nonumber
-\Dthat \hat{\MA} & = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \A{f}^+\left(\hat{\MA}+2\hat{\PA}\right)\right)\left(1 - \int_0^1 \left(\hat{\MA}(x) + 2\hat{\PA}(x)\right) \, d\hat{x} \right) \\ 
+\Dthat \hat{\MA} & = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \A{F}^+\left(\hat{\MA},\hat{\PA}\right)\right)\left(1 - \int_0^1 \hat{A}(x) \, d\hat{x} \right) \\ 
 &+ 2\KhatdpA \hat{\PA}-2\KhatpA \hat{\MA}^2 - \KhatoffA \hat{\MA} \\ 
-\Dthat \hat{\PA} & =\KhatpA \hat{\MA}^2- \KhatdpA \hat{\PA}-\frac{r_\text{PA} \Tot{P}}{\kdp_A}\hat{P} \hat{\PA} \\ 
+\Dthat \hat{\PA} & =\KhatpA \hat{\MA}^2- \KhatdpA \left(1+\hat{R}_\text{PA}\hat{P}\right) \hat{\PA} \\ 
 \label{eq:26c}
-\Dthat \hat{C} & =\DhatC \Dxhat^2 \hat{P} +\KhatonC \left(1+\hat R_\text{AC}\left(\hat A_1+2\hat A_n\right) \right)\left(1 - \int_0^1 \hat{C}(\hat x) \, d\hat{x} \right)  - \KhatoffC \hat{C}-\frac{r_\text{PC} \Tot{P}}{\kdp_A}\hat P \hat{C} \\ 
-\Dthat \hat{P} & =\DhatP \Dxhat^2 \hat{P} +\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \hat{P}-\frac{r_\text{CP} \Tot{C}}{\kdp_A}\hat C \hat{P} \\ 
-\DhatA &=\frac{\A{D}}{L^2 \A{\kdp}}, \quad \KhatonA=\frac{\A{\kon}}{\A{\kdp} h }, \quad \KhatfA = \frac{\A{\kf}}{\A{\kon}}, \quad  \KhatoffA = \frac{\A{\koff}}{\A{\kdp}}, \quad \KhatpA = \frac{\A{\kp} \Tot{A}}{\A{\kdp}}, \quad \KhatdpA=1\\
+\Dthat \hat{C} & =\DhatC \Dxhat^2 \hat{P} +\KhatonC \left(1+\hat R_\text{AC}\hat{A} \right)\left(1 - \int_0^1 \hat{C}(\hat x) \, d\hat{x} \right)  - \KhatoffC \left(1+\hat{R}_\text{PC}\hat P\right)\hat{C} \\ 
+\Dthat \hat{P} & =\DhatP \Dxhat^2 \hat{P} +\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \left(1+\hat{R}_\text{CP}\hat C\right) \hat{P} \\ 
+\hat{R}_\text{PA}&=\frac{r_\text{PA} \Tot{P}}{\kdp_A}, \quad \hat{R}_\text{AC}=\frac{r_\text{AC} \Tot{A}}{\kon_C}, \quad \hat{R}_\text{PC}=\frac{r_\text{PC} \Tot{P}}{\koff_C},\quad \hat{R}_\text{CP}=\frac{r_\text{CP} \Tot{C}}{\koff_P}\\
 \DhatP &=\frac{D_P}{L^2 \A{\kdp}} \quad \KhatonP=\frac{{\kon_P}}{\A{\kdp} h },\quad \KhatoffP = \frac{\koff_P}{\kdp_A}\\
-\DhatC &=\frac{D_C}{L^2 \A{\kdp}} \quad \KhatonC=\frac{{\kon_C}}{\A{\kdp} h },\quad \KhatoffC = \frac{\koff_C}{\kdp_A},\quad \hat{R}_\text{AC}=\frac{r_\text{AC}\Tot{A}}{\kon_C}
+\DhatC &=\frac{D_C}{L^2 \A{\kdp}} \quad \KhatonC=\frac{{\kon_C}}{\A{\kdp} h },\quad \KhatoffC = \frac{\koff_C}{\kdp_A}
 \end{align}
 \end{subequations}
-Using the parameters in Tables\ \ref{tab:paramsMy} and\ \ref{tab:params}, there are four unknown parameters here: $r_\text{PA}$ (inhibition of PAR-3 by pPARs), $r_\text{PC}$ and $r_\text{CP}$ (mutual inhibition of pPARs and aPARs), and $r_\text{AC}$ (rate at which PAR-3 promotes CDC-42). We estimate them in the next section; Table\ \ref{tab:params3} provides a summary for convenience.
 
-\subsubsection{Estimating the unknown parameters}
-The first unknown parameter is $r_\text{PC}$, which is the inhibition of $C$ (which stands for CDC-42, PAR-6, and PKC-3) by $P$ (which stands for all the pPARs). To estimate this parameter, we solve\ \eqref{eq:26c} at steady state in the absence of $A$ to obtain
+\subsection{Parameter estimation}
+We have to fit a total of six parameters: the mutual inhibition/promotion strengths, and the on rates for $C$ and $P$. 
+\begin{enumerate}
+\item There is typically about 25\% bound CDC-42/PAR-6 \cite[Fig.~S3i]{gross2019guiding}. This sets $\kon_C$ via $\kon_C/(\kon_C+\koff_C h)=0.25$, giving $\kon_C=0.032$ $\mu$m/s. 
+\item The parameter $\hat{R}_\text{PC}$ is available from the data in \cite{sailer2015dynamic}. To obtain it, we solve\ \eqref{eq:26c} at steady state in the absence of $A$ to obtain
 \begin{equation}
-\hat C = \frac{1}{1+\frac{h \koff_c}{\kon_C}+\frac{r_\text{CP}h}{\kon_C} \Tot{P} \hat P}. 
+\hat C = \frac{1}{1+\frac{h \koff_c}{\kon_C}+\frac{\hat R_\text{PC}\koff_C h}{\kon_C} \hat P}. 
 \end{equation}
-Now according to \cite{sailer2015dynamic}, in a system of units where $\hat C=1$ when $\hat P=0$, we have $\hat{C} \approx 1/(1+13.3\hat{P})$, which implies that 
+Now according to \cite{sailer2015dynamic}, in a system of units where $\hat C=1$ when $\hat P=0$,
 \begin{equation*}
-13.3 = \frac{r_\text{CP} h \Tot{P}}{\kon_C+h\koff_C}\rightarrow r_\text{CP}=3.8 \times 10^{-3} \, \mu \text{m/s}.
+\tilde C =   \frac{1+\frac{h \koff_c}{\kon_C}}{1+\frac{h \koff_c}{\kon_C}+\frac{\hat R_\text{PC}\koff_C h}{\kon_C} \hat P}
+\end{equation*} 
+we have $\hat{C} \approx 1/(1+13.3\hat{P})$, which implies that 
+\begin{equation*}
+13.3 = \frac{\hat R_\text{PC}\koff_C h}{\kon_C\left(1+\frac{h \koff_c}{\kon_C}\right)}= \frac{\hat R_\text{PC}\koff_C h}{\kon_C+h \koff_c} \rightarrow \hat R_\text{PC}=17.8
 \end{equation*}
-So we have found the inhibition of $C$ by $P$. Because inhibition of $P$ by $C$ is fundamentally the same loop, we will assume $r_\text{PC}=r_\text{CP}$. This sets two of the parameters.
+\item We set the strength of recruitment of $C$ by $A$ so that the total amount of bound $C$ is still roughly 30\%. This gives $\hat R_\text{AC}=4$. 
+\item There is very little (at most 5\%) PAR-2 on the anterior relative to the posterior. This sets the inhibition strength $\hat R_\text{CP} \gg 1$. We use $\hat R_\text{CP}=100$, although the choice is not unique.
+\item In embryos without myosin, the PAR-2 domain takes up 25--35\% of the embryo, and about 25\% of the protein is bound. This means that $P \approx 1$ in that region. This sets $\kon_P=0.25$ $\mu$m/s. 
+\item The boundary position is set by the inhibition of $A$ by $P$. We set $\hat R_\text{PA}=0.2$, so that the steady state has a PAR-3 domain of size about 75\% \cite[Fig.~5B]{zonies2010symmetry}. 
+\end{enumerate}
+
 
 \begin{table}
 \begin{small}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}\hline
 Parameter & Description & Value & Units & Ref & Notes \\ \hline
-$r_\text{PC}$ & $P$ inhibiting $C$ & $3.8 \times 10^{-3}$  & $\mu$m/s & \cite{sailer2015dynamic} & Fitting CDC/CHIN-1 relationship (Fig.\ A5)\\ 
-$r_\text{CP}$ & $C$ inhibiting $P$ & $3.8 \times 10^{-3}$  & $\mu$m/s & \cite{sailer2015dynamic} & Same as $r_\text{PC}$ \\
-$r_\text{AC}$ & $A$ promoting $C$ & $8 \times 10^{-4}$ & $\mu$m$^2$/s & \cite{sailer2015dynamic} & 20--25\% anterior $C$ when $r_\text{PA}=0$ \\
-$r_\text{AP}$ & $P$ inhibiting $A$ & $6 \times 10^{-4}$ & $\mu$m/s & \cite{zonies2010symmetry} & 75\% $A$ enrichment no myosin \\ \hline
+$\C{D}$ & $C$ diffusivity & 0.1 & $\mu$m$^2$/s & \cite{robin2014single} & Known (PAR-6)\\
+$\C{\koff} $ & $C$ detachment rate & 0.01 & 1/s & \cite{robin2014single}& Known (PAR-6)\\
+$D_P$ & PAR-2 diffusivity & 0.15 & $\mu$m$^2$/s & \cite{goehring2011polarization}&  \\ 
+$\koff_P$ & PAR-2 detachment rate & $7.3 \times 10^{-3}$ & 1/s & \cite{goehring2011polarization}& \\ \hline
+$\kon_P$ & $P$ attachment rate & 0.2 & $\mu$m/s & & 80\% bound $P$ in post.\ \cite{gross2019guiding}\\ 
+$\kon_C$ & $C$ attachment rate & 0.032 & $\mu$m/s & & 25\% bound $C$ \cite{gross2019guiding} \\ 
+$\hat R_\text{PC}$ & $P$ inhibiting $C$ & 17.8  & & \cite{sailer2015dynamic} & CDC/CHIN-1 relationship (Fig.\ A5)\\ 
+$\hat R_\text{AC}$ & $A$ promoting $C$ & 4 & &  &  Restore 25\% bound $C$\\
+$\hat R_\text{CP}$ & $C$ inhibiting $P$ & 100  & & &$\sim 5\%$ PAR-2 on anterior \cite{gross2019guiding} \\
+$\hat R_\text{PA}$& $P$ inhibiting $A$ & 0.75 & & & 70\% $A$ enrichment no myosin  \cite{zonies2010symmetry, gross2019guiding}\\ \hline
 \end{tabular}
-\caption{\label{tab:params3} Values for unknown reaction parameters in the models of this section.}
+\caption{\label{tab:paramsC} Parameters for biochemistry model.}
 \end{small}
 \end{table}
 
-Our next observation from \cite{sailer2015dynamic} is that for PAR-1 mutant embryos, the amount of PAR-6 in the posterior is 20--25\% of the anterior. PAR-1 mutants are important in our new circuit because they remove the inhibition of PAR-3 by pPARs, so that $r_\text{AP}=0$. Thus, when $r_\text{AP}=0$, we want to choose $r_\text{AC}$ (promotion of $C$ by $A$) to match the experimental observation. Figure\ \ref{fig:ParamsC} shows our attempt to do this. In the left panel, we tune $r_\text{AC}$ so that the $C$ (PAR-6/CDC-42/PKC-3) concentration is about 25\% in the posterior regions to its value in the anterior regions. In the right panel, we then introduce $r_\text{PA}=6 \times 10^{-4}$ $\mu$m/s (determined in Section\ \ref{sec:RAP}) and see how the boundary position changes from our earlier parameters. Previously, we saw that this value of $r_\text{PA}$ gave a boundary position at roughly 75\% of the embryo length. The right panel of Fig.\ \ref{fig:ParamsC} establishes that this is still the case.
+\subsection{Steady state without flow}
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{BiochemParamsWithC.eps}
-\caption{\label{fig:ParamsC}Steady states in the model\ \eqref{eq:PCND}. We fix the parameter $r_\text{PC}=r_\text{CP}=3.8 \times 10^{-3} \, \mu \text{m/s}$, which leaves two unknown parameters. At left, we set $r_\text{PA}=0$, so that there is no inhibition of $A$ by $P$. This means that asymmetries in $C$ are driven by $A$ only, which allows us to set $r_\text{AC}$ to match experimental observations. At right, we then introduce inhibition of $A$ by $P$ and fit the boundary position.}
+\caption{\label{fig:StStC}Steady state in the model\ \eqref{eq:PCND} with the parameters in Table\ \ref{tab:paramsC}. The left shows the steady state ($\hat t = 500$) with initial condition shown in dotted lines, and the right panel shows that we approach this steady state (75\% enriched PAR-3) regardless of the initial starting point. }
 \end{figure}
 
-To be more precise about the position of the boundary under these parameters, in Fig.\ \ref{fig:P3NewBC} we repeat our experiment of starting with some percentage of the domain enriched in PAR-3, then watching the evolution to steady state. As in the previous section, we once again see bistable dynamics where the PAR-3 boundary can...
+Figure\ \ref{fig:StStC} shows the steady state we obtain with the parameters in Table\ \ref{tab:paramsC}. We make the following observations:
+\begin{enumerate}
+\item The PAR-3 domain takes up about 74\% of the embryo. 
+\item There is 27\% bound $C$ at steady state.
+\item The maximum bound $P$ is 1, and the total bound $P$ is about 27\%. 
+\item The anterior $P$ level is 6\% of the posterior level. 
+\item There posterior $A$ level is 7\% of the anterior level. 
+\end{enumerate}
+The last observation is interesting because we did not include it in our parameter fitting. It coincides nicely, but not exactly, with the experimental observation in \cite[Fig.~4C]{sailer2015dynamic} that the posterior $A$ level goes from 8\% to 2\% when PAR-1 is added into the system. Here our numbers are 10\% (when $\hat R_\text{PA}=0$) to 7\% (when $\hat R_\text{PA}=0.2$, fitted to give the correct boundary position). 
 
-
-\begin{figure}
-\centering
-\includegraphics[width=0.6\textwidth]{PAR3SizeNewBiochem.eps}
-\caption{\label{fig:P3NewBC}Boundary position in the model\ \eqref{eq:PCND} starting from different initial conditions. We locally enrich PAR-3 and $C$, then plot the size of the enriched domain over time. There is a unique steady state which sits around 75\% embryo length.}
-\end{figure}
+\red{Initial conditions are important here. If CDC-42 colocalizes with PAR-3 or if it starts uniform.}
 
 \subsection{Incorporating myosin}
 \begin{subequations}
 \label{eq:Everything}
 \begin{align}
 \nonumber
-\Dthat \hat{A}_1 +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\MA} \right)   &=\DhatA \Dxhat^2 \hat{A}_1 +\KhatonA\left(1+\hat{K}_A^+ f_A^+\left(\hat{\MA}(x) + 2\hat{\PA}(x)\right)\right)\left(1 - \int_0^1 \left(\hat{\MA}(x) + 2\hat{\PA}(x)\right) \, d\hat{x} \right) \\  
- &-\KhatoffA \hat{A}_1 +2\KhatdpA \hat{\PA}-2 \KhatpA \hat{A}_1^2 \\ 
-\Dthat \hat{\PA} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\PA} \right)  &=\KhatpA \hat{\MA}^2- \KhatdpA \hat{\PA}-\frac{r_\text{PA} \Tot{P}}{\kdp_A}\hat{P}\hat{\PA} \\ 
-\Dthat \hat{P} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{P} \right)  &=\DhatP \Dxhat^2 \hat{P}+\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \hat{P}-\frac{r_\text{CP} \Tot{C}}{\kdp_A}\hat{C}\hat{P} \\  \nonumber
-\Dthat \hat{C}+\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{C} \right)  &=\DhatC \Dxhat^2 \hat{P} +\KhatonC \left(1+\hat R_\text{AC}\left(\hat A_1+2\hat A_n\right) \right)\left(1 - \int_0^1 \hat{C}(\hat x) \, d\hat{x} \right)  \\ &- \KhatoffC \hat{C}-\frac{r_\text{PC} \Tot{P}}{\kdp_A}\hat P \hat{C} \\ 
-\nonumber
-\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) &=\hat{D}_M \Dxhat^2 \hat{M} +\KhatonM \left(1+\hat{R}_\text{CM} \hat C\right) \left(1-\int_0^1  \hat{M}(x) \, dx\right) \\ &- \left(\KhatoffM+\frac{r_\text{PM}\Tot{P}}{\kdp_A}\hat{P} \right) \hat{M}\\
-\hat{v} &= \hat{\ell}^2 \Dxhat^2 v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M})\\ \nonumber
-\DhatA =\frac{\A{D}}{L^2 \A{\kdp}}, \quad \KhatonA &=\frac{\A{\kon}}{\A{\kdp} h }, \KhatoffA = \frac{\koff_A}{\kdp_A}, \quad \KhatdpA =1, \quad \KhatpA = \frac{\A{\kp} \Tot{A}}{\A{\kdp}}, \quad \KhatfA = \frac{\A{\kf}}{\A{\kon}} \\
-\DhatP =\frac{D_P}{L^2 \A{\kdp}}, \quad \KhatonP &=\frac{{\kon_P}}{\A{\kdp} h }, \quad \KhatoffP = \frac{\koff_P}{\kdp_A}, \quad \hat{\sigma}_0 = \left(\frac{\sigma_0/ \sqrt{\eta \gamma} }{L {\kdp_A}}\right)   \\ \nonumber
- \hat{D}_M =\frac{D_M}{{\kdp_A}  L^2}, \quad \KhatonM &= \frac{\My{\kon}}{h {\kdp_A}}, \quad \KhatoffM = \frac{\koff_M}{\kdp_A}, \quad  \hat{\ell} = \frac{\sqrt{\eta/\gamma}}{L} \quad v = \hat{v} \frac{\sigma_0}{\sqrt{\eta \gamma}}, \quad \hat R_\text{CM}=\frac{r_\text{CM}\Tot{C}}{\kon_M} \\ \nonumber
-\DhatC =\frac{D_C}{L^2 \A{\kdp}} \quad \KhatonC &=\frac{{\kon_C}}{\A{\kdp} h },\quad \KhatoffC = \frac{\koff_C}{\kdp_A},\quad \hat{R}_\text{AC}=\frac{r_\text{AC}\Tot{A}}{\kon_C}
+&\Dthat \hat{\MA}  +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\MA} \right) = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \A{F}^+\left(\hat{\MA},\hat{\PA}\right)\right)\left(1 - \int_0^1 \hat{A}(x) \, d\hat{x} \right) \\ 
+&+ 2\KhatdpA \hat{\PA}-2\KhatpA \hat{\MA}^2 - \KhatoffA \hat{\MA} \\ 
+&\Dthat \hat{\PA} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\PA} \right)  =\KhatpA \hat{\MA}^2- \KhatdpA \left(1+\hat{R}_\text{PA}\hat{P}\right) \hat{\PA} \\ 
+\label{eq:26c}
+&\Dthat \hat{C} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{C} \right) =\DhatC \Dxhat^2 \hat{P} +\KhatonC \left(1+\hat R_\text{AC}\hat{A} \right)\left(1 - \int_0^1 \hat{C}(\hat x) \, d\hat{x} \right)  - \KhatoffC \left(1+\hat{R}_\text{PC}\hat P\right)\hat{C} \\ 
+&\Dthat \hat{P} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{P} \right)   =\DhatP \Dxhat^2 \hat{P} +\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \left(1+\hat{R}_\text{CP}\hat C\right) \hat{P} \\ 
+&\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) =\hat{D}_M \Dxhat^2 \hat{M} +\KhatonM \left(1+\hat{R}_\text{CM} \hat C\right) \left(1-\int_0^1  \hat{M}(x) \, dx\right)- \KhatoffM \hat{M}\\
+&\hat{v} = \hat{\ell}^2 \Dxhat^2 v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M}),\qquad  R_\text{CM}=\frac{r_\text{CM}\Tot{C}}{\kon_M},\qquad \hat{R}_\text{PM}=\frac{r_\text{PM}\Tot{P}}{\koff_M}.
 \end{align}
 \end{subequations}
+Unknown parameters: $\kon_M$, $R_\text{CM}$ (probably enough). 
 
 \iffalse
 \subsection{CDC-42, myosin, and branched actin}

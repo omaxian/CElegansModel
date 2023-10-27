@@ -1,43 +1,40 @@
 % Rxn-diffusion model of PAR-2 and PAR-3 with dimerization on cortex
 % Parameters 
-L = 67.33;
-h = 4.7;
+L = 134.6;
+h = 9.5;
 % PAR-3
 DA = 0.1;
-konA = 1; 
+konA = 0.6; 
 koffA = 3;
 kdpA = 0.08; 
-ATot = 50;
-kpA = 0.03; % First number is Kp_hat
-Kf_Hat = 12.5;
-rPA = 6e-4; % Inhibition of A by P
+KpA_Hat = 75; % Correct distribution of mon/polys
+Kf_Hat = 10.5;
+Ansat = 0.4;
 %PAR-2
 DP = 0.15;
-konP = 0.13;
+konP = 0.3; % Fitting parameter
 koffP = 7.3e-3;
-PTot = 50;
-rCP = 3.8e-3; % Inhibition of P by C
 % CDC-42
 DC = 0.1;
-konC = 0.02;
+konC = 0.032; % Fitting parameter
 koffC = 0.01;
-CTot = 50;
-rPC = rCP; % Inhibition of C by P
-rAC = 8e-4; % Promotion of C by A
 % Dimensionless
 Timescale=1/kdpA;
 DA_Hat = DA/L^2*Timescale;
 KonA_Hat = konA/h*Timescale;
 KoffA_Hat = koffA*Timescale;
 KdpA_Hat = 1;
-KpA_Hat = kpA*ATot*Timescale;
 DP_Hat = DP/L^2*Timescale;
 KonP_Hat = konP/h*Timescale;
 KoffP_hat = koffP*Timescale;
 DC_Hat = DC/L^2*Timescale;
 KonC_Hat = konC/h*Timescale;
 KoffC_Hat = koffC*Timescale;
-Rac_Hat = rAC*ATot/konC;
+% Inhibition strengths
+RhatPA = 0.5;
+RhatAC = 2;
+RhatPC = 10; % This is set from Sailer (2015)
+RhatCP = 100;
 
 % Initialization
 dt=1e-2;
@@ -46,14 +43,14 @@ dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.1:0.1:0.9 0.99];
+iSizes=[0.7];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 A1 = 0.5*ones(N,1).*Inside;
 An = 0.25*ones(N,1).*Inside;
-C = ones(N,1).*Inside;
-P = ones(N,1).*~Inside;
+C = konC/(konC+koffC*h)*ones(N,1);%.*Inside;
+P = konP/(konP+koffP*h)*ones(N,1).*~Inside;
 plot(x,A1+2*An,':',x,C,':',x,P,':')
 hold on
 
@@ -90,11 +87,11 @@ for iT=0:nT-1
     Ac = 1 - sum(Asum)*dx;
     Pc = 1 - sum(P)*dx;
     Cc = 1 - sum(C)*dx;
-    Feedback = PAR3FeedbackFcn(Asum);
+    Feedback = PAR3FeedbackFcn(An,Ansat);
     RHS_A1 = KonA_Hat*(1+Kf_Hat*Feedback)*Ac - KoffA_Hat*A1 + 2*KdpA_Hat*An - 2*KpA_Hat*A1.^2;
-    RHS_A2 = -KdpA_Hat*An + KpA_Hat*A1.^2 - rPA*PTot/kdpA*P.*An;
-    RHS_C = KonC_Hat*(1+Rac_Hat.*Asum)*Cc - KoffC_Hat*C - rPC*PTot/kdpA*P.*C;
-    RHS_P = KonP_Hat*Pc - KoffP_hat*P - rCP*CTot/kdpA*C.*P;
+    RHS_A2 = KpA_Hat*A1.^2 - KdpA_Hat*(1+RhatPA*P).*An;
+    RHS_C = KonC_Hat*(1+RhatAC.*Asum)*Cc - KoffC_Hat*(1+RhatPC*P).*C;
+    RHS_P = KonP_Hat*Pc - KoffP_hat*(1+RhatCP*C).*P;
     P = (speye(N)/dt-DP_Hat*DSq) \ (P/dt+RHS_P);
     C = (speye(N)/dt-DC_Hat*DSq) \ (C/dt+RHS_C);
     A1 = (speye(N)/dt-DA_Hat*DSq) \ (A1/dt+RHS_A1);

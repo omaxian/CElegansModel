@@ -24,8 +24,8 @@ Sigma0 = 4.2e-3;
 % Dimensionless
 rAP_Hat = 16.5; % A inhibiting P
 rPA_Hat = 0.3; % P inhibiting A
-rAM_Hat = 0.2; % A promoting M
-rPM_Hat = 0; % P inhibiting M
+rAM_Hat = 0; % A promoting M
+rPM_Hat = 0.5; % P inhibiting M
 DA_Hat = DA/(L^2*kdpA);
 KonA_Hat = konA/(kdpA*h);
 KoffA_Hat = koffA/kdpA;
@@ -48,7 +48,7 @@ DOneCenter = FirstDerivMatCenter(N,dx);
 x = (0:N-1)'*dx;
 advorder = 1;
 % Start with small zone of PAR-2 on posterior cap
-InitialSize=0.9;
+InitialSize=0.5;
 cap = (x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 A1 = 0.5*ones(N,1).*(cap);
 An = 0.25*ones(N,1).*(cap);
@@ -57,7 +57,7 @@ M = 0.5*ones(N,1);%+0.4*(rand(N,1)-0.5);
 %plot(x,Ass,':',x,Pss,':',x,Mss,':')
 %hold on
 
-tf=500;
+tf=300;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;

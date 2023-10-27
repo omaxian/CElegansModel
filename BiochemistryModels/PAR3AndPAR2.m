@@ -32,7 +32,7 @@ dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
 % Start with small zone of PAR-2 on posterior cap
-iSizes = [0.2];
+iSizes = [0.7];
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
 A1 = 0.5*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
