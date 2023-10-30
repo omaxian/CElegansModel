@@ -4,19 +4,19 @@ L = 134.6;
 h = 9.5;
 % PAR-3
 DA = 0.1;
-konA = 0.6; 
+konA = 0.5; 
 koffA = 3;
 kdpA = 0.08; 
 KpA_Hat = 75; % Correct distribution of mon/polys
-Kf_Hat = 10.5;
-Ansat = 0.4;
+Kf_Hat = 12;
+Asat = 0.4;
 %PAR-2
 DP = 0.15;
-konP = 0.13;
+konP = 0.6;
 koffP = 7.3e-3;
 % Dimensionless
-rAP_Hat = 16.5; % A inhibiting P
-rPA_Hat = 0.3; % P inhibiting A
+rAP_Hat = 100; % A inhibiting P
+rPA_Hat = 0.5; % P inhibiting A
 DA_Hat = DA/(L^2*kdpA);
 KonA_Hat = konA/(kdpA*h);
 KoffA_Hat = koffA/kdpA;
@@ -39,8 +39,8 @@ A1 = 0.5*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 An = 0.25*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 P = ones(N,1).*~(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %if (rAP==0)
-%plot(x,A1+2*An,':',x,P,':')
-%hold on
+plot(x,A1+2*An,':',x,P,':')
+hold on
 %end
 
 tf=500;
@@ -73,7 +73,7 @@ for iT=0:nT-1
     Atot = A1+2*An;
     Ac = 1 - sum(Atot)*dx;
     Pc = 1 - sum(P)*dx;
-    Feedback = PAR3FeedbackFcn(An,Ansat);
+    Feedback = PAR3FeedbackFcn(Atot,Asat);
     RHS_A1 = KonA_Hat*(1+Kf_Hat*Feedback)*Ac - KoffA_Hat*A1 + 2*KdpA_Hat*An - 2*KpA_Hat*A1.^2;
     RHS_A2 = KpA_Hat*A1.^2 -KdpA_Hat*(1+rPA_Hat*P).*An;
     RHS_P = KonP_Hat*Pc - KoffP_Hat*(1+rAP_Hat*Atot).*P;
@@ -86,7 +86,6 @@ for iT=0:nT-1
 end
 set(gca,'ColorOrderIndex',1)
 plot(x,A1+2*An,x,P)
-title(strcat('$\hat R_\textrm{AP}=$',num2str(rAP_Hat),...
-    ' $\hat R_\textrm{PA}=$',num2str(rPA_Hat)))
+title(strcat('$\hat R_\textrm{PA}=$',num2str(rPA_Hat)))
 AllSizes(:,iis)=PAR3Size;
 end

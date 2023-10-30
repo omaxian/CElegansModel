@@ -4,16 +4,16 @@ h = 9.5;
 koffA = 3;
 kdpA = 0.08; 
 Kp_Hat = 75; % Correct distribution of mon/polys
-konA = 0.6; % First unknown
-Kf_Hat = 10.5;
-Ansat = 0.4;
+konA = 0.5; % First unknown
+Kf_Hat = 12;
+Asat = 0.4;
 
 % Non-dimensionalization
 D_Hat = DA/(L^2*kdpA);
 Kon_Hat = konA/(kdpA*h); 
 Koff_Hat = koffA/kdpA;
 Kdp_Hat = 1;
-RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ansat);
+RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat);
 Art = 0.82; Astart=Art;
 while (abs(RHSfcn(Art)) > 0.01)
     Art = fsolve(RHSfcn,Astart);
@@ -24,7 +24,7 @@ while (abs(RHSfcn(Art)) > 0.01)
 end
 Ac0 = 1-Art;
 Atots=(0:0.01:5)';
-AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ansat,-1);
+AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,-1);
 DetRate = Detachment(Atots,Koff_Hat,Kdp_Hat,Kp_Hat);
 %plot(Atots,AttRate)
 %hold on
@@ -33,7 +33,7 @@ DetRate = Detachment(Atots,Koff_Hat,Kdp_Hat,Kp_Hat);
 % ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
-AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ansat,Ac0);
+AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,Ac0);
 %plot(Atots,AttRate)
 % set(gca,'ColorOrderIndex',1)
 % for Ac=[0.15 0.25]
@@ -72,7 +72,7 @@ function val = RHS(Atot,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat)
     Kconst = Kp_Hat/Kdp_Hat;
     A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
     An = 1/2*(Atot-A1);
-    Feedback = PAR3FeedbackFcn(An,Asat);
+    Feedback = PAR3FeedbackFcn(Atot,Asat);
     val = Kon_Hat*(1+Kf_Hat*Feedback).*(1-Atot)- Koff_Hat*A1;
 end
 
@@ -83,7 +83,7 @@ function att = Attachment(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,Ac)
     Kconst = Kp_Hat/Kdp_Hat;
     A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
     An = 1/2*(Atot-A1);
-    Feedback = PAR3FeedbackFcn(An,Asat);
+    Feedback = PAR3FeedbackFcn(Atot,Asat);
     att = Kon_Hat*(1+Kf_Hat*Feedback).*Ac;
 end
 
