@@ -16,7 +16,7 @@ konP = 0.6;
 koffP = 7.3e-3;
 % CDC-42
 DC = 0.1;
-konC = 0.1; % Fitting parameter
+konC = 0.1;
 koffC = 0.01;
 % Myosin
 DM = 0.05;
@@ -25,6 +25,10 @@ konM = 0.3; % Fitting parameter
 eta = 0.1;
 gamma = 1e-3;
 Sigma0 = 4.2e-3;
+% Branched actin
+DR = 0.05;
+koffR = 0.12;
+konR = 0;
 % Dimensionless
 Timescale=1/kdpA;
 DA_Hat = DA/L^2*Timescale;
@@ -42,11 +46,16 @@ DM_Hat = DM/L^2*Timescale;
 KonM_Hat = konM/h*Timescale;
 KoffM_Hat = koffM*Timescale;
 LRatio = sqrt(eta/gamma)/L;
+DR_Hat = DR/L^2*Timescale;
+KoffR_Hat = koffR*Timescale;
 % Reaction networks
 RhatPA = 0.5;
 RhatAP = 100;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
+% Fitting parameters
 RhatCM = 0.75;    % CDC-42 promotes myosin (fitting parameter)
+RhatCR = 1; % CDC-42 making branched actin
+RhatRM = 0; % Branched actin killing myosin
 
 % Initialization
 dt=1e-2;
@@ -69,10 +78,11 @@ An(An==0)=0.025;
 C = konC/(konC+koffC*h)*ones(N,1);
 P = ones(N,1).*(~Inside);
 M = 0.5*ones(N,1);
+R = zeros(N,1);
 plot(x,A1+2*An,':',x,C,':',x,P,':',x,M,':')
 hold on
 
-tf = 300;
+tf = 100;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -106,20 +116,21 @@ for iT=0:nT-1
         vmaxes(iSave)=max(abs(v));
         Pmaxes(iSave)=max(P);
         hold off
-        plot(x,A1+2*An,x,C,x,P,x,M)
+        plot(x,A1+2*An,x,C,x,P,x,M,x,R)
         drawnow
     end
     
     % Initialization and cytoplasmic
-    A1prev = A1; A2prev = An; Pprev = P; Cprev=C; Mprev=M;
+    A1prev = A1; A2prev = An; Pprev = P; Cprev=C; Mprev=M; Rprev=R;
     Asum = A1+2*An;
     Ac = 1 - sum(Asum)*dx;
     Pc = 1 - sum(P)*dx;
     Cc = 1 - sum(C)*dx;
     Mc = 1 - sum(M)*dx;
+    Rc = 1 - sum(R)*dx;
     
     % Flows
-    Sigma_active = ActiveStress(M);
+    Sigma_active = ActiveStress(M).*exp(-10*R);
     v = (speye(N)-LRatio^2*DSq) \ (LRatio*DOneCenter*Sigma_active);
     vHalf = 1/2*(v+circshift(v,-1));
     % Advection (explicit)
@@ -128,6 +139,7 @@ for iT=0:nT-1
     MinusdxA2v = AdvectionRHS(t,An,dx,vHalf,advorder);
     MinusdxPv = AdvectionRHS(t,P,dx,vHalf,advorder);
     MinusdxCv = AdvectionRHS(t,C,dx,vHalf,advorder);
+    MinusdxRv = AdvectionRHS(t,R,dx,vHalf,advorder);
 
     % Reactions
     Feedback = PAR3FeedbackFcn(Asum,Asat);
@@ -136,16 +148,18 @@ for iT=0:nT-1
     RHS_A2 = SigmaHat*MinusdxA2v + KpA_Hat*A1.^2 - KdpA_Hat*(1+RhatPA*P).*An;
     RHS_C = SigmaHat*MinusdxCv + KonC_Hat*Cc - KoffC_Hat*(1+RhatPC*P).*C;
     RHS_P = SigmaHat*MinusdxPv + KonP_Hat*Pc - KoffP_hat*(1+RhatAP*Asum).*P;
-    RHS_M = SigmaHat*MinusdxMv + (KonM_Hat+RhatCM*C)*Mc - KoffM_Hat*M;
+    RHS_M = SigmaHat*MinusdxMv + (KonM_Hat+RhatCM*C)*Mc - KoffM_Hat*(1+RhatRM*R).*M;
+    RHS_R = SigmaHat*MinusdxRv + RhatCR*max(C-0.2,0)*Rc - KoffR_Hat*R;
     P = (speye(N)/dt-DP_Hat*DSq) \ (P/dt+RHS_P);
     C = (speye(N)/dt-DC_Hat*DSq) \ (C/dt+RHS_C);
     A1 = (speye(N)/dt-DA_Hat*DSq) \ (A1/dt+RHS_A1);
     M  = (speye(N)/dt-DM_Hat*DSq) \ (M/dt+RHS_M);
+    R = (speye(N)/dt-DR_Hat*DSq) \ (R/dt+RHS_R);
     An = An + dt*RHS_A2;
-    chk = (M-Mprev)/dt- (DM_Hat*DSq*M + RHS_M);
+    chk = (R-Rprev)/dt- (DR_Hat*DSq*R + RHS_R);
 end
 set(gca,'ColorOrderIndex',1)
-plot(x,A1+2*An,x,C,x,P,x,M)
+plot(x,A1+2*An,x,C,x,P,x,M,x,R)
 %title(strcat('$A^\textrm{(Tot)}=$',num2str(ATot),', $P^\textrm{(Tot)}=$',num2str(PTot)))
-AllP3Sizes(:,iS)=PAR3Size;
+%AllP3Sizes(:,iS)=PAR3Size;
 end
