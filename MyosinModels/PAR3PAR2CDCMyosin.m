@@ -12,7 +12,7 @@ Kf_Hat = 12;
 Asat = 0.4;
 %PAR-2
 DP = 0.15;
-konP = 0.6;
+konP = 0.2;
 koffP = 7.3e-3;
 % CDC-42
 DC = 0.1;
@@ -21,7 +21,7 @@ koffC = 0.01;
 % Myosin
 DM = 0.05;
 koffM = 0.12;
-konM = 0.3; % Fitting parameter
+konM = 0.05; % Fitting parameter
 eta = 0.1;
 gamma = 1e-3;
 Sigma0 = 4.2e-3;
@@ -44,9 +44,9 @@ KoffM_Hat = koffM*Timescale;
 LRatio = sqrt(eta/gamma)/L;
 % Reaction networks
 RhatPA = 0.5;
-RhatAP = 100;
-RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
-RhatCM = 0.75;    % CDC-42 promotes myosin (fitting parameter)
+RhatAP = 10;
+RhatPC = 5;%13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
+RhatCM = 2;%3;    % CDC-42 promotes myosin (fitting parameter)
 
 % Initialization
 dt=1e-2;
@@ -57,7 +57,7 @@ DOneCenter = FirstDerivMatCenter(N,dx);
 x = (0:N-1)'*dx;
 advorder = 1;
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.5];
+iSizes=[0.9];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );

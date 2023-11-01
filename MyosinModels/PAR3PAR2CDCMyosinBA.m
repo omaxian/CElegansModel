@@ -12,16 +12,16 @@ Kf_Hat = 12;
 Asat = 0.4;
 %PAR-2
 DP = 0.15;
-konP = 0.6;
+konP = 0.2;
 koffP = 7.3e-3;
 % CDC-42
 DC = 0.1;
-konC = 0.1;
+konC = 0.1; 
 koffC = 0.01;
 % Myosin
 DM = 0.05;
 koffM = 0.12;
-konM = 0.3; % Fitting parameter
+konM = 0.05; % Fitting parameter
 eta = 0.1;
 gamma = 1e-3;
 Sigma0 = 4.2e-3;
@@ -50,12 +50,13 @@ DR_Hat = DR/L^2*Timescale;
 KoffR_Hat = koffR*Timescale;
 % Reaction networks
 RhatPA = 0.5;
-RhatAP = 100;
-RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
+RhatAP = 10;
+RhatPC = 5;%13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 % Fitting parameters
-RhatCM = 0.75;    % CDC-42 promotes myosin (fitting parameter)
-RhatCR = 1; % CDC-42 making branched actin
-RhatRM = 0; % Branched actin killing myosin
+RhatCM = 3;    % CDC-42 promotes myosin (fitting parameter)
+RhatCR = 2; % CDC-42 making branched actin
+RhatRM = 15; % Branched actin killing myosin
+Thres = 0.35;
 
 % Initialization
 dt=1e-2;
@@ -82,7 +83,7 @@ R = zeros(N,1);
 plot(x,A1+2*An,':',x,C,':',x,P,':',x,M,':')
 hold on
 
-tf = 100;
+tf = 200;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -130,7 +131,7 @@ for iT=0:nT-1
     Rc = 1 - sum(R)*dx;
     
     % Flows
-    Sigma_active = ActiveStress(M).*exp(-10*R);
+    Sigma_active = ActiveStress(M);
     v = (speye(N)-LRatio^2*DSq) \ (LRatio*DOneCenter*Sigma_active);
     vHalf = 1/2*(v+circshift(v,-1));
     % Advection (explicit)
@@ -149,7 +150,7 @@ for iT=0:nT-1
     RHS_C = SigmaHat*MinusdxCv + KonC_Hat*Cc - KoffC_Hat*(1+RhatPC*P).*C;
     RHS_P = SigmaHat*MinusdxPv + KonP_Hat*Pc - KoffP_hat*(1+RhatAP*Asum).*P;
     RHS_M = SigmaHat*MinusdxMv + (KonM_Hat+RhatCM*C)*Mc - KoffM_Hat*(1+RhatRM*R).*M;
-    RHS_R = SigmaHat*MinusdxRv + RhatCR*max(C-0.2,0)*Rc - KoffR_Hat*R;
+    RHS_R = SigmaHat*MinusdxRv + RhatCR*max(C-Thres,0)*Rc - KoffR_Hat*R;
     P = (speye(N)/dt-DP_Hat*DSq) \ (P/dt+RHS_P);
     C = (speye(N)/dt-DC_Hat*DSq) \ (C/dt+RHS_C);
     A1 = (speye(N)/dt-DA_Hat*DSq) \ (A1/dt+RHS_A1);
