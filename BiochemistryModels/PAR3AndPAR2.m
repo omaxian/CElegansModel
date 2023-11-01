@@ -12,10 +12,10 @@ Kf_Hat = 12;
 Asat = 0.4;
 %PAR-2
 DP = 0.15;
-konP = 0.2;
+konP = 0.3;
 koffP = 7.3e-3;
 % Dimensionless
-rAP_Hat = 10; % A inhibiting P
+rAP_Hat = 20; % A inhibiting P
 rPA_Hat = 0.5; % P inhibiting A
 DA_Hat = DA/(L^2*kdpA);
 KonA_Hat = konA/(kdpA*h);
@@ -35,9 +35,11 @@ x = (0:N-1)'*dx;
 iSizes = [0.7];
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
-A1 = 0.5*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
-An = 0.25*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
-P = ones(N,1).*~(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+Zone=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+%Zone = ((x > 0.1 & x < 0.5) | (x>0.6 & x < 1));
+A1 = 0.5*ones(N,1).*Zone;
+An = 0.25*ones(N,1).*Zone;
+P = ones(N,1).*~Zone;
 %if (rAP==0)
 plot(x,A1+2*An,':',x,P,':')
 hold on
@@ -68,6 +70,7 @@ for iT=0:nT-1
         hold off
         plot(x,A1+2*An,x,P)
         drawnow
+        1 - sum(P)*dx
     end
     A1prev = A1; A2prev = An; Pprev = P;
     Atot = A1+2*An;

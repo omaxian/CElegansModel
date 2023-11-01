@@ -12,16 +12,16 @@ Kf_Hat = 12;
 Asat = 0.4;
 %PAR-2
 DP = 0.15;
-konP = 0.2;
+konP = 0.3;
 koffP = 7.3e-3;
 % CDC-42
 DC = 0.1;
-konC = 0.1; % Fitting parameter
+konC = 0.5; % Fitting parameter
 koffC = 0.01;
 % Myosin
 DM = 0.05;
 koffM = 0.12;
-konM = 0.05; % Fitting parameter
+konM = 0.25; % Fitting parameter
 eta = 0.1;
 gamma = 1e-3;
 Sigma0 = 4.2e-3;
@@ -44,9 +44,9 @@ KoffM_Hat = koffM*Timescale;
 LRatio = sqrt(eta/gamma)/L;
 % Reaction networks
 RhatPA = 0.5;
-RhatAP = 10;
-RhatPC = 5;%13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
-RhatCM = 2;%3;    % CDC-42 promotes myosin (fitting parameter)
+RhatAP = 20;
+RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
+RhatCM = 1.5;    % CDC-42 promotes myosin (fitting parameter)
 
 % Initialization
 dt=1e-2;
@@ -72,7 +72,7 @@ M = 0.5*ones(N,1);
 plot(x,A1+2*An,':',x,C,':',x,P,':',x,M,':')
 hold on
 
-tf = 300;
+tf = 200;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;

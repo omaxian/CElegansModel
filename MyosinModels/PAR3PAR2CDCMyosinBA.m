@@ -7,21 +7,21 @@ DA = 0.1;
 konA = 0.5; 
 koffA = 3;
 kdpA = 0.08; 
-KpA_Hat = 75; 
+KpA_Hat = 75; % Correct distribution of mon/polys
 Kf_Hat = 12;
 Asat = 0.4;
 %PAR-2
 DP = 0.15;
-konP = 0.2;
+konP = 0.3;
 koffP = 7.3e-3;
 % CDC-42
 DC = 0.1;
-konC = 0.1; 
+konC = 0.5; 
 koffC = 0.01;
 % Myosin
 DM = 0.05;
 koffM = 0.12;
-konM = 0.05; % Fitting parameter
+konM = 0.25; % Fitting parameter
 eta = 0.1;
 gamma = 1e-3;
 Sigma0 = 4.2e-3;
@@ -50,13 +50,13 @@ DR_Hat = DR/L^2*Timescale;
 KoffR_Hat = koffR*Timescale;
 % Reaction networks
 RhatPA = 0.5;
-RhatAP = 10;
-RhatPC = 5;%13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
+RhatAP = 20;
+RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 % Fitting parameters
 RhatCM = 3;    % CDC-42 promotes myosin (fitting parameter)
 RhatCR = 2; % CDC-42 making branched actin
-RhatRM = 15; % Branched actin killing myosin
-Thres = 0.35;
+RhatRM = 3; % Branched actin killing myosin
+Thres = 0.3;
 
 % Initialization
 dt=1e-2;
@@ -67,15 +67,13 @@ DOneCenter = FirstDerivMatCenter(N,dx);
 x = (0:N-1)'*dx;
 advorder = 1;
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.5];
+iSizes=[0.9];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %Inside = ~(x > 0.75-((1-InitialSize)/2) & x < 0.75+((1-InitialSize)/2));
 A1 = 0.5*ones(N,1).*Inside;
 An = 0.25*ones(N,1).*Inside;
-A1(A1==0)=0.05;
-An(An==0)=0.025;
 C = konC/(konC+koffC*h)*ones(N,1);
 P = ones(N,1).*(~Inside);
 M = 0.5*ones(N,1);
@@ -100,7 +98,7 @@ v =0;
 er = 1;
 for iT=0:nT-1
     t = iT*dt;
-    %M = (0.27+0.1*sin(2*pi*x-pi/2)); % experimental myosin
+    %M=(0.27+0.2*sin(2*pi*x-pi/2)); % experimental myosin
     if (mod(iT,saveEvery)==0)
         iSave = iT/saveEvery+1;
         AllA1s(iSave,:)=A1;
@@ -119,6 +117,7 @@ for iT=0:nT-1
         hold off
         plot(x,A1+2*An,x,C,x,P,x,M,x,R)
         drawnow
+        1 - sum(P)*dx
     end
     
     % Initialization and cytoplasmic
@@ -150,7 +149,7 @@ for iT=0:nT-1
     RHS_C = SigmaHat*MinusdxCv + KonC_Hat*Cc - KoffC_Hat*(1+RhatPC*P).*C;
     RHS_P = SigmaHat*MinusdxPv + KonP_Hat*Pc - KoffP_hat*(1+RhatAP*Asum).*P;
     RHS_M = SigmaHat*MinusdxMv + (KonM_Hat+RhatCM*C)*Mc - KoffM_Hat*(1+RhatRM*R).*M;
-    RHS_R = SigmaHat*MinusdxRv + RhatCR*max(C-Thres,0)*Rc - KoffR_Hat*R;
+    RHS_R = SigmaHat*MinusdxRv + RhatCR*(C>Thres).*C*Rc - KoffR_Hat*R;
     P = (speye(N)/dt-DP_Hat*DSq) \ (P/dt+RHS_P);
     C = (speye(N)/dt-DC_Hat*DSq) \ (C/dt+RHS_C);
     A1 = (speye(N)/dt-DA_Hat*DSq) \ (A1/dt+RHS_A1);
