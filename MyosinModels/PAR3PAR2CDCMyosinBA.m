@@ -90,6 +90,7 @@ AllAns = zeros(nSave,N);
 AllPs = zeros(nSave,N);
 AllCs = zeros(nSave,N);
 AllMs = zeros(nSave,N);
+AllRs = zeros(nSave,N);
 PAR3Size = zeros(nSave,1);
 vmaxes = zeros(nSave,1);
 Pmaxes = zeros(nSave,1);
@@ -106,6 +107,7 @@ for iT=0:nT-1
         AllPs(iSave,:)=P;
         AllCs(iSave,:)=C;
         AllMs(iSave,:)=M;
+        AllRs(iSave,:)=R;
         Locs = find((A1+2*An) > P);
         try
         PAR3Size(iSave) = (Locs(end)-Locs(1)+1)*dx;
@@ -114,10 +116,10 @@ for iT=0:nT-1
         end
         vmaxes(iSave)=max(abs(v));
         Pmaxes(iSave)=max(P);
-        hold off
-        plot(x,A1+2*An,x,C,x,P,x,M,x,R)
-        drawnow
-        1 - sum(P)*dx
+        %hold off
+        %plot(x,A1+2*An,x,C,x,P,x,M,x,R)
+        %drawnow
+        %1 - sum(P)*dx
     end
     
     % Initialization and cytoplasmic
@@ -161,5 +163,5 @@ end
 set(gca,'ColorOrderIndex',1)
 plot(x,A1+2*An,x,C,x,P,x,M,x,R)
 %title(strcat('$A^\textrm{(Tot)}=$',num2str(ATot),', $P^\textrm{(Tot)}=$',num2str(PTot)))
-%AllP3Sizes(:,iS)=PAR3Size;
+AllP3Sizes(:,iS)=PAR3Size;
 end
