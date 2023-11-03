@@ -56,10 +56,10 @@ for iT=0:nT
         saveIndex = iT/saveEvery+1;
         AllMs(saveIndex,:)=M;
         Allvs(saveIndex,:)=v;
-%         plot(x,M)
-%         title(strcat('$t=$',num2str(iT*dt)))
-%         drawnow
-%         hold off
+        plot(x,M)
+        %title(strcat('$t=$',num2str(iT*dt)))
+        drawnow
+        hold off
     end
     % Advection (explicit)
     MinusdxMv = AdvectionRHS(t,M,dx,vHalf,advorder);
