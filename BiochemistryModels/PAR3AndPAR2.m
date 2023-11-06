@@ -16,7 +16,7 @@ konP = 0.3;
 koffP = 7.3e-3;
 % Dimensionless
 rAP_Hat = 20; % A inhibiting P
-rPA_Hat = 1; % P inhibiting A
+rPA_Hat = 0; % P inhibiting A
 DA_Hat = DA/(L^2*kdpA);
 KonA_Hat = konA/(kdpA*h);
 KoffA_Hat = koffA/kdpA;
@@ -70,15 +70,15 @@ for iT=0:nT-1
 %         hold off
 %         plot(x,A1+2*An,x,P)
 %         drawnow
-        %1 - sum(P)*dx
+%         1 - sum(P)*dx
     end
     A1prev = A1; A2prev = An; Pprev = P;
     Atot = A1+2*An;
     Ac = 1 - sum(Atot)*dx;
     Pc = 1 - sum(P)*dx;
     Feedback = PAR3FeedbackFcn(Atot,Asat);
-    RHS_A1 = KonA_Hat*(1+Kf_Hat*Feedback)*Ac - KoffA_Hat*A1 + 2*KdpA_Hat*An - 2*KpA_Hat*A1.^2;
     RHS_A2 = KpA_Hat*A1.^2 -KdpA_Hat*(1+rPA_Hat*P).*An;
+    RHS_A1 = KonA_Hat*(1+Kf_Hat*Feedback)*Ac - KoffA_Hat*A1 -2*RHS_A2;
     RHS_P = KonP_Hat*Pc - KoffP_Hat*(1+rAP_Hat*Atot).*P;
     P = (speye(N)/dt-DP_Hat*DSq) \ (P/dt+RHS_P);
     A1 = (speye(N)/dt-DA_Hat*DSq) \ (A1/dt+RHS_A1);
