@@ -55,7 +55,7 @@ RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.2;    
 AcForK = 0.05;
-RhatCM = 2;    % CDC-42 promotes myosin (fitting parameter)
+RhatCM = 1.5;    % CDC-42 promotes myosin (fitting parameter)
 
 % Initialization
 dt=1e-2;
@@ -100,7 +100,6 @@ v =0;
 er = 1;
 for iT=0:nT-1
     t = iT*dt;
-    %M = (0.27+0.1*sin(2*pi*x-pi/2)); % experimental myosin
     if (mod(iT,saveEvery)==0)
         iSave = iT/saveEvery+1;
         AllA1s(iSave,:)=A1;
