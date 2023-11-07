@@ -74,3 +74,26 @@ ylabel('$\hat \sigma_a$')
 title('Normalized stress')
 %figure
 %plot(MyFilt,SmoothStr./MyFilt)
+nEm=10;
+close all;
+tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
+nexttile
+plot(xog,MyBright')
+hold on
+errorbar(xog,mean(MyBright),std(MyBright)/sqrt(nEm),'-k','LineWidth',1.0);
+plot(0:0.001:0.999,circshift(M,-250),'-k')
+xlim([0.25 0.75])
+nexttile
+xlabel('$\hat x$')
+ylabel('$\hat M$')
+plot(xog,xFlows'*60)
+hold on
+errorbar(xog,mean(xFlows*60),std(xFlows*60)/sqrt(nEm),'-k','LineWidth',1.0);
+vr=v*Sigma0/sqrt(eta*gamma)*60;
+plot(0:0.001:0.999,circshift(vr,-250),'-k')
+xlim([0.25 0.75])
+xlabel('$\hat x$')
+ylabel('$v$ ($\mu$m/min)')
+title('Myosin intensity')
+title('Flow velocity')
+legend('Embryo','','','','','','','','','','Mean','Model')
