@@ -2,11 +2,18 @@ DA = 0.1;
 L = 134.6;
 h = 9.5;
 koffA = 3;
-kdpA = 0.08; 
-Kp_Hat = 75; % Correct distribution of mon/polys
+kdpA = 0.08;
+Factor = 0.5;
+Kp_Hat = 75*Factor; % Correct distribution of mon/polys
 konA = 0.5; % First unknown
-Kf_Hat = 12;
-Asat = 0.4;
+Kf_Hat = 12*Factor;
+Asat = 0.15; % Come up with an expression for this as fcn of uniform state!!
+% Table of values
+% Factor >=0.9 Asat = 0.4
+% Factor = 0.85 Asat = 0.35
+% Factor = 0.8 Asat = 0.3
+% Factor = 0.75 Asat = 0.22
+% Factor = 0.7 Asat = 0.15
 
 % Non-dimensionalization
 D_Hat = DA/(L^2*kdpA);
@@ -23,18 +30,23 @@ while (abs(RHSfcn(Art)) > 0.01)
     Astart = Astart/2;
 end
 Ac0 = 1-Art;
+% Compute mean oligomer size
+alpha=1-sqrt(1/(4*Art*Kp_Hat)*(-1+sqrt(1+8*Art*Kp_Hat)));
+MeanOligs = 1/(1-alpha);
+alpha = 1-1./MeanOligs;
+Kps = (2*alpha-alpha.^2)./(2*Art*(1-alpha).^4);
 Atots=(0:0.01:5)';
 AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,-1);
 DetRate = Detachment(Atots,Koff_Hat,Kdp_Hat,Kp_Hat);
-%plot(Atots,AttRate)
-%hold on
-%plot(Atots,DetRate)
+plot(Atots,AttRate)
+hold on
+plot(Atots,DetRate)
 % ylimlim=ylim;
 % ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
 AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,Ac0);
-%plot(Atots,AttRate)
+plot(Atots,AttRate)
 % set(gca,'ColorOrderIndex',1)
 % for Ac=[0.15 0.25]
 %     AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac);

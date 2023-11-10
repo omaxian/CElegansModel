@@ -10,9 +10,9 @@ iSizes = 0.9;%[0.2:0.1:0.9 0.99];
 %figure;
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
-A1 = A10*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+A1 = 0.5*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %An =  A10^2*Kp_Hat/Kdp_Hat*(x<1/2);
-An = An0*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+An = 0.25*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 Ac0=1-sum(A1+2*An)*dx
 plot(x,A1+2*An,':')
 hold on
@@ -31,10 +31,14 @@ for iT=0:nT
         AllA1s(iSave,:)=A1;
         AllAns(iSave,:)=An;
         Locs = find(A1+2*An > 0.2);
-        EnrichSize(iSave)=(Locs(end)-Locs(1)+1)*dx;
-%         hold off
-%         plot(x,A1+2*An)
-%         drawnow
+        try
+            EnrichSize(iSave)=(Locs(end)-Locs(1)+1)*dx;
+        catch
+            EnrichSize(iSave)=0;
+        end
+        hold off
+        plot(x,A1+2*An)
+        drawnow
     end
     A1prev=A1; Anprev=An;
     Atot = A1+2*An;

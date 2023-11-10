@@ -66,7 +66,7 @@ DOneCenter = FirstDerivMatCenter(N,dx);
 x = (0:N-1)'*dx;
 advorder = 1;
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.1:0.1:0.9 0.99];
+iSizes=[0.9];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
@@ -116,9 +116,9 @@ for iT=0:nT-1
         end
         vmaxes(iSave)=max(abs(v));
         Pmaxes(iSave)=max(P);
-%         hold off
-%         plot(x,A1+2*An,x,K,x,C,x,P,x,M)
-%         drawnow
+        hold off
+        plot(x,A1+2*An,x,K,x,C,x,P,x,M)
+        drawnow
     end
     
     % Initialization and cytoplasmic
