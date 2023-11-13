@@ -3,24 +3,18 @@ L = 134.6;
 h = 9.5;
 koffA = 3;
 kdpA = 0.08;
-Factor = 0.5;
-Kp_Hat = 75*Factor; % Correct distribution of mon/polys
+Kp_Hat = 75; % Correct distribution of mon/polys
 konA = 0.5; % First unknown
-Kf_Hat = 12*Factor;
-Asat = 0.15; % Come up with an expression for this as fcn of uniform state!!
-% Table of values
-% Factor >=0.9 Asat = 0.4
-% Factor = 0.85 Asat = 0.35
-% Factor = 0.8 Asat = 0.3
-% Factor = 0.75 Asat = 0.22
-% Factor = 0.7 Asat = 0.15
+Kf_Hat = 12;
+%Asat = 0.4;
+SatFactor = 0.85; % Come up with an expression for this as fcn of uniform state!!
 
 % Non-dimensionalization
 D_Hat = DA/(L^2*kdpA);
 Kon_Hat = konA/(kdpA*h); 
 Koff_Hat = koffA/kdpA;
 Kdp_Hat = 1;
-RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat);
+RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,SatFactor);
 Art = 0.82; Astart=Art;
 while (abs(RHSfcn(Art)) > 0.01)
     Art = fsolve(RHSfcn,Astart);
@@ -30,23 +24,33 @@ while (abs(RHSfcn(Art)) > 0.01)
     Astart = Astart/2;
 end
 Ac0 = 1-Art;
+Asat = SatFactor*Art;
 % Compute mean oligomer size
 alpha=1-sqrt(1/(4*Art*Kp_Hat)*(-1+sqrt(1+8*Art*Kp_Hat)));
 MeanOligs = 1/(1-alpha);
-alpha = 1-1./MeanOligs;
-Kps = (2*alpha-alpha.^2)./(2*Art*(1-alpha).^4);
-Atots=(0:0.01:5)';
+%alpha = 1-1./MeanOligs;
+%Kps = (2*alpha-alpha.^2)./(2*Art*(1-alpha).^4);
+Atots=(0:0.001:1)';
 AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,-1);
 DetRate = Detachment(Atots,Koff_Hat,Kdp_Hat,Kp_Hat);
-plot(Atots,AttRate)
-hold on
+%plot(Atots,AttRate)
+%hold on
 plot(Atots,DetRate)
 % ylimlim=ylim;
 % ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
 AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,Ac0);
-plot(Atots,AttRate)
+%plot(Atots,AttRate)
+NetFluxAtEq = AttRate-DetRate;
+Signs = NetFluxAtEq(1:end-1).*NetFluxAtEq(2:end);
+SignChanges=find(Signs<0);
+LowRoot = 1/2*(Atots(min(SignChanges)+1)+Atots(min(SignChanges)));
+HighRoot = 1/2*(Atots(max(SignChanges)+1)+Atots(max(SignChanges)));
+%Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot/LowRoot];
+%xlim([0 1])
+
+%Roots
 % set(gca,'ColorOrderIndex',1)
 % for Ac=[0.15 0.25]
 %     AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Ac);
@@ -65,7 +69,8 @@ L11 = -Koff_Hat + Ac0*Kf_Hat*Kon_Hat - 4*A10*Kp_Hat - 4*pi^2*D_Hat;
 L12 = 2*(Kdp_Hat + Ac0*Kf_Hat*Kon_Hat);
 L21 = 2*A10*Kp_Hat;
 L22 = -Kdp_Hat;
-detL2 = Kdp_Hat*(Koff_Hat+4*pi^2*D_Hat) - Ac0*Kdp_Hat*Kf_Hat*Kon_Hat - 4*A10*Ac0*Kf_Hat*Kon_Hat*Kp_Hat
+detL2 = Kdp_Hat*(Koff_Hat+4*pi^2*D_Hat)...
+    - Ac0*Kdp_Hat*Kf_Hat*Kon_Hat - 4*A10*Ac0*Kf_Hat*Kon_Hat*Kp_Hat;
 %detLs(iK)=detL2;
 
 % L11 = -1 + (-1 + Kf_Hat - 2*A10*Kf_Hat - 4*An0*Kf_Hat)*Kon_Hat - 4*A10*Kp_Hat;
@@ -78,13 +83,11 @@ detL=L11*L22-L12*L21;
 %dets=[dets;detL2];
 %end
 %end
-xlim([0 1])
 
-function val = RHS(Atot,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat)
+function val = RHS(Atot,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,SatFactor)
     Kconst = Kp_Hat/Kdp_Hat;
     A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
-    An = 1/2*(Atot-A1);
-    Feedback = PAR3FeedbackFcn(Atot,Asat);
+    Feedback = PAR3FeedbackFcn(Atot,SatFactor*Atot);
     val = Kon_Hat*(1+Kf_Hat*Feedback).*(1-Atot)- Koff_Hat*A1;
 end
 
@@ -104,23 +107,3 @@ function det = Detachment(Atot,Koff_Hat,Kdp_Hat,Kp_Hat)
     A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
     det = Koff_Hat*A1;
 end
-
-function rts = QuarticRootsA1(Kon,Kf,Kdp,Kp)
-    Kpratio = Kp/Kdp;
-    a = -4*Kon*Kpratio^2*Kf;
-    b = -4*Kon*Kpratio*Kf;
-    c = -2*Kon*Kpratio-Kon*Kf+2*Kon*Kpratio*Kf;
-    d = -1 - Kon + Kon*Kf;
-    e = Kon;
-    rts = QuarticRoots(a,b,c,d,e);
-    inds = abs(imag(rts)) < 1e-10 & rts < 1 & rts > 0;
-    try
-    rts = [real(rts(inds)); Kpratio*real(rts(inds))^2];
-    catch
-        keyboard
-        rts=real(rts(inds));
-        rts=max(rts);
-        rts=[rts; Kpratio*rts^2];
-    end
-end
-    

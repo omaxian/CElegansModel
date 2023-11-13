@@ -9,7 +9,7 @@ koffA = 3;
 kdpA = 0.08; 
 KpA_Hat = 75; 
 Kf_Hat = 12;
-Asat = 0.4;
+Asat = 0.4135;
 %PAR-2
 DP = 0.15;
 konP = 0.13;

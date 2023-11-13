@@ -9,7 +9,7 @@ koffA = 3;
 kdpA = 0.08; 
 KpA_Hat = 75; 
 Kf_Hat = 12;
-Asat = 0.4;
+Asat = 0.4135;
 %PAR-2
 DP = 0.15;
 konP = 0.13;
@@ -29,7 +29,7 @@ eta = 0.1;
 gamma = 1e-3;
 Sigma0 = 4.2e-3;
 % Branched actin
-DR = 0.05;
+DR = 0.5
 koffR = 0.12;
 % Dimensionless
 % Biochem
@@ -60,10 +60,10 @@ RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.2;    
 AcForK = 0.05;
-RhatCM = 3;    % CDC-42 promotes myosin (fitting parameter)
-RhatCR = 10; % CDC-42 making branched actin (arbitrary - don't change)
+RhatCM = 4;    % CDC-42 promotes myosin (fitting parameter)
+RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
 Thres = 0.2; % Threshold where CDC-42 -> branched actin Fitting parameter
-RhatRM = 1.5; % Branched actin killing myosin (fitting parameter)
+RhatRM = 13; % Branched actin killing myosin (fitting parameter)
 
 % Initialization
 dt=1e-2;

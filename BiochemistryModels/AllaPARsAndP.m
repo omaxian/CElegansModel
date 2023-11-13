@@ -9,7 +9,7 @@ koffA = 3;
 kdpA = 0.08; 
 KpA_Hat = 75; 
 Kf_Hat = 12;
-Asat = 0.4;
+Asat = 0.4135;
 %PAR-2
 DP = 0.15;
 konP = 0.13;
@@ -51,7 +51,7 @@ DOneCenter = FirstDerivMatCenter(N,dx);
 x = (0:N-1)'*dx;
 advorder = 1;
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.7];
+iSizes=[0.3:0.1:0.9 0.99];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
@@ -96,9 +96,9 @@ for iT=0:nT-1
         PAR3Size(iSave)=0;
         end
         Pmaxes(iSave)=max(P);
-        hold off
-        plot(x,A1+2*An,x,K,x,C,x,P)
-        drawnow
+%         hold off
+%         plot(x,A1+2*An,x,K,x,C,x,P)
+%         drawnow
     end
     
     % Initialization and cytoplasmic

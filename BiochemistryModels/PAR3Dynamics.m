@@ -6,13 +6,14 @@ DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
 Kconst = Kp_Hat/Kdp_Hat;
 %A10 = 1/(4*Kconst)*(-1+sqrt(1+4*Art*2*Kconst));
-iSizes = 0.9;%[0.2:0.1:0.9 0.99];
+iSizes = [0.9];
 %figure;
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
-A1 = 0.5*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
-%An =  A10^2*Kp_Hat/Kdp_Hat*(x<1/2);
-An = 0.25*ones(N,1).*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+%A1 = A10*ones(N,1)+0.1*cos(2*pi*x);
+A1 = A10.*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+%An = An0*ones(N,1)+0.1*cos(2*pi*x);
+An = An0.*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 Ac0=1-sum(A1+2*An)*dx
 plot(x,A1+2*An,':')
 hold on
@@ -36,9 +37,9 @@ for iT=0:nT
         catch
             EnrichSize(iSave)=0;
         end
-        hold off
-        plot(x,A1+2*An)
-        drawnow
+%         hold off
+%         plot(x,A1+2*An)
+%         drawnow
     end
     A1prev=A1; Anprev=An;
     Atot = A1+2*An;
