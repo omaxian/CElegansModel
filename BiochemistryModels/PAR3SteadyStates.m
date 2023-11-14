@@ -3,18 +3,22 @@ L = 134.6;
 h = 9.5;
 koffA = 3;
 kdpA = 0.08;
-Kp_Hat = 75; % Correct distribution of mon/polys
-konA = 0.5; % First unknown
-Kf_Hat = 12;
-%Asat = 0.4;
-SatFactor = 0.85; % Come up with an expression for this as fcn of uniform state!!
+Kp_Hat = 20; % Correct distribution of mon/polys
+konA = 1; % First unknown (set from when feedback is off)
+Kf_Hat = 3.5;
+Asat = 0.4;
+%SatFactor = 0.85; % Come up with an expression for this as fcn of uniform state!!
+Roots=[];
+%for Kp_Hat=1:50
+%for Kf_Hat=0:0.5:10
 
 % Non-dimensionalization
 D_Hat = DA/(L^2*kdpA);
 Kon_Hat = konA/(kdpA*h); 
 Koff_Hat = koffA/kdpA;
 Kdp_Hat = 1;
-RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,SatFactor);
+beta = 0.25;
+RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,beta,Kf_Hat,Kdp_Hat,Kp_Hat,Asat);
 Art = 0.82; Astart=Art;
 while (abs(RHSfcn(Art)) > 0.01)
     Art = fsolve(RHSfcn,Astart);
@@ -24,30 +28,33 @@ while (abs(RHSfcn(Art)) > 0.01)
     Astart = Astart/2;
 end
 Ac0 = 1-Art;
-Asat = SatFactor*Art;
 % Compute mean oligomer size
-alpha=1-sqrt(1/(4*Art*Kp_Hat)*(-1+sqrt(1+8*Art*Kp_Hat)));
+alpha=Kp_Hat*AMon(Art,Kp_Hat);
 MeanOligs = 1/(1-alpha);
 %alpha = 1-1./MeanOligs;
 %Kps = (2*alpha-alpha.^2)./(2*Art*(1-alpha).^4);
 Atots=(0:0.001:1)';
-AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,-1);
-DetRate = Detachment(Atots,Koff_Hat,Kdp_Hat,Kp_Hat);
-%plot(Atots,AttRate)
-%hold on
+AttRate = AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,-1);
+DetRate = DetachmentPAR3(Atots,Koff_Hat,beta,Kdp_Hat,Kp_Hat);
+plot(Atots,AttRate)
+hold on
 plot(Atots,DetRate)
 % ylimlim=ylim;
 % ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
-AttRate = Attachment(Atots,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,Ac0);
-%plot(Atots,AttRate)
+AttRate =  AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,Ac0);
+plot(Atots,AttRate)
 NetFluxAtEq = AttRate-DetRate;
 Signs = NetFluxAtEq(1:end-1).*NetFluxAtEq(2:end);
-SignChanges=find(Signs<0);
-LowRoot = 1/2*(Atots(min(SignChanges)+1)+Atots(min(SignChanges)));
-HighRoot = 1/2*(Atots(max(SignChanges)+1)+Atots(max(SignChanges)));
-%Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot/LowRoot];
+SignChanges=sum(Signs<0);
+SignLocs = find(Signs<0);
+LowRoot = Atots(SignLocs(1));
+HighRoot = Atots(SignLocs(end));
+%[LowRoot HighRoot]
+Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot/LowRoot];
+%end
+%end
 %xlim([0 1])
 
 %Roots
@@ -84,26 +91,8 @@ detL=L11*L22-L12*L21;
 %end
 %end
 
-function val = RHS(Atot,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,SatFactor)
-    Kconst = Kp_Hat/Kdp_Hat;
-    A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
-    Feedback = PAR3FeedbackFcn(Atot,SatFactor*Atot);
-    val = Kon_Hat*(1+Kf_Hat*Feedback).*(1-Atot)- Koff_Hat*A1;
-end
-
-function att = Attachment(Atot,Kon_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,Asat,Ac)
-    if (Ac < 0)
-        Ac = 1-Atot;
-    end
-    Kconst = Kp_Hat/Kdp_Hat;
-    A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
-    An = 1/2*(Atot-A1);
-    Feedback = PAR3FeedbackFcn(Atot,Asat);
-    att = Kon_Hat*(1+Kf_Hat*Feedback).*Ac;
-end
-
-function det = Detachment(Atot,Koff_Hat,Kdp_Hat,Kp_Hat)
-    Kconst = Kp_Hat/Kdp_Hat;
-    A1 = 1/(4*Kconst)*(-1+sqrt(1+4*Atot*2*Kconst));
-    det = Koff_Hat*A1;
+function val = RHS(Atot,Kon_Hat,Koff_Hat,beta,Kf_Hat,Kdp_Hat,Kp_Hat,Asat)
+    OnRate = AttachmentPAR3(Atot,Kon_Hat,Kf_Hat,Asat,-1);
+    OffRate = DetachmentPAR3(Atot,Koff_Hat,beta,Kdp_Hat,Kp_Hat);
+    val = OnRate-OffRate;
 end
