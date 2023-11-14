@@ -57,6 +57,7 @@
 \newcommand{\C}[1]{#1_C}
 \global\long\def\DhatA{\hat{D}_A}
 \global\long\def\KhatonA{\hat{K}^\text{on}_A}
+\global\long\def\Khatoff{\hat{K}^\text{off}}
 \global\long\def\KhatoffA{\hat{K}^\text{off}_A}
 \global\long\def\KhatfA{\hat{K}^\text{f}_A}
 \global\long\def\KhatpA{\hat{K}^\text{p}_A}
@@ -309,18 +310,18 @@ Unlike in budding yeast cells \cite{mogilner2012cell}, there is no experimental 
 Recent experimental observations about PAR-3 provide a potential way out of this conundrum. Indeed, it was recently shown that PAR-3 asymmetries are stable even in the absence of its posterior inhibitor PAR-1, which suggest that the dynamics of PAR-3 \emph{by itself} are intrinsically bistable \cite{lang2023oligomerization}. Experimental evidence has shown that the bistability occurs via a mechanism in which membrane-bound PAR-3 recruits additional cytoplasmic monomers to the membrane. One goal of this section is to translate these observations into equations which demonstrate how PAR-3 can set up and maintain an asymmetry in the absence of posterior inhibition. We then incorporate posterior PAR proteins and show how their inclusion modifies the dynamics of PAR-3, potentially shifting the boundary between the two protein domains. 
 
 \subsection{Basic equations and framework for PAR-3 \label{sec:Par3}}
-We first formulate our model of PAR-3 dynamics, which is based on that of Lang and Munro \cite{lang2022oligomerization}. The key property of PAR-3 that makes it different from other proteins is its ability to form \emph{oligomers} on the membrane. Unlike monomers, these oligomers do not diffuse in the membrane, and are not found in high concentrations in the cytoplasm. Based on these experimental observations, we will consider a model in which there are two species of PAR-3, 
+\red{REREAD AND FILL IN DETAILS.} We first formulate our model of PAR-3 dynamics, which is based on that of Lang and Munro \cite{lang2022oligomerization}. The key property of PAR-3 that makes it different from other proteins is its ability to form \emph{oligomers} on the membrane. Unlike monomers, these oligomers do not diffuse in the membrane, and are not found in high concentrations in the cytoplasm. Based on these experimental observations, we will consider a model in which there are two species of PAR-3, 
 \begin{enumerate}
 \item Monomeric PAR-3, which can be found in cytoplasmic form $(\MAC)$ or membrane bound $(\MA)$ form.
-\item Oligomerized PAR-3 $(\PA)$ which is only found on the membrane and can neither diffuse nor become unbound. These assumptions are approximations based on the experimental observations in \cite[Fig.~3K]{lang2023oligomerization}, which show that the dissociation rate constant for dimers in trimers is 5--10 times smaller than that for monomers, and also the experimental observation that PAR-3 only binds to the membrane in monomer form \cite{lang2023oligomerization}.
+\item Oligomerized PAR-3 $(\PA)$ which is only found on the membrane. We will let the number of oligomers of size $n$ be denoted by $A_n$. 
 \end{enumerate}
 Given these assumptions, the model equations in dimensional form are as follows
 \begin{subequations}
 \label{eq:P3model}
 \begin{align}
-\Dt \MA & = \A{D} \Dx^2 \MA + \left(\A{\kon}+\A{\kf}\A{f}^+\left(\MA,\PA\right)\right)  \MAC + 2\A{\kdp}\PA -2\A{\kp} \MA^2 - \A{\koff}\MA \\
-\Dt \PA & =\A{\kp}\MA^2- \A{\kdp}\PA \\ \label{eq:Acyto}
-A_\text{cyto} & = \frac{1}{h L} \left(\Tot{A} L - \int_0^L \left(A_1(x)+2A_n(x)\right) \, dx \right)
+\Dt \MA & = \A{D} \Dx^2 \MA + \left(\A{\kon}+\A{\kf}\A{f}^+\left(\MA,\PA\right)\right)  \MAC + 2\A{\kdp}\PA -2\A{\kp} \MA^2 - \koff_{A,1}\MA \\
+\Dt A_n & =\A{\kp}\MA A_{n-1}- \A{\kdp}A_n-\koff_{A,n}A_n \qquad n \geq 2 \\ \label{eq:Acyto}
+A_\text{cyto} & = \frac{1}{h L} \left(\Tot{A} L - \int_0^L A(x) \, dx \right) \qquad A(x) =\sum_{n=1}^N n A_n(x)
 \end{align}
 \end{subequations}
 A complete list of parameters with units and values is given in Table\ \ref{tab:paramsP3}, but it will be helpful to point out the important ones in our model. First, the feedback strength $k_A^+$, which has units of length$^2$/time, gives the rate at which cytoplasmic PAR-3 is recruited to the membrane. It is multiplied by the flux function $f_A^+$, which gives the strength of recruitment (in units of inverse length). The overall on rate is proportional to the cytoplasmic concentration, which is defined in\ \eqref{eq:Acyto}. There $\Tot{A}$ expresses the density of bound PAR-3 when all molecules are bound to the membrane (units 1/length). Subtracting the amount of bound PAR-3 and dividing by the membrane area gives
@@ -337,32 +338,65 @@ Substituting into\ \eqref{eq:P3model} gives the rewritten dynamics
 \begin{align}
 \nonumber
 \Dthat \hat{\MA} & = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \hat F_A^+(\hat \MA, \hat \PA) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right) \\ 
-\label{eq:Amono} &+ 2\KhatdpA \hat{\PA}-2\KhatpA \hat{\MA}^2 - \KhatoffA \hat{\MA} \\
+\label{eq:Amono} &+ 2\KhatdpA \hat{\PA}-2\KhatpA \hat{\MA}^2 - \Khatoff_{A,1} \hat{\MA} \\
 \label{eq:Apoly}
-\Dthat \hat{\PA} & =\KhatpA \hat{\MA}^2- \KhatdpA \hat{\PA} \\ 
+\Dthat \hat{\PA} & =\KhatpA \hat{\MA} \hat A_{n-1} - \hat{\PA}-\Khatoff_{A,n}\hat A_n \qquad n \geq 2 \\ 
 \label{eq:paramsND}
-\DhatA &=\frac{\A{D}}{L^2 \A{\kdp}}, \quad \KhatonA=\frac{\A{\kon}}{\A{\kdp} h }, \quad \KhatfA = \frac{\A{\kf}\Tot{A}}{\A{\kon}}, \quad  \KhatoffA = \frac{\A{\koff}}{\A{\kdp}}, \\ \nonumber \KhatpA &= \frac{\A{\kp} \Tot{A}}{\A{\kdp}}, \quad \KhatdpA=1, \quad \hat F_A^+(\hat \MA,\hat \PA) =\frac{\A{f}^+(\MA,\PA)}{\Tot{A}}
+\DhatA &=\frac{\A{D}}{L^2 \A{\kdp}}, \quad \KhatonA=\frac{\A{\kon}}{\A{\kdp} h }, \quad \KhatfA = \frac{\A{\kf}\Tot{A}}{\A{\kon}}, \quad  \KhatoffA = \frac{\A{\koff}}{\A{\kdp}}, \\ \nonumber \KhatpA &= \frac{\A{\kp} \Tot{A}}{\A{\kdp}},\quad \hat F_A^+(\hat \MA,\hat \PA) =\frac{\A{f}^+(\MA,\PA)}{\Tot{A}}
 \end{align}
 \end{subequations}
-and we have used the convenient shorthand $A=\MA + 2 \PA$ and likewise for the hatted variables. \red{I like this because we are separating oligomers and monomers. In a single species model, you don't have tight control over diffusion coefficient.}
+and we have used the convenient shorthand $A=\sum n A_n$ and likewise for the hatted variables. \red{I like this because we are separating oligomers and monomers. In a single species model, you don't have tight control over diffusion coefficient.}
+
+\subsection{Quasi-steady state approximation}
+We make the quasi-steady state approximation \cite{lang2022oligomerization} that the oligomerization kinetics are in equilibrium relative to the other processes. This means that the distribution of oligomer sizes is exponential \cite{edelstein1998models,lang2022oligomerization}
+\begin{equation}
+\hat A_n =  \KhatpA \hat A_1 \hat A_{n-1}:=\alpha \hat A_{n-1} \quad n \geq 2
+\end{equation}
+It follows that the total number of monomers is given by 
+\begin{equation}
+\hat A = \sum_{n=1}^N n \alpha^{n-1} \hat A_1 \rightarrow \frac{\hat A_1}{\left(1-\alpha\right)^2}.
+\end{equation}
+This equation can then be solved for $\hat A_1$ to obtain \cite[Eq.~(12)]{lang2022oligomerization}
+\begin{equation}
+\label{eq:AmonA}
+\hat A_1 = \frac{1+2\hat A \KhatpA-\sqrt{1+4 \KhatpA \hat A}}{2 \hat A \left(\KhatpA\right)^2},
+\end{equation}
+which gives the number of bound monomers as a function of the total bound $\hat A$. 
+
+This approximation reduces the dynamics\ \eqref{eq:PAR3gen} to a single equation for $\hat A=\sum n \hat A_n$, 
+\begin{equation}
+\Dthat \hat A = \DhatA \Dxhat^2 A_1+\KhatonA \left(1+\KhatfA \hat F_A^+(\hat A) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right) - \sum_{n=1}^\infty n \Khatoff_{A,n}  \alpha^{n-1} \hat A_1.
+\end{equation}
+We will consider two cases for the off-rate: in the first case, we assume that only monomers can unbind, which gives \cite[Eq.~(14)]{lang2023oligomerization}
+\begin{equation}
+\Dthat \hat A = \DhatA \Dxhat^2 A_1+\KhatonA \left(1+\KhatfA \hat F_A^+(\hat A) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right) - \Khatoff_{A,1}  \hat A_1.
+\end{equation}
+In the second case, we use the experimentally-fit curve $\Khatoff_{A,n}=\Khatoff_{A,1} \beta^{n-1}$, which gives 
+\begin{gather}
+\sum_{n=1}^\infty n \Khatoff_{A,n}  \alpha^{n-1} \hat A_1 = \Khatoff_{A,1} \hat A_1 \sum_{n=1}^\infty n \left(\beta \alpha\right)^{n-1}= \frac{\koff_{A,1} \hat A_1}{\left(1-\beta \alpha\right)^2}\\
+\Dthat \hat A = \DhatA \Dxhat^2 \hat A_1+\KhatonA \left(1+\KhatfA \hat F_A^+(\hat A) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right) - \Khatoff_{A,1}  \frac{\hat A_1}{\left(1-\beta \KhatpA \hat A_1\right)^2}
+\end{gather}
+Note that setting $\beta=0$ will give detachment of monomers only.
 
 \subsection{Parameters \label{sec:paramsP3}}
-Recent experimental measurements \cite{lang2023oligomerization} give accurate measurements for three of the parameters: the diffusion coefficient $D_A$, the detachment rate of monomers $\koff_A$, and the depolymerization rate $\kdp_A$. The values of these parameters are summarized in Table\ \ref{tab:paramsP3}, and determine the dimensionless parameters $\DhatA$ and $\KhatoffA$. We determine $\KhatonA$, $\KhatpA$, $\KhatfA$, and the form of the feedback function via a systematic fitting procedure as detailed next.
+Recent experimental measurements \cite{lang2023oligomerization} give accurate measurements for three of the parameters: the diffusion coefficient $D_A=0.1$ $\mu$m$^2$/s, the detachment rate $\koff_{A,n}=3\beta^{n-1}$ with $\beta=0.25$, and the depolymerization rate $\kdp_A=0.08$/s. The values of these parameters are summarized in Table\ \ref{tab:paramsP3}, and determine the dimensionless parameters $\DhatA$ and $\KhatoffA$. We determine $\KhatonA$, $\KhatpA$, $\KhatfA$, and the form of the feedback function via a systematic fitting procedure as detailed next.
 
 \subsubsection{Fitting the polymerization rate}
 The first parameter we need to fit the polymerization rate is the percentage of PAR-3 bound to the membrane in the uniform state. The uniform state can be realized by considering mutants which lack a functional sperm cue and thus do not polarize \cite[Fig.~S1]{lang2023oligomerization}. These mutants show a peak PAR-3 concentration in late interphase; late maintenance phase then gives a bound concentration that is roughly 50\% of this peak. We will assume that almost all of the PAR-3 is bound in late interphase, so that the uniform state in late maintenance is at $\hat A_u:=\hat{\MA}+2\hat{\PA} \approx 0.5$. The observation that these embryos do not polarize implies that the uniform state is stable, and the estimate for the percentage of bound protein is similar to that obtained for PAR-2 at the end of maintenance phase in \cite[Fig.~S3]{gross2019guiding}. 
 
 When there is no posterior inhibitor, the concentration of bound PAR-3 during late maintenance phase in the anterior is roughly $\hat A_a=1.2u \approx 0.6$ (this comes from comparing flourescence in PAR-1 mutant and spd-5 mutant embryos shown in Figs.\ 2 and S1 of \cite{lang2023oligomerization}). In PAR-1 mutants, the concentration in the posterior is then roughly 10\% of the anterior, or $\hat A_p=0.06$. 
 
-These measurements allow us firstly to determine the relative polymerization rate $\KhatpA$. The distribution of oligomer sizes in PAR-1 mutant embryos was measured in \cite{lang2023oligomerization} on both the anterior and posterior side. There it was shown that the distribution is roughly exponential, so that $a_n$, the number of size $n$ is $a_n=\alpha^{n-1} a_1$. This implies that the fraction in monomer form is $\left(1-\alpha\right)^2$. Using the measurements in \cite{lang2023oligomerization}, we have $\alpha=0.42$ on the posterior side (30\% in monomer form), and $\alpha=0.73$ on the anterior side (10\% in monomer form). We can then obtain $\KhatpA$ by solving \eqref{eq:Apoly} at steady state to obtain the relationship
-\begin{equation}
-\frac{\hat A_1}{\hat A} = \frac{1}{4 \hat A \KhatpA}\left(-1+\sqrt{1+8 \hat A \KhatpA}\right).
-\end{equation}
-We then insist that $\hat A=0.6 \rightarrow \hat A_1=0.06$ and solve for $\KhatpA$, which gives $\KhatpA=75$. The corresponding value on the posterior side is $\hat A = 0.06$ and $\hat A_1=0.017$, which is roughly 28\% of the protein in monomer form, matching the experimental observation.
+These measurements allow us firstly to determine the relative polymerization rate $\KhatpA$. The distribution of oligomer sizes in PAR-1 mutant embryos was measured in \cite{lang2023oligomerization} on both the anterior and posterior side. There it was shown that the distribution is roughly exponential, so that $a_n$, the number of size $n$ is $a_n=\alpha^{n-1} a_1$. This implies that the fraction in monomer form is $\left(1-\alpha\right)^2$. Using the measurements in \cite{lang2023oligomerization}, we have $\alpha=0.42$ on the posterior side (30\% in monomer form), and $\alpha=0.73$ on the anterior side (10\% in monomer form). When we substitute $\KhatpA=20$ into\ \eqref{eq:AmonA}, we obtain $\alpha(\hat A = 0.06)=0.41$ and $\alpha(\hat A = 0.6)=0.75$. 
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FracMonAndDissoc.eps}
+\caption{\label{fig:FracMonDissoc}Comparing polymerization dynamics with different panels. Left panel: the fraction of monomers as a function of bound $\hat A$ with three different values of $\KhatpA$. The polymerization rate $\KhatpA=20$ best fits the data. Right panel: the effective dissociation rate as a function of $\hat A$ with two different assumptions: only monomers can dissociate (blue curve), and dissociation occurs with the experimentally determined rate $\koff_{A,n}=\koff_{A,1} \beta^{n-1}$ for $\beta=0.25$ (red curve).}
+\end{figure}
 
 \subsubsection{The form of the feedback strength -- linear feedback models}
 Before we get into fitting the feedback parameters, it is important to consider the nature of the feedback model. Our model is based strongly on that of Lang and Munro \cite{lang2022oligomerization}, who used the linear feedback model $$f_A^+(\MA,\PA)=\MA+2\PA=A.$$ 
-To analyze the characteristics of this model, we consider two representative examples in Fig.\ \ref{fig:P3Linear}, where we look at the attachment and detachment fluxes as a function of $\hat A$. The detachment flux is simply $\KhatoffA \hat \MA$, and is therefore set by the red line. The attachment flux varies depending on the model considered. If we consider a uniform state, then the cytoplasmic concentration is simply $1-\hat A$, and there is a single uniform steady state (intersection of dotted blue and red lines). In polarized states, the concentration is not necessarily uniform, and so we analyze the stability of the steady state by taking the cytoplasmic concentration as constant (this is similar to ``local perturbation analysis'' \cite{holmes2015local}, in which the equations are analyzed by ignoring the flux law and looking at the evolution of an infinitesimally-small perturbation). This results in the darker blue line in Fig.\ \ref{fig:P3Linear}. There we see that the linear feedback model admits only two possibilities: a stable uniform state (when feedback is small relative to the on-rate), and an unstable uniform state which leads to spontaneous polarization (when the feedback is larger). This contradicts our experimental observation of \emph{bistability}.
+To analyze the characteristics of this model, we consider two representative examples in Fig.\ \ref{fig:P3Linear}, where we look at the attachment and detachment fluxes as a function of $\hat A$. The detachment flux is simply $\KhatoffA \hat \MA$, and is therefore set by the red line (this example has $\beta=0$). The attachment flux varies depending on the model considered. If we consider a uniform state, then the cytoplasmic concentration is simply $1-\hat A$, and there is a single uniform steady state (intersection of dotted blue and red lines). In polarized states, the concentration is not necessarily uniform, and so we analyze the stability of the steady state by taking the cytoplasmic concentration as constant (this is similar to ``local perturbation analysis'' \cite{holmes2015local}, in which the equations are analyzed by ignoring the flux law and looking at the evolution of an infinitesimally-small perturbation). This results in the darker blue line in Fig.\ \ref{fig:P3Linear}. There we see that the linear feedback model admits only two possibilities: a stable uniform state (when feedback is small relative to the on-rate), and an unstable uniform state which leads to spontaneous polarization (when the feedback is larger). This contradicts our experimental observation of \emph{bistability}.
 
 \begin{figure}
 \centering
@@ -370,11 +404,12 @@ To analyze the characteristics of this model, we consider two representative exa
 \caption{\label{fig:P3Linear}Flux plane analysis for linear feedback in the stable (left) and unstable (right) case. The stability analysis is determined by how the attachment rate (solid blue line, with constant cytoplasmic concentration) compares to the detachment rate (red) near the steady state.}
 \end{figure}
 
+\subsubsection{Feedback with saturation}
 For the uniform steady state to be stable, the attachment rate at constant cytoplasmic concentration has to be smaller than the detachment rate, as shown in the left panel of Fig.\ \ref{fig:P3Linear}. At the same time, for bistability, the attachment flux at constant cytoplasmic concentration has to intersect the detachment curve three times (two stable fixed points and one unstable fixed point in between). A simple way to accomplish this is by setting
 \begin{equation}
 f_A^+(\MA,\PA) =\min\left(\MA+2\PA,A_\text{sat}\right) \rightarrow F_A^+(\hat \MA, \hat \PA) = \min\left(\hat \MA+2\hat \PA, \hat A_\text{sat}\right). 
 \end{equation}
-The uniform steady state is stable if $\hat A_\text{sat} < u = 0.5$, which provides one constraint on the saturation. The second constraint comes from bistability; the system is only locally bistable at fixed cytoplasmic concentration when $\hat A_\text{sat}$ is close to the uniform state (if $\hat A_\text{sat}$ is too small the feedback becomes essentially constant and cannot generate bistability). Based on these considerations, we set $\hat A_\text{sat}=0.85 u$. Note that the feedback strength it thus determined in concert with the uniform state; we solve for the uniform state assuming the feedback $ F_A^+=\hat A_\text{sat}=0.85 u$, then substitute to obtain the saturation level in non-uniform states. For our base parameter set, $\hat A_\text{sat} \approx 0.4$. For embryos depleted of PAR-3, the uniform state will be smaller, and so the feedback will saturate at a lower point as well.  
+The uniform steady state is stable if $\hat A_\text{sat} < u = 0.5$, which provides one constraint on the saturation. The second constraint comes from bistability; the system is only locally bistable at fixed cytoplasmic concentration when $\hat A_\text{sat}$ is close to the uniform state (if $\hat A_\text{sat}$ is too small the feedback becomes essentially constant and cannot generate bistability). Based on these considerations, we set $\hat A_\text{sat}=0.4$. 
 
 
 \begin{figure}
@@ -399,11 +434,12 @@ This completes our parameter selection for the PAR-3 model. The parameters we us
 \begin{tabular}{|c|c|c|c|c|c|}\hline
 Parameter & Description & Value & Units & Ref & Notes \\ \hline
 $\A{D} $ & Monomeric PAR-3 diffusivity & 0.1 & $\mu$m$^2$/s & \cite{lang2023oligomerization} & \\
-$\A{\kon}$ & Monomeric PAR-3 attachment rate & 0.5 & $\mu$m/s & & Fit for uniform state $\hat A=0.5$ \\
-$\A{\koff}$ & Monomeric PAR-3 detachment rate &  3& 1/s & \cite{lang2023oligomerization} & (Fig.\ 3K)\\
+$\A{\kon}$ & Monomeric PAR-3 attachment rate & 1& $\mu$m/s & & Fit for uniform state $\hat A=0.5$ \\
+$\koff_{A,1}$ & Monomeric PAR-3 detachment rate &  3& 1/s & \cite{lang2023oligomerization} & (Fig.\ 3K)\\
+$\beta$ & $\koff_{A,n}=\koff_{A,1}\beta^{n-1}$ & 0.25 & & \cite{lang2023oligomerization} & (Fig.\ 4E) \\
 $\A{\kdp}$ & PAR-3 depolymerization rate & 0.08 & 1/s & \cite{lang2023oligomerization} & (Fig.\ 4E) \\
-$\KhatpA$ & PAR-3 polymerization rate & 75 & & & Fit for correct \% monomers \cite{lang2023oligomerization}  \\
-$\KhatfA$ & PAR-3 self recruitment rate &12 & & & Fit for bistability\\
+$\KhatpA$ & PAR-3 polymerization rate & 20 & & & Fit for correct \% monomers \cite{lang2023oligomerization}  \\
+$\KhatfA$ & PAR-3 self recruitment rate &3.5 & & & Fit for bistability\\
 $F_A^+$ & PAR-3 feedback function &$\text{min}\left(\hat A,0.85u\right)$ &  &\cite{lang2022oligomerization} &  Stable uniform state\\
 $\Tot{A}$ & Maximum bound PAR-3 density & -- & $\#/\mu$m & & Contained in other unknowns \\ \hline
 \end{tabular}
@@ -411,8 +447,43 @@ $\Tot{A}$ & Maximum bound PAR-3 density & -- & $\#/\mu$m & & Contained in other 
 \end{small}
 \end{table}
 
-\subsection{Theoretical results for bistable PAR-3 model}
-We now examine the general bistable behavior of the model, again by considering flux balance plots of the type shown in Fig.\ \ref{fig:P3Cap}. Our goal is to examine the stability diagram as a function of two parameters: the mean oligomer size (determined by the polymerization rate $\KhatpA$) and the feedback strength $\KhatfA$, with all other parameters fixed as in Table\ \ref{tab:paramsP3}. Our general approach is as follows: for a pair of parameters, we solve for the steady state, then draw the flux balance plot around the steady state as shown in Fig.\ \ref{fig:P3FluxP}. If the attachment flux at constant cytoplasmic concentration intersects the detachment flux three times, then the system is bistable. We report bistability in terms of the mean oligomer size at the uniform stable state, and the A/P ratio is the ratio of the $\hat A$ values at the highest (uniform steady state) and lowest (bistable posterior state) crossings.
+
+\subsection{Simulated steady states with and without diffusion}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{PAR3Boundary.eps}
+\caption{\label{fig:P3FBBd}Simulating the PAR-3 feedback model with the parameters in Table\ \ref{tab:paramsP3}. The initial conditions are shown in dotted blue, and the distribution at $\hat t = 500$ ($\hat t =1$ corresponds to 12.5 seconds of real time) is in red. In the top row, we make a continuous perturbation from the uniform state, finding that large enough perturbations induce bistability. In the bottom row, we start with a peaked initial profile of large and small size, finding that only larger (than 0.5) initial profiles can lead to bistability. \red{TODO: replace this figure.}}
+\end{figure}
+
+So far, we have only considered \emph{theoretical} bistability of the model in the absence of diffusion. But what happens when we actually run the model forward in time from embryo-like initial conditions?  Figure\ \ref{fig:P3FBBd} shows what happens when we run from $\hat t = 0$ to $\hat t = 500$, which achieves the steady state. In the top left plot, we see that the uniform steady state is stable, as expected from the stability diagram. But when the perturbation to the uniform state is too large, or when we introduce an asymmetry into the system by depleting PAR-3 in part of the domain, we see bistable dynamics where the small part gravitates to one steady state, while the larger end goes to another. In the bistable region, we observe a posterior concentration which is always roughly 10\% of the anterior concentration, as desired (the exact number at steady state is $0.043/0.51 \approx 9$\%).
+
+In the case when we deplete PAR-3 in part of the domain, the bistable behavior only happens when the initial domain size is sufficiently large. Figure\ \ref{fig:P3FBBd} demonstrates this in the bottom row, where we consider initial domains of PAR-3 enrichment of 0.6 (bottom left) and 0.5 (bottom right). We find that when the initial PAR-3 domain of enrichment is larger than 50\% of the domain, the system tends to the bistable state, with about 93\% of the domain enriched in PAR-3 and 7\% at the lower state. When the initial domain of PAR-3 enrichment is too low, however, we find that the flux into the depleted regions is too large, and those regions tend to surpass the smaller bistable steady state and be attracted to the larger uniform one. The higher flux happens because of a larger cytoplasmic concentration (which could result from the initial condition, or from unbinding from the enriched domain if we try to deplete the cytoplasm initially). In any case, the conclusion of Fig.\ \ref{fig:P3FBBd} is that there is a uniform steady state, which is the attractor when most of the PAR-3 is initially in the cytoplasm, and a bistable state, which is an attractor when the cytoplasmic concentration is around 0.5 (50\% of protein in the cytoplasm). 
+
+\subsubsection{Position of boundary and approach to steady state}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{PAR3DomainSizes.eps}
+\caption{\label{fig:WWoDiff}Size of PAR-3 domain over time without (left) and with (right) diffusion of monomeric PAR-3. Without diffusion, any boundary position more than 20\% enriched PAR-3 is stable, because there exists a solution to\ \eqref{eq:NoDiffEqn} where the on rate balances the off rate in both the enriched and depleted regions. When we introduce diffusion, there is an additional constraint in the boundary layer which specifies a unique boundary position.}
+\end{figure}
+
+Let us now try to understand the position of the boundary. In Fig.\ \ref{fig:WWoDiff}, we plot the size of the enriched PAR-3 domain over time for various initial boundary positions. We start without diffusion, observing that, for sizes of the enriched PAR-3 domain 0.6 or larger, the cytoplasmic concentration is sufficiently low for a bistable solution to exist (left panel of Fig.\ \ref{fig:WWoDiff}). When the PAR-3 domain is initially too small, the cytoplasmic concentration at steady state would be too high for bistability, and so the uniform state is the only stable one. If the bistable solution exists, then the boundary position does not move in time; any domain size 0.6 or larger appears to be stable.
+
+This is not the case when we add diffusion into the model, which provides an additional constraint. In this case, the right panel of Fig.\ \ref{fig:WWoDiff} shows that there is a \emph{unique} boundary position that the system tends to, when the diffusive flux in the \emph{boundary layer} balances the net unbinding and binding fluxes. Indeed, when we turn on diffusion, there is diffusion of monomers away from the enrichment zone, and consequently local depletion of monomers at the edge of the enrichment zone (oligomers are not depleted, so the on flux is basically unchanged). There is then an imbalance of flux where the flux from binding is larger than the unbinding flux at the edge of the enrichment zone. If the on-rate dominates diffusion (this is the case when the cytoplasm is enriched), then the boundary will tend to expand. On the other hand, if diffusive fluxes are sufficiently large (cytoplasmic depletion or larger zone of enrichment), then the boundary will contract if diffusive flux outwards overcomes the increased local binding. The unique boundary position is when the diffusive of monomers outward exactly compensates for the slower unbinding rate with diffusion. Figure\ \ref{fig:ExpContrBd} shows examples of this.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{ExpandContractBd.eps}
+\caption{\label{fig:ExpContrBd}Local depletion by diffusion and consequent expansion/contraction of boundary. These figures show the positive fluxes due to binding (blue) and the negative fluxes due to diffusion and unbinding (red). When the boundary is narrow (left figure), the binding rate is higher due to enriched cytoplasm, and the boundary expands. On the other hand, when the boundary is wider (right figure), the binding rate is locally lower than the off rate + diffusion (note diffusion makes the difference in this case), and the boundary contracts. }
+\end{figure}
+
+An important observation from Fig.\ \ref{fig:WWoDiff} is the \emph{rate} at which the boundary shifts to the steady state. Because the rate of expansion/contraction is controlled by diffusion of monomers, and because the dimensionless diffusivity $\DhatA \approx 7 \times 10^{-5}$,  the movement of the boundary is quite slow. Indeed, most embryos are in maintenance phase for about 10 minutes, which corresponds to $\hat t = 48$. During this time, the movement of the boundary is at most 5\% of the perimeter, or about 10\% of the embryo length. Similar arguments to this were made in \cite{lang2022oligomerization} to justify the possibility that the uniform steady state is unstable, and that the polarized PAR-3 state (in which PAR-3 is stably enriched on one half of the embryo) \cite{lang2023oligomerization} might be a transient state that transitions to a large peak if we were to wait long enough. Here we propose that the polarized state of PAR-3 in the absence of PAR-1 is a result of the initial sperm cue, and that, if given long enough, the position of the boundary would relax towards the posterior side.
+
+
+\subsection{Parameter regimes for bistability}
+
+\subsubsection{Changing the saturation threshold}
+\red{Here will have to propose 3 feedback saturation models. Throw out one of them immediately, then do the details with two.} We now examine the general bistable behavior of the model, again by considering flux balance plots of the type shown in Fig.\ \ref{fig:P3Cap}. Our goal is to examine the stability diagram as a function of two parameters: the mean oligomer size (determined by the polymerization rate $\KhatpA$) and the feedback strength $\KhatfA$, with all other parameters fixed as in Table\ \ref{tab:paramsP3}. Our general approach is as follows: for a pair of parameters, we solve for the steady state, then draw the flux balance plot around the steady state as shown in Fig.\ \ref{fig:P3FluxP}. If the attachment flux at constant cytoplasmic concentration intersects the detachment flux three times, then the system is bistable. We report bistability in terms of the mean oligomer size at the uniform stable state, and the A/P ratio is the ratio of the $\hat A$ values at the highest (uniform steady state) and lowest (bistable posterior state) crossings.
 
 \begin{figure}
 \centering
@@ -441,36 +512,7 @@ We now systematically tune the oligomerization rate and feedback strength in acc
 
 While the experimental data shows A/P asymmetries occurring at smaller mean oligomer sizes than the model predicts, the model prediction of a sudden switch from a single uniform steady state to bistable dynamics is validated by the experimental data. The data show essentially symmetric PAR-3 distributions for mean oligomer sizes less than 2.5, with asymmetries as large as 10 for mean oligomer sizes of 3 or higher. 
 
-\subsection{Simulated steady states with and without diffusion}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{PAR3Boundary.eps}
-\caption{\label{fig:P3FBBd}Simulating the PAR-3 feedback model with the parameters in Table\ \ref{tab:paramsP3}. The initial conditions are shown in dotted blue, and the distribution at $\hat t = 500$ ($\hat t =1$ corresponds to 12.5 seconds of real time) is in red. In the top row, we make a continuous perturbation from the uniform state, finding that large enough perturbations induce bistability. In the bottom row, we start with a peaked initial profile of large and small size, finding that only larger (than 0.5) initial profiles can lead to bistability.}
-\end{figure}
-
-So far, we have only considered \emph{theoretical} bistability of the model in the absence of diffusion. But what happens when we actually run the model forward in time from embryo-like initial conditions?  Figure\ \ref{fig:P3FBBd} shows what happens when we run from $\hat t = 0$ to $\hat t = 500$, which achieves the steady state. In the top left plot, we see that the uniform steady state is stable, as expected from the stability diagram. But when the perturbation to the uniform state is too large, or when we introduce an asymmetry into the system by depleting PAR-3 in part of the domain, we see bistable dynamics where the small part gravitates to one steady state, while the larger end goes to another. In the bistable region, we observe a posterior concentration which is always roughly 10\% of the anterior concentration, as desired (the exact number at steady state is $0.043/0.51 \approx 9$\%).
-
-In the case when we deplete PAR-3 in part of the domain, the bistable behavior only happens when the initial domain size is sufficiently large. Figure\ \ref{fig:P3FBBd} demonstrates this in the bottom row, where we consider initial domains of PAR-3 enrichment of 0.6 (bottom left) and 0.5 (bottom right). We find that when the initial PAR-3 domain of enrichment is larger than 50\% of the domain, the system tends to the bistable state, with about 93\% of the domain enriched in PAR-3 and 7\% at the lower state. When the initial domain of PAR-3 enrichment is too low, however, we find that the flux into the depleted regions is too large, and those regions tend to surpass the smaller bistable steady state and be attracted to the larger uniform one. The higher flux happens because of a larger cytoplasmic concentration (which could result from the initial condition, or from unbinding from the enriched domain if we try to deplete the cytoplasm initially). In any case, the conclusion of Fig.\ \ref{fig:P3FBBd} is that there is a uniform steady state, which is the attractor when most of the PAR-3 is initially in the cytoplasm, and a bistable state, which is an attractor when the cytoplasmic concentration is around 0.5 (50\% of protein in the cytoplasm). 
-
-\subsubsection{Position of boundary and approach to steady state}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{PAR3DomainSizes.eps}
-\caption{\label{fig:WWoDiff}Size of PAR-3 domain over time without (left) and with (right) diffusion of monomeric PAR-3. Without diffusion, any boundary position with 60\% or more enriched PAR-3 is stable, because there exists a solution to\ \eqref{eq:NoDiffEqn} where the on rate balances the off rate in both the enriched and depleted regions. When we introduce diffusion, there is an additional constraint in the boundary layer which specifies a unique boundary position.}
-\end{figure}
-
-Let us now try to understand the position of the boundary. In Fig.\ \ref{fig:WWoDiff}, we plot the size of the enriched PAR-3 domain over time for various initial boundary positions. We start without diffusion, observing that, for sizes of the enriched PAR-3 domain 0.6 or larger, the cytoplasmic concentration is sufficiently low for a bistable solution to exist (left panel of Fig.\ \ref{fig:WWoDiff}). When the PAR-3 domain is initially too small, the cytoplasmic concentration at steady state would be too high for bistability, and so the uniform state is the only stable one. If the bistable solution exists, then the boundary position does not move in time; any domain size 0.6 or larger appears to be stable.
-
-This is not the case when we add diffusion into the model, which provides an additional constraint. In this case, the right panel of Fig.\ \ref{fig:WWoDiff} shows that there is a \emph{unique} boundary position that the system tends to, when the diffusive flux in the \emph{boundary layer} balances the net unbinding and binding fluxes. Indeed, when we turn on diffusion, there is diffusion of monomers away from the enrichment zone, and consequently local depletion of monomers at the edge of the enrichment zone (oligomers are not depleted, so the on flux is basically unchanged). There is then an imbalance of flux where the flux from binding is larger than the unbinding flux at the edge of the enrichment zone. If the on-rate dominates diffusion (this is the case when the cytoplasm is enriched), then the boundary will tend to expand. On the other hand, if diffusive fluxes are sufficiently large (cytoplasmic depletion or larger zone of enrichment), then the boundary will contract if diffusive flux outwards overcomes the increased local binding. The unique boundary position is when the diffusive of monomers outward exactly compensates for the slower unbinding rate with diffusion. Figure\ \ref{fig:ExpContrBd} shows examples of this.
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{ExpandContractBd.eps}
-\caption{\label{fig:ExpContrBd}Local depletion by diffusion and consequent expansion/contraction of boundary. These figures show the positive fluxes due to binding (blue) and the negative fluxes due to diffusion and unbinding (red). When the boundary is narrow (left figure), the binding rate is higher due to enriched cytoplasm, and the boundary expands. On the other hand, when the boundary is wider (right figure), the binding rate is locally lower than the off rate + diffusion (note diffusion makes the difference in this case), and the boundary contracts. }
-\end{figure}
-
-An important observation from Fig.\ \ref{fig:WWoDiff} is the \emph{rate} at which the boundary shifts to the steady state. Because the rate of expansion/contraction is controlled by diffusion of monomers, and because the dimensionless diffusivity $\DhatA \approx 7 \times 10^{-5}$,  the movement of the boundary is quite slow. Indeed, most embryos are in maintenance phase for about 10 minutes, which corresponds to $\hat t = 48$. During this time, the movement of the boundary is at most 5\% of the perimeter, or about 10\% of the embryo length. Similar arguments to this were made in \cite{lang2022oligomerization} to justify the possibility that the uniform steady state is unstable, and that the polarized PAR-3 state (in which PAR-3 is stably enriched on one half of the embryo) \cite{lang2023oligomerization} might be a transient state that transitions to a large peak if we were to wait long enough. Here we propose that the polarized state of PAR-3 in the absence of PAR-1 is a result of the initial sperm cue, and that, if given long enough, the position of the boundary would relax towards the posterior side.
+Note that the feedback strength it thus determined in concert with the uniform state; we solve for the uniform state assuming the feedback $ F_A^+=\hat A_\text{sat}=0.85 u$, then substitute to obtain the saturation level in non-uniform states. For our base parameter set, $\hat A_\text{sat} \approx 0.4$. For embryos depleted of PAR-3, the uniform state will be smaller, and so the feedback will saturate at a lower point as well.  
 
 \subsection{Including other proteins with mutual inhibition \label{sec:BCOnly}}
 \begin{figure}
