@@ -4,7 +4,6 @@ N = 2000;
 dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
-Kconst = Kp_Hat/Kdp_Hat;
 iSizes = [0.9];
 %figure;
 for iis=1:length(iSizes)

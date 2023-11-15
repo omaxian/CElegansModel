@@ -1,22 +1,24 @@
-% Rxn-diffusion model of PAR-2 and PAR-3 with dimerization on cortex
+% Rxn-diffusion model of PAR-2 and PAR-3
+for iD=[1 0]
 % Parameters 
 L = 134.6;
 h = 9.5;
 % PAR-3
-DA = 0.1;
-konA = 0.5; 
+DA = 0.1*iD;
+konA = 1; 
 koffA = 3;
+betaA = 0.25;
 kdpA = 0.08; 
-KpA_Hat = 75; % Correct distribution of mon/polys
-Kf_Hat = 12;
-Asat = 0.4;
+KpA_Hat = 20; % Correct distribution of mon/polys
+KfA_Hat = 5.5;
+Asat = 0.35;
 %PAR-2
 DP = 0.15;
-konP = 0.3;
+konP = 0.3; % Fitting parameter
 koffP = 7.3e-3;
 % Dimensionless
-rAP_Hat = 20; % A inhibiting P
-rPA_Hat = 0; % P inhibiting A
+rAP_Hat = 50; % A inhibiting P
+rPA_Hat = 1; % P inhibiting A
 DA_Hat = DA/(L^2*kdpA);
 KonA_Hat = konA/(kdpA*h);
 KoffA_Hat = koffA/kdpA;
@@ -26,22 +28,26 @@ KonP_Hat = konP/(kdpA*h);
 KoffP_Hat = koffP/kdpA;
 
 % Initialization
-dt=1e-2;
-N=1000;
+dt = 2e-3;
+N = 2000;
 dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
+% Precompute LU factorization
+PDiffMat = (speye(N)/dt-DP_Hat*DSq);
+[PDiff_L,PDiff_U,PDiff_P]=lu(PDiffMat);
+
+
 % Start with small zone of PAR-2 on posterior cap
 iSizes = [0.1:0.1:0.9 0.99];
-for iis=7
+for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
 Zone=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %Zone = ((x > 0.1 & x < 0.5) | (x>0.6 & x < 1));
-A1 = 0.5*ones(N,1).*Zone;
-An = 0.25*ones(N,1).*Zone;
-P = ones(N,1).*~Zone;
+A = 0.5.*Zone + 0.05*~Zone;
+P = ~Zone;
 %if (rAP==0)
-plot(x,A1+2*An,':',x,P,':')
+plot(x,A,':',x,P,':')
 hold on
 %end
 
@@ -49,46 +55,56 @@ tf=500;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
-AllA1s = zeros(nSave,N);
-AllAns = zeros(nSave,N);
-AllPs = zeros(nSave,N);
-PAR3Size = zeros(nSave,1);
+AllAs = zeros(nSave+1,N);
+AllPs = zeros(nSave+1,N);
 
 er = 1;
 for iT=0:nT-1
     if (mod(iT,saveEvery)==0)
+        %toc
         iSave = iT/saveEvery+1;
-        AllA1s(iSave,:)=A1;
-        AllAns(iSave,:)=An;
+        AllAs(iSave,:)=A;
         AllPs(iSave,:)=P;
-        Locs = find((A1+2*An) > P);
-        try
-        PAR3Size(iSave) = (Locs(end)-Locs(1)+1)*dx;
-        catch
-        PAR3Size(iSave)=0;
-        end
 %         hold off
-%         plot(x,A1+2*An,x,P)
+%         plot(x,A,x,P)
 %         drawnow
-%         1 - sum(P)*dx
+        %tic
     end
-    A1prev = A1; A2prev = An; Pprev = P;
-    Atot = A1+2*An;
-    Ac = 1 - sum(Atot)*dx;
+    % Cytoplasmic concentrations
+    Aprev = A; Pprev = P;
+    Ac = 1 - sum(A)*dx;
     Pc = 1 - sum(P)*dx;
-    Feedback = PAR3FeedbackFcn(Atot,Asat);
-    RHS_A2 = KpA_Hat*A1.^2 -KdpA_Hat*(1+rPA_Hat*P).*An;
-    RHS_A1 = KonA_Hat*(1+Kf_Hat*Feedback)*Ac - KoffA_Hat*A1 -2*RHS_A2;
-    RHS_P = KonP_Hat*Pc - KoffP_Hat*(1+rAP_Hat*Atot).*P;
-    P = (speye(N)/dt-DP_Hat*DSq) \ (P/dt+RHS_P);
-    A1 = (speye(N)/dt-DA_Hat*DSq) \ (A1/dt+RHS_A1);
-    An = An + dt*RHS_A2;
-    chk = (P-Pprev)/dt- (DP_Hat*DSq*P + RHS_P);
-    mv = [P-Pprev; A1-A1prev; An-A2prev]/dt;
-    er = max(abs(mv));
+    % PAR-3 update
+    KpsWithP = KpA_Hat./(1+P.*rPA_Hat);
+    A_On =  AttachmentPAR3(A,KonA_Hat,KfA_Hat,Asat,Ac);
+    A_Off = DetachmentPAR3(A,KoffA_Hat,betaA,KdpA_Hat,KpsWithP);
+    A1 = AMon(A,KpsWithP/KdpA_Hat);
+    RHS_A = A_On - A_Off;
+    A = A + dt*(RHS_A+DA_Hat*DSq*A1);
+    % pPAR update
+    RHS_P = KonP_Hat*Pc - KoffP_Hat*(1+rAP_Hat*A).*P;
+    P = PDiff_U\ (PDiff_L\(PDiff_P*(P/dt+RHS_P)));
+    %chk = (P-Pprev)/dt- (DP_Hat*DSq*P + RHS_P);
 end
 set(gca,'ColorOrderIndex',1)
-plot(x,A1+2*An,x,P)
+plot(x,A,x,P)
 title(strcat('$\hat R_\textrm{PA}=$',num2str(rPA_Hat)))
-AllSizes(:,iis)=PAR3Size;
+% Post process to get aPAR and pPAR sizes
+PAR3Size = zeros(nSave,1);
+PAR3Ratio = zeros(nSave,1);
+PAR2Size = zeros(nSave,1);
+PAR2Ratio = zeros(nSave,1);
+for iT=1:nSave
+    MyA = AllAs(iT,:);
+    PAR3Ratio(iT) = max(MyA)/min(MyA); 
+    PAR3Size(iT) = sum(MyA > 0.8*max(MyA))*dx;
+    MyP = AllPs(iT,:);
+    PAR2Ratio(iT) = max(MyP)/min(MyP);
+    PAR2Size(iT) = sum(MyP > 0.8*max(MyP))*dx;
+end
+AllP3Sizes{iD+1}(:,iis)=PAR3Size;
+AllP2Sizes{iD+1}(:,iis)=PAR2Size;
+AllP3Ratios{iD+1}(:,iis)=PAR3Ratio;
+AllP2Ratios{iD+1}(:,iis)=PAR2Ratio;
+end
 end
