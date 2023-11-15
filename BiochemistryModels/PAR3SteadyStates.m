@@ -1,23 +1,21 @@
-DA = 0;
+DA = 0.1;
 L = 134.6;
 h = 9.5;
 koffA = 3;
+beta = 0.25;
 kdpA = 0.08;
 Kp_Hat = 20; % Correct distribution of mon/polys
 konA = 1; % First unknown (set from when feedback is off)
-Kf_Hat = 3.5;
-Asat = 0.4;
-%SatFactor = 0.85; % Come up with an expression for this as fcn of uniform state!!
+Kf_Hat = 5.5;
+Asat = 0.35;%/Factors(iF);
+Factors = 0.5:0.01:1;
 Roots=[];
-%for Kp_Hat=1:50
-%for Kf_Hat=0:0.5:10
 
 % Non-dimensionalization
 D_Hat = DA/(L^2*kdpA);
 Kon_Hat = konA/(kdpA*h); 
 Koff_Hat = koffA/kdpA;
 Kdp_Hat = 1;
-beta = 0.25;
 RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,beta,Kf_Hat,Kdp_Hat,Kp_Hat,Asat);
 Art = 0.82; Astart=Art;
 while (abs(RHSfcn(Art)) > 0.01)
@@ -28,31 +26,34 @@ while (abs(RHSfcn(Art)) > 0.01)
     Astart = Astart/2;
 end
 Ac0 = 1-Art;
+%Asat = Asat*Art
 % Compute mean oligomer size
-alpha=Kp_Hat*AMon(Art,Kp_Hat);
-MeanOligs = 1/(1-alpha);
 %alpha = 1-1./MeanOligs;
 %Kps = (2*alpha-alpha.^2)./(2*Art*(1-alpha).^4);
 Atots=(0:0.001:1)';
 AttRate = AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,-1);
 DetRate = DetachmentPAR3(Atots,Koff_Hat,beta,Kdp_Hat,Kp_Hat);
-plot(Atots,AttRate)
-hold on
-plot(Atots,DetRate)
+%plot(Atots,AttRate,':')
+%hold on
+%plot(Atots,DetRate)
 % ylimlim=ylim;
 % ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
 AttRate =  AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,Ac0);
-plot(Atots,AttRate)
+%set(gca,'ColorOrderIndex',1)
+%plot(Atots,AttRate)
+xlabel('$\hat A$')
 NetFluxAtEq = AttRate-DetRate;
 Signs = NetFluxAtEq(1:end-1).*NetFluxAtEq(2:end);
 SignChanges=sum(Signs<0);
 SignLocs = find(Signs<0);
 LowRoot = Atots(SignLocs(1));
 HighRoot = Atots(SignLocs(end));
+alpha=Kp_Hat*AMon(Art,Kp_Hat);
+MeanOligs = 1/(1-alpha);
 %[LowRoot HighRoot]
-Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot/LowRoot];
+Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot LowRoot]
 %end
 %end
 %xlim([0 1])
@@ -92,6 +93,7 @@ detL=L11*L22-L12*L21;
 %end
 
 function val = RHS(Atot,Kon_Hat,Koff_Hat,beta,Kf_Hat,Kdp_Hat,Kp_Hat,Asat)
+    %Asat = Asat*Atot;
     OnRate = AttachmentPAR3(Atot,Kon_Hat,Kf_Hat,Asat,-1);
     OffRate = DetachmentPAR3(Atot,Koff_Hat,beta,Kdp_Hat,Kp_Hat);
     val = OnRate-OffRate;
