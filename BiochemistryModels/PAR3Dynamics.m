@@ -3,14 +3,14 @@ for iFac=1:length(Factors)
 clf;
 Kp_Hat = Factors(iFac)*20;
 Kf_Hat = Factors(iFac)*5.5;
-Asat = 0.35;%/Factors(iFac);
-PAR3SteadyStates; % get parameters
-dt = 5e-3;
+Asat = 0.35/Factors(iFac); % if you want to inversely scale saturation
+PAR3SteadyStates; % get parameters that are not fixed here
+dt = 2e-3;
 N = 2000;
 dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
-iSizes = [0.5];
+iSizes = [0.5]; % start half the domain enriched
 %figure;
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
@@ -55,6 +55,8 @@ for iT=0:nT-1
     A = A + dt*(RHS_1+D_Hat*DSq*A1);
 end
 plot(x,A)
+legend('Initial condition','$t=4$ min')
+title(strcat('Fraction protein = ',num2str(Factors(iFac))))
 %hold on
 %plot(xlim,[Arts(1) Arts(1)],':k')
 %plot(xlim,[Arts(2) Arts(2)],':k')

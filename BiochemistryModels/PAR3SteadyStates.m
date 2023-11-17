@@ -32,17 +32,17 @@ Ac0 = 1-Art;
 Atots=(0:0.001:1)';
 AttRate = AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,-1);
 DetRate = DetachmentPAR3(Atots,Koff_Hat,beta,Kdp_Hat,Kp_Hat);
-plot(Atots,AttRate,':')
-hold on
-plot(Atots,DetRate)
+%plot(Atots,AttRate,':')
+%hold on
+%plot(Atots,DetRate)
 % ylimlim=ylim;
 % ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
 AttRate =  AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,Ac0);
 %set(gca,'ColorOrderIndex',1)
-plot(Atots,AttRate)
-xlabel('$\hat A$')
+%plot(Atots,AttRate)
+%xlabel('$\hat A$')
 NetFluxAtEq = AttRate-DetRate;
 Signs = NetFluxAtEq(1:end-1).*NetFluxAtEq(2:end);
 SignChanges=sum(Signs<0);
