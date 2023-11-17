@@ -1,10 +1,16 @@
+Factors = 0.5:0.01:1;
+for iFac=1:length(Factors)
+clf;
+Kp_Hat = Factors(iFac)*20;
+Kf_Hat = Factors(iFac)*5.5;
+Asat = 0.35;%/Factors(iFac);
 PAR3SteadyStates; % get parameters
 dt = 5e-3;
 N = 2000;
 dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
-iSizes = [0.9];
+iSizes = [0.5];
 %figure;
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
@@ -14,7 +20,7 @@ A(A==0)=0.1*Art;
 Ac0=1-sum(A)*dx;
 
 er = 1;
-tf = 500;
+tf = 19.2;
 saveEvery=0.1/dt;
 nT = tf/dt+1;
 
@@ -24,7 +30,7 @@ nSave = (nT-1)/saveEvery;
 AllAs = zeros(nSave,N);
 EnrichSize = zeros(nSave,1);
 APRatios = zeros(nSave,1);
-for iT=0:nT
+for iT=0:nT-1
     if (mod(iT,saveEvery)==0)
         iSave = iT/saveEvery+1;
         AllAs(iSave,:)=A;
@@ -52,6 +58,13 @@ plot(x,A)
 %hold on
 %plot(xlim,[Arts(1) Arts(1)],':k')
 %plot(xlim,[Arts(2) Arts(2)],':k')
-AllSizes{Fac+1}(:,iis)=EnrichSize;
-AllRatios{Fac+1}(:,iis)=APRatios;
+%AllSizes{Fac+1}(:,iis)=EnrichSize;
+%AllRatios{Fac+1}(:,iis)=APRatios;
+drawnow
+TotalPAR3(iFac) = sum(A)*dx;
+AllAPRatios(iFac) = max(A)/min(A);
+[~,ind] = max(A);
+alphaAtMax = A1(ind)*Kp_Hat;
+AllMeanOligsA(iFac) = 1/(1-alphaAtMax);
+end
 end

@@ -1,10 +1,9 @@
 % Rxn-diffusion model of PAR-2 and PAR-3 with dimerization on cortex
 % Parameters 
-for iD=[1 0]
 L = 134.6;
 h = 9.5;
 % PAR-3
-DA = iD*0.1;
+DA = 0.1;
 konA = 1; 
 koffA = 3;
 betaA = 0.25;
@@ -38,7 +37,7 @@ KoffC_Hat = koffC*Timescale;
 DK_Hat = DK/L^2*Timescale;
 KoffK_Hat = koffK*Timescale;
 % Reaction networks
-RhatPA = 1;
+RhatPA = 4;
 RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.2;    
@@ -59,7 +58,7 @@ CDiffMat = speye(N)/dt-DC_Hat*DSq;
 [CDiff_L,CDiff_U,CDiff_P]=lu(CDiffMat);
 
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.1:0.1:0.9 0.99];
+iSizes=[0.9];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
@@ -68,8 +67,8 @@ A = 0.5*Inside + 0.05*~Inside;
 C = konC/(konC+koffC*h)*ones(N,1);
 K = zeros(N,1);
 P = ~Inside;
-plot(x,A,':',x,K,':',x,C,':',x,P,':')
-hold on
+%plot(x,A,':',x,K,':',x,C,':',x,P,':')
+%hold on
 
 tf = 500;
 saveEvery=1/dt;
@@ -89,18 +88,18 @@ for iT=0:nT-1
         AllPs(iSave,:)=P;
         AllCs(iSave,:)=C;
         AllKs(iSave,:)=K;
-%         hold off
-%         plot(x,A,x,K,x,C,x,P)
-%         drawnow
+        hold off
+        plot(x,A,x,K,x,C,x,P)
+        drawnow
     end
     
     % Initialization and cytoplasmic
     Aprev = A; Pprev = P; Cprev=C; Kprev=K;
     Ac = 1 - sum(A)*dx;
     Pc = 1 - sum(P)*dx;
-    Cc = 1 - sum(C)*dx;
     Kc = 1 - sum(K)*dx;
-
+    Cc = 1 - sum(C)*dx;
+    
     % PAR-3 update
     KpsWithP = KpA_Hat./(1+P.*RhatPA);
     A_On =  AttachmentPAR3(A,KonA_Hat,KfA_Hat,Asat,Ac);
@@ -133,9 +132,8 @@ for iT=1:nSave
     PAR2Ratio(iT) = max(MyP)/min(MyP);
     PAR2Size(iT) = sum(MyP > 0.8*max(MyP))*dx;
 end
-AllP3Sizes{iD+1}(:,iS)=PAR3Size;
-AllP2Sizes{iD+1}(:,iS)=PAR2Size;
-AllP3Ratios{iD+1}(:,iS)=PAR3Ratio;
-AllP2Ratios{iD+1}(:,iS)=PAR2Ratio;
-end
+AllP3Sizes(:,iS)=PAR3Size;
+AllP2Sizes(:,iS)=PAR2Size;
+AllP3Ratios(:,iS)=PAR3Ratio;
+AllP2Ratios(:,iS)=PAR2Ratio;
 end

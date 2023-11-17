@@ -4,11 +4,10 @@ h = 9.5;
 koffA = 3;
 beta = 0.25;
 kdpA = 0.08;
-Kp_Hat = 20; % Correct distribution of mon/polys
+%Kp_Hat = 20; % Correct distribution of mon/polys
 konA = 1; % First unknown (set from when feedback is off)
-Kf_Hat = 5.5;
-Asat = 0.35;%/Factors(iF);
-Factors = 0.5:0.01:1;
+%Kf_Hat = 5.5;
+%Asat = 0.35;%/Factors(iF);
 Roots=[];
 
 % Non-dimensionalization
@@ -33,16 +32,16 @@ Ac0 = 1-Art;
 Atots=(0:0.001:1)';
 AttRate = AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,-1);
 DetRate = DetachmentPAR3(Atots,Koff_Hat,beta,Kdp_Hat,Kp_Hat);
-%plot(Atots,AttRate,':')
-%hold on
-%plot(Atots,DetRate)
+plot(Atots,AttRate,':')
+hold on
+plot(Atots,DetRate)
 % ylimlim=ylim;
 % ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
 AttRate =  AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,Ac0);
 %set(gca,'ColorOrderIndex',1)
-%plot(Atots,AttRate)
+plot(Atots,AttRate)
 xlabel('$\hat A$')
 NetFluxAtEq = AttRate-DetRate;
 Signs = NetFluxAtEq(1:end-1).*NetFluxAtEq(2:end);
@@ -53,7 +52,7 @@ HighRoot = Atots(SignLocs(end));
 alpha=Kp_Hat*AMon(Art,Kp_Hat);
 MeanOligs = 1/(1-alpha);
 %[LowRoot HighRoot]
-Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot LowRoot]
+%Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot LowRoot]
 %end
 %end
 %xlim([0 1])
