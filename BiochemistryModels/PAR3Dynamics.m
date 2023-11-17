@@ -3,7 +3,7 @@ for iFac=1:length(Factors)
 clf;
 Kp_Hat = Factors(iFac)*20;
 Kf_Hat = Factors(iFac)*5.5;
-Asat = 0.35/Factors(iFac); % if you want to inversely scale saturation
+Asat = 0.35;%/Factors(iFac); % if you want to inversely scale saturation
 PAR3SteadyStates; % get parameters that are not fixed here
 dt = 2e-3;
 N = 2000;
@@ -15,9 +15,10 @@ iSizes = [0.5]; % start half the domain enriched
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
 A = Art.*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
-A(A==0)=0.1*Art;
+A(A==0)=0.01*Art;
 %A = Art+0.2*cos(2*pi*x);
 Ac0=1-sum(A)*dx;
+A = A/(1-Ac0); % put nothing in the cytoplasm initially
 
 er = 1;
 tf = 19.2;
@@ -70,3 +71,7 @@ alphaAtMax = A1(ind)*Kp_Hat;
 AllMeanOligsA(iFac) = 1/(1-alphaAtMax);
 end
 end
+figure;
+plot(AllMeanOligsA,AllAPRatios,'o')
+xlabel('Mean oligomer size (anterior)')
+ylabel('A/P ratio')
