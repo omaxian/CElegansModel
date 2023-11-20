@@ -88,9 +88,9 @@ for iT=0:nT-1
         AllPs(iSave,:)=P;
         AllCs(iSave,:)=C;
         AllKs(iSave,:)=K;
-        hold off
-        plot(x,A,x,K,x,C,x,P)
-        drawnow
+%         hold off
+%         plot(x,A,x,K,x,C,x,P)
+%         drawnow
     end
     
     % Initialization and cytoplasmic
@@ -116,8 +116,8 @@ for iT=0:nT-1
     K =  KDiff_U\ (KDiff_L\(KDiff_P*(K/dt+RHS_K)));
     %chk = (C-Cprev)/dt- (DC_Hat*DSq*C + RHS_C);
 end
-set(gca,'ColorOrderIndex',1)
-plot(x,A,x,K,x,C,x,P)
+%set(gca,'ColorOrderIndex',1)
+%plot(x,A,x,K,x,C,x,P)
 %title(strcat('$A^\textrm{(Tot)}=$',num2str(ATot),', $P^\textrm{(Tot)}=$',num2str(PTot)))
 % Post process to get aPAR and pPAR sizes
 PAR3Size = zeros(nSave,1);

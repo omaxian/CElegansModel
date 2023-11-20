@@ -565,13 +565,13 @@ In Fig.\ \ref{fig:P3Depl}, we put our models for feedback together into one summ
 \end{enumerate}
 
 \subsubsection{Replicating experimental conditions}
-Figure\ \ref{fig:P3Depl} looked at PAR-3 depletion around the uniform state using a kind of local perturbation analysis. In this section, we repeat the analysis considering dynamics. Specifically, we first set the fraction $F$ of total PAR-3, then scale the dimensionless feedback strength and polymerization rate accordingly. We solve for the uniform steady state with these parameters, then initialize a simulation with half the domain at $\hat A = u$ (the ``anterior'') and the other half at $\hat A = 0.1u$ (the ``posterior''). We then run the dynamics\ \eqref{eq:SingleSpec} forward in time until we reach $\hat t = 19.2$, which is 4 minutes of real time, corresponding exactly to the time interval used in experiments. At $\hat t = 19.2$, we record the mean oligomer size on the anterior and the A/P asymmetry. The results for our different feedback models are shown in Fig.\ \ref{fig:P3DeplF}
+Figure\ \ref{fig:P3Depl} looked at PAR-3 depletion around the uniform state using a kind of local perturbation analysis. In this section, we repeat the analysis considering dynamics. Specifically, we first set the fraction $F$ of total PAR-3, then scale the dimensionless feedback strength and polymerization rate accordingly. To mimic the end of establishment phase, we initialize a simulation with all protein bound to the membrane with half the domain having 10 times more bound protein than the other. We then run the dynamics\ \eqref{eq:SingleSpec} forward in time until we reach $\hat t = 19.2$, which is 4 minutes of real time, corresponding exactly to the time interval used in experiments. At $\hat t = 19.2$, we record the mean oligomer size on the anterior and the A/P asymmetry. The results for our different feedback models are shown in Fig.\ \ref{fig:P3DeplF}
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{PAR3DepletionExp_F.eps}
 \includegraphics[width=0.8\textwidth]{PAR3DepletionExp_ForPaper.eps}
-\caption{\label{fig:P3DeplF}Dynamic PAR-3 depletion experiment. We consider a fraction of the total PAR-3 $F$, then vary the polymerization rate by $\KhatpA=20F$, and feedback strength according to $\KhatfA=5.5F$ (for $x=1$, these are the base parameters in Table\ \ref{tab:paramsP3}). For each set of parameters, we solve for the uniform state $u$, then at $\hat t =0$ set up half the domain at $\hat A=u$ and half the domain at $\hat A=0.1u$ to mimic the end of ``establishment'' phase. We then evolve until $\hat t=19.2$ (4 minutes of real time) and record the A/P asymmetry and mean oligomer size on the anterior. The top plots compare the recruitment models to the data, while the bottom plot is a cleaned-up version for paper main text. }
+\caption{\label{fig:P3DeplF}Dynamic PAR-3 depletion experiment. We consider a fraction of the total PAR-3 $F$, then vary the polymerization rate by $\KhatpA=20F$, and feedback strength according to $\KhatfA=5.5F$ (for $x=1$, these are the base parameters in Table\ \ref{tab:paramsP3}). For each set of parameters, we mimic the end of establishment phase by setting up the domain with 100\% bound protein, with the A/P ratio 10/1  at time zero. We then evolve until $\hat t=19.2$ (4 minutes of real time) and record the A/P asymmetry and mean oligomer size on the anterior. The top plots compare the recruitment models to the data, while the bottom plot is a cleaned-up version for paper main text. }
 \end{figure}
 
 We once again make the following observations:
@@ -585,7 +585,14 @@ We once again make the following observations:
 Thus, while no model for the feedback is perfect, the simplest model (where the feedback saturates at a fixed fraction of PAR-3 bound to the membrane), gives the best match to experimental data, as it reproduces the bifurcation from symmetry to asymmetry, and predicts a minimum asymmetry of about 4. This is the model we use in the main text, and the one we build on going forward.
 
 \subsubsection{Phase diagram}
-Ask Charlie and Ed how to do this one.
+Now that we have determined the effective form of the feedback, we construct a phase diagram for the bistable state vs.\ the uniform state. We consider in this case local perturbations, so that we make the flux plot around the uniform steady state (as in Fig.\ \ref{fig:P3Cap}) and determine if there is coexistence of another steady state at the same cytoplasmic concentration. If there is, we record the mean oligomer size at steady state, and the A/P ratio. The phase diagram in Fig.\ \ref{fig:PhaseDiag} shows how the polarization depends on the mean oligomer size (at the uniform steady state) and feedback strength, with the colors indicating the A/P ratio. The default parameters we use are shown as a star. As we might expect, states with large mean oligomer sizes require low feedback strengths to polarize. This illustrates how feedback and oligomerization work together to stabilize the polarized state.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{PAR3PhaseDiagram.eps}
+\caption{\label{fig:PhaseDiag} Phase diagram for A/P ratio as a function of mean oligomer size at the uniform steady state and feedback strength. Here we consider local perturbation analysis (as in Fig.\ \ref{fig:P3Cap}), so the A/P ratio is larger than 1 if a second steady state exists at the same cytoplasmic concentration as the uniform steady state. The red dots show the case when the A/P ratio is exactly 1 (no polarization), while the dots of other colors show polarized states with ratios following the colormap shown at right (which cuts off at 20; the top right value is actually 35). The star indicates the default parameter values.}
+\end{figure}
+
 
 \subsection{Including other proteins with mutual inhibition \label{sec:BCOnly}}
 \begin{figure}
@@ -684,9 +691,8 @@ we have $\tilde{C} \approx 1/(1+13.3\hat{P})$, which implies that
 \hat{R}_\text{ACK}(0.25)(0.75)- (0.125)(0.25)=0 \rightarrow \hat{R}_\text{ACK}=0.17\approx 0.2.
 \end{equation*}
 \item In embryos depleted of PAR-1 and CHIN-1, the level of PAR-3 at the anterior is roughly 10\% of the posterior, and PAR-6 can load onto the membrane everywhere. We therefore set $\hat A_0=0.05$, as this is 10\% of the uniform state.
-\item \red{In embryos without myosin flows, the steady state boundary is at 70--75\% PAR-3 enrichment \cite[Fig.~5B]{zonies2010symmetry}. This sets $\hat{R}_\text{PA}=1.5$.}
 \end{enumerate}
-The way the parameters are set is summarized in Table\ \ref{tab:paramsBC}.
+We will for the moment leave the parameter $\hat R_\text{PA}$ unset, and look at how the model changes when we vary it. The way the rest of parameters are set is summarized in Table\ \ref{tab:paramsBC}.
 
 \subsubsection{Regimes of behavior without PAR-3 diffusion}
 We now try to understand how the biochemistry model\ \eqref{eq:AllBC} can behave for different choices of the PAR-1/PAR-3 inhibition strength $\hat R_\text{PA}$. To accomplish this, we set up an initial condition shown in the top right of Fig.\ \ref{fig:BCRegimes}, where PAR-3 ($A$) is enriched in the middle 90\% of the embryo, while posterior PARs ($P$) are enriched in the outer 10\%. CDC-42 ($C$) is distributed uniformly, and no PAR-6/PKC-3 ($K$) is bound to the membrane. We then run the model forward in time until $\hat t = 60$ (12.5 minutes of real time) and look at how the distributions of the proteins evolve. 
@@ -710,13 +716,26 @@ We now try to understand how the boundary position is set in the absence of diff
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{BoundaryCytoBiochemNoDiff.eps}
-\caption{\label{fig:BoundaryNoDiff}Simulating the biochemistry dynamics\ \eqref{eq:AllBC} with (left) and without (right) cytoplasmic depletion. In both cases, we set $\hat R_\text{PA}=4$, so that we are in the intermediate regime where aPARs and pPARs can coexist on the membrane. We start at the initial condition shown in Fig.\ \ref{fig:BCRegimes}, then show a sequence of time points from $\hat t = 50$ (the lightest colors) to $\hat t = 800$ (the darkest colors). The left plot shows results with the equations as written, while the right plot removes the cytoplasmic pool updates after $\hat t = 100$. For clarity of the plot, we show only PAR-3 in blue and pPARs in purple.}
+\caption{\label{fig:BoundaryNoDiff}Simulating the biochemistry dynamics\ \eqref{eq:AllBC} with (left) and without (right) cytoplasmic depletion. In both cases, we set $\hat R_\text{PA}=4$, so that we are in the intermediate regime where aPARs and pPARs can coexist on the membrane, and there is no diffusion of PAR-3 monomers $\left(D_A=0\right)$. We start at the initial condition shown in Fig.\ \ref{fig:BCRegimes}, then show a sequence of time points from $\hat t = 50$ (the lightest colors) to $\hat t = 800$ (the darkest colors). The left plot shows results with the equations as written, while the right plot removes the cytoplasmic pool updates after $\hat t = 100$. For clarity of the plot, we show only PAR-3 in blue and pPARs in purple.}
 \end{figure}
 
-The reason the boundary shifts without diffusion of PAR-3 is that PAR-1 shifts the local equilibrium of oligomerization towards the monomer state, driving the depolymerization curve higher and making only one small stable point for the local dynamics. Because of cytoplasmic depletion, the increase in $A$ and decrease in $P$ on the anterior domain eventually stops this process, as there is at some point too much $A$ and not enough $P$ for $P$ to win the competition (the decrease in $P$ comes from both cytoplasmic depletion and cytoplasmic enrichment of CDC-42/PAR-6/PKC-3, which inhibit $P$). To demonstrate that the cytoplasmic dynamics are key to arresting posterior domain expansion, in the right panel of Fig.\ \ref{fig:BoundaryNoDiff} we simulate with a cytoplasmic pool that is ``frozen'' at its value at $\hat t = 100$. The result is an anterior domain which shrinks at a constant rate, until it is driven to a small state everywhere. 
+The reason the boundary shifts without diffusion of PAR-3 is that PAR-1 shifts the local equilibrium of oligomerization towards the monomer state, driving the depolymerization curve higher and making only one small stable point for the local dynamics. Because of cytoplasmic depletion, the increase in $A$ and decrease in $P$ on the anterior domain eventually stops this process, as there is at some point too much $A$ and not enough $P$ for $P$ to win the competition (the decrease in $P$ comes from both cytoplasmic depletion and cytoplasmic enrichment of CDC-42/PAR-6/PKC-3, which inhibit $P$). To demonstrate that the cytoplasmic dynamics are key to arresting posterior domain expansion, in the right panel of Fig.\ \ref{fig:BoundaryNoDiff} we simulate with a cytoplasmic pool that is ``frozen'' at its value at $\hat t = 100$. The result is an anterior domain which shrinks at a constant rate, until it is driven to a small state everywhere (contracts off the end of the embryo). 
+
+
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{BCDomainSizeNoDiff.eps}
+\caption{\label{fig:BCDSNoD} Size of the PAR-3 (left) and PAR-2 (right) domain over time for simulations of the model\ \eqref{eq:AllBC} without diffusion of PAR-3 monomers ($D_A=0$). Here the domain size is measured by the length of domain where a particular protein concentration is 80\% of its maximum or larger. }
+\end{figure}
+
+We now consider the evolution of the boundary over time starting from different initial configurations. The initial conditions are as in Fig.\ \ref{fig:BCRegimes}, with enrichment of PAR-3 on some fraction of the domain and enrichment of PAR-2 on the other part of the domain. We then watch the simulation evolve, plotting the PAR-3 domain size on the left panel of Fig.\ \ref{fig:BCDSNoD} and the PAR-2 domain size on the right. When the initial domain size is too small (10\% PAR-3), the loading of PAR-3 is too fast, and PKC-3 is distributed uniformly, which allows the pPARs to be uniform as well. Thus PAR-3 assumes its intrinsic bistable profile, but the other proteins do not.
+
+The more interesting dynamics occur for slightly larger sizes of the PAR-3 domain. If we start the domain with 20\% of more enrichment of PAR-3, there is attraction to a steady state polarization of PAR-3 and PAR-2. Without diffusion, there appears to be a smaller-than-expected range of domain sizes (roughly 35--50\% PAR-3 and 15--30\% PAR-2), but no unique boundary position.
+
 
 \subsubsection{Incorporating diffusion}
-We now incorporate diffusion of PAR-3 monomers. Naively, we might expect diffusion to prevent the PAR-3 boundary from getting too concentrated, since diffusive flux outward will fight against the tendency of the PAR-3 domain to contract. Figure\ \ref{fig:BoundaryDiff} shows that this is not the case, as the simulations with diffusion are almost identical to those without, in the sense that not accounting for cytoplasmic changes still drives the boundary down to nothing (although at a lower rate than without diffusion). Thus diffusion slows down, but does not stop, the boundary from contracting to zero. 
+We now incorporate diffusion of PAR-3 monomers, first considering the experiment with and without cytoplasmic depletion (Fig.\ \ref{fig:BoundaryNoDiff}). Naively, we might expect diffusion to prevent the PAR-3 boundary from getting too concentrated, since diffusive flux outward will fight against the tendency of the PAR-3 domain to contract. Figure\ \ref{fig:BoundaryDiff} shows that this is not the case, as the simulations with diffusion are almost identical to those without, in the sense that not accounting for cytoplasmic depletion still drives the boundary down to nothing (although at a slower rate than without diffusion). Thus diffusion slows down, but does not stop, the boundary from contracting to zero. 
 
 \begin{figure}
 \centering
@@ -724,19 +743,27 @@ We now incorporate diffusion of PAR-3 monomers. Naively, we might expect diffusi
 \caption{\label{fig:BoundaryDiff}Same plot as Fig.\ \ref{fig:BoundaryNoDiff}, but with diffusion of PAR-3 monomers. }
 \end{figure}
 
-\subsubsection{Position of the boundary with correct parameters and diffusion of PAR-3}
+What about the position of the boundary? In simulations with PAR-3 alone, diffusion sets a unique boundary position. Fig.\ \ref{fig:BCDSD} shows that this is also the case with the full biochemistry. As before, small amounts of initial PAR-3 enrichment lead to a different boundary position because PAR-3 assumes its intrinsic bistable state while the other proteins are distributed uniformly (this size is smaller than when PAR-3 is literally by itself because the pPARs still inhibit PAR-3, they just do so uniformly). Initial PAR-3 domain sizes 0.2 or larger lead to a single steady state boundary with about 50\% PAR-3 enrichment and 25\% PAR-2 enrichment. The rest of the domain is where the gradient of PKC-3 is set up.
+
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{SteadyStateBC.eps}
-\caption{\label{fig:BCSS}Steady state with biochemistry model\ \eqref{eq:AllBC}. The left panel shows the steady ststa we obtain when we start with 40\% or more PAR-3 enrichment. We see a domain of PAR-3 taking up about 70\% of the embryo, with the other aPARs concentrated in a more narrow zone (the diffusive gradient is larger). The right panel plots the size of the PAR-3 domain as a function of time.}
+\includegraphics[width=\textwidth]{BCDomainSizeDiff.eps}
+\caption{\label{fig:BCDSD} Size of the PAR-3 (left) and PAR-2 (right) domain over time for simulations of the model\ \eqref{eq:AllBC} with diffusion of PAR-3 monomers ($D_A=0.1$ $\mu$m$^2$/s). Here the domain size is measured by the length of domain where a particular protein concentration is 80\% of its maximum or larger. }
 \end{figure}
 
-\red{Show how it evolves from different start positions.} We now run the model to steady state and examine the results. We begin with an initial profile where PAR-3 is enriched in a zone, with $P$ enriched outside of this zone, and the other proteins set uniformly. We find that very small enrichments of PAR-3 (0.1 or less) lead to a state where all proteins are uniform everywhere. A second set of initial sizes (between 0.1 and 0.3) leads to a state where PAR-3 assumes its intrinsic bistable profile, while the other proteins are uniform. If the initial size of the PAR-3 enrichment domain is large enough (40\% of the embryo length or larger), we obtain the steady state shown in the left panel of Fig.\ \ref{fig:BCSS}. This state has a roughly 70\% zone of PAR-3 enrichment, with the other aPARs enriched in a tighter zone inside. 
 
-How does the model do in predicting experimental observations we did not fit? The most important one is the posterior/anterior ratio of PAR-3, which at steady state is 4\% (0.023/0.567). This ratio lines up well with the experimental data in \cite[Fig.~4C]{sailer2015dynamic}. Beause of the small ratio, there is no PAR-6 on the posterior pole, as there is not enough PAR-3 to gate the association with CDC-42 and binding to the membrane. The pPAR ratio is about 6\% (0.068/1.184), which could be compared to experimental data as well.
+\subsubsection{Setting the inhibition strength $\hat R_\text{PA}$ and simulating}
+We have already seen that the inhibition strength $\hat R_\text{PA}$, which is our last unknown parameter, can change the boundary position and A/P ratio of PAR-3 and pPARs. The parameter $\hat R_\text{PA}$ also affects the distribution of oligomer sizes on the posterior, both through the relationship\ \eqref{eq:QSSP} and indirectly by setting the amount of $P$ on the posterior/anterior. To determine the value of $\hat R_\text{PA}$, we simulate to steady state with several different values, and plot the steady states, PAR-3 domain size over time, and $\alpha$ values at steady state in Fig.\ \ref{fig:BCSS}. 
 
-As in the model with PAR-3 alone, we find that the approach to steady state is quite slow. As shown in the right panel of Fig.\ \ref{fig:BCSS}, an initial zone of 90\% PAR-3 enrichment ``relaxes'' to the steady state on a timescale of roughly $\hat t = 100$, which is 20 minutes of real time. We need contractility to approach the steady state faster, as we discuss in the next section.
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FittingRPADiff.eps}
+\caption{\label{fig:BCSS}Steady state with biochemistry model\ \eqref{eq:AllBC}, varying parameter $\hat R_\text{PA}$. The top left panel shows the initial condition, with 90\% of the domain enriched in PAR-3. The next three panels show the steady state $A$ (PAR-3), $K$ (PKC-3/PAR-6), $C$ (CDC-42), and $P$ (pPAR) levels with different values of $\hat R_\text{PA}$. The bottom plots show the PAR-3 domain size (left) and $\alpha$ values (right) at steady state for the different values of $\hat R_\text{PA}$. }
+\end{figure}
 
+Similar to the results shown for $\hat R_\text{PA}=4$ in Fig.\ \ref{fig:BCDSD}, we find that the approach to steady state occurs on a timescale of about $\hat t = 200$ (40 minutes of real time), which is too long to observe \emph{in vivo}. The means that systems with myosin knockdown, such as those in \cite{zonies2010symmetry}, might only observe a transient boundary position rather than the steady state one. Thus the correct way to pin the parameter $\hat R_\text{PA}$ is to look at the A/P ratio of PAR-3 or the $\alpha$ value on the posterior when PAR-1 is included. It seems to us that $\hat R_\text{PA}=2$ is a reasonable choice; it gives $\alpha=0.14$ on the posterior (75\% monomers) and an A/P ratio of 20 at steady state (this is double the ratio for PAR-3 alone). Furthermore, it produces a boundary position of about 70\% of the embryo by $\hat t = 36$, which is about 450 s of real time. This corresponds nicely to the results of \cite[Fig.~2c]{gross2019guiding}, which found that this is about how long it takes the PAR-2 domain to spread without myosin. \red{We need the $\alpha$ value on the posterior to confirm however.}
+
+\iffalse
 \section{Coupling contractility to biochemistry \label{sec:WithMy}}
 \red{PAR-3 saturation level has changed slightly.} 4We now present the full model with contractility and all of the biochemistry. The goal of this section is to couple the dynamics of proteins to myosin. We do this through the GTPase CDC-42, which activates myosin and branched actin, as shown in blue in Fig.~\ref{fig:ModelSch}.
 
@@ -857,6 +884,7 @@ Figure\ \ref{fig:TimeSeqBA} shows the dynamics of the approach to steady state f
 Figure\ \ref{fig:StStBA} shows how our modeled steady state compares to wild-type embryos. Qualitatively, the results match: the myosin intensity displays a peak at the anterior cap, then drops off to a level midway between the peak anterior and posterior levels at the anterior pole. The flow also exhibits a maximum off of the anterior cap, then rapidly transitions to a stall point at the edge of the anterior domain.
 
 \red{Quantitatively, our results almost match up with the experiments, but leave a little to be desired. The issue is the lengthscale on which the drop in myosin occurs. Because branched actin is only active on the anterior cap, the lengthscale on which it goes from zero to its peak value is quite small (controlled by the diffusivity, which here is set equal to the diffusivity of myosin; see the last panel of Fig.\ \ref{fig:StStBA}). As such, the myosin is inhibited quickly in the model, and the profile rapidly drops to a flat level in the anterior. This is \emph{not} what is observed in experiments, where we see a more gradual decrease (although the individual embryos do show rapid decreases). The result of this in the flow field is a slightly smaller absolute velocity and a smaller lengthscale once again (relative to the experimental data).}
+\fi
 
 \bibliographystyle{plain}
 

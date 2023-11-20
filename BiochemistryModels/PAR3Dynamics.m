@@ -14,8 +14,9 @@ iSizes = [0.5]; % start half the domain enriched
 %figure;
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
-A = Art.*(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
-A(A==0)=0.01*Art;
+Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
+A = Art.*Inside;
+A(A==0)=0.1*Art;
 %A = Art+0.2*cos(2*pi*x);
 Ac0=1-sum(A)*dx;
 A = A/(1-Ac0); % put nothing in the cytoplasm initially
