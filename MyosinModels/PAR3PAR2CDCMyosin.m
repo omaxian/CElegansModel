@@ -51,12 +51,12 @@ KonM_Hat = konM/h*Timescale;
 KoffM_Hat = koffM*Timescale;
 LRatio = sqrt(eta/gamma)/L;
 % Reaction networks
-RhatPA = 4;
+RhatPA = 2;
 RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.2;    
 AcForK = 0.05;
-RhatCM = 0.5;    % CDC-42 promotes myosin (fitting parameter)
+RhatCM = 1.2;    % CDC-42 promotes myosin (fitting parameter)
 
 % Initialization
 dt = 2e-3;
@@ -154,7 +154,22 @@ for iT=0:nT-1
     chk = (M-Mprev)/dt- (DM_Hat*DSq*M + RHS_M);
 end
 set(gca,'ColorOrderIndex',1)
-plot(x,A1+2*An,x,K,x,C,x,P,x,M)
-%title(strcat('$A^\textrm{(Tot)}=$',num2str(ATot),', $P^\textrm{(Tot)}=$',num2str(PTot)))
+plot(x,A,x,K,x,C,x,P,x,M)
+% Post process to get aPAR and pPAR sizes
+PAR3Size = zeros(nSave,1);
+PAR3Ratio = zeros(nSave,1);
+PAR2Size = zeros(nSave,1);
+PAR2Ratio = zeros(nSave,1);
+for iT=1:nSave
+    MyA = AllAs(iT,:);
+    PAR3Ratio(iT) = max(MyA)/min(MyA); 
+    PAR3Size(iT) = sum(MyA > 0.8*max(MyA))*dx;
+    MyP = AllPs(iT,:);
+    PAR2Ratio(iT) = max(MyP)/min(MyP);
+    PAR2Size(iT) = sum(MyP > 0.8*max(MyP))*dx;
+end
 AllP3Sizes(:,iS)=PAR3Size;
+AllP2Sizes(:,iS)=PAR2Size;
+AllP3Ratios(:,iS)=PAR3Ratio;
+AllP2Ratios(:,iS)=PAR2Ratio;
 end

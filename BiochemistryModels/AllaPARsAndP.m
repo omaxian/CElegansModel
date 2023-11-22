@@ -37,7 +37,7 @@ KoffC_Hat = koffC*Timescale;
 DK_Hat = DK/L^2*Timescale;
 KoffK_Hat = koffK*Timescale;
 % Reaction networks
-RhatPA = 4;
+RhatPA = 2;
 RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.2;    
@@ -58,7 +58,7 @@ CDiffMat = speye(N)/dt-DC_Hat*DSq;
 [CDiff_L,CDiff_U,CDiff_P]=lu(CDiffMat);
 
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.9];
+iSizes=[0.5];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
@@ -67,10 +67,10 @@ A = 0.5*Inside + 0.05*~Inside;
 C = konC/(konC+koffC*h)*ones(N,1);
 K = zeros(N,1);
 P = ~Inside;
-%plot(x,A,':',x,K,':',x,C,':',x,P,':')
-%hold on
+plot(x,A,':',x,K,':',x,C,':',x,P,':')
+hold on
 
-tf = 500;
+tf = 400;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -116,9 +116,8 @@ for iT=0:nT-1
     K =  KDiff_U\ (KDiff_L\(KDiff_P*(K/dt+RHS_K)));
     %chk = (C-Cprev)/dt- (DC_Hat*DSq*C + RHS_C);
 end
-%set(gca,'ColorOrderIndex',1)
-%plot(x,A,x,K,x,C,x,P)
-%title(strcat('$A^\textrm{(Tot)}=$',num2str(ATot),', $P^\textrm{(Tot)}=$',num2str(PTot)))
+set(gca,'ColorOrderIndex',1)
+plot(x,A,x,K,x,C,x,P)
 % Post process to get aPAR and pPAR sizes
 PAR3Size = zeros(nSave,1);
 PAR3Ratio = zeros(nSave,1);
