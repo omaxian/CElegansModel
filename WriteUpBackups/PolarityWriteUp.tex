@@ -565,7 +565,7 @@ We have already seen that the inhibition strength $\hat R_\text{PA}$, which is o
 
 Similar to the results shown for $\hat R_\text{PA}=4$ in Fig.\ \ref{fig:BCDSD}, we find that the approach to steady state occurs on a timescale of about $\hat t = 200$ (40 minutes of real time), which is too long to observe \emph{in vivo}. The means that systems with myosin knockdown in establishment phase, such as those in \cite{zonies2010symmetry}, might only observe a transient boundary position rather than the steady state one. Thus the correct way to pin the parameter $\hat R_\text{PA}$ is to look at the A/P ratio of PAR-3 or the $\alpha$ value on the posterior when PAR-1 is included. It seems to us that $\hat R_\text{PA}=2$ is a reasonable choice; it gives $\alpha=0.14$ on the posterior (75\% monomers) and an A/P ratio of 20 at steady state (this is double the ratio for PAR-3 alone). Furthermore, it predicts (slow) expansion of the boundary by about 20\% in maintenance phase, as observed in experiments where embryos are allowed to establish polarity but then treated to inhibit contractility. \red{We need the $\alpha$ value on the posterior to confirm however.}
 
-
+\newpage
 \section{Dynamics of myosin in the embryo \label{sec:myosin}}
 Once we set up a bistable reaction system, the question becomes how we can move from the uniform to the polarized state. Experiments suggest that there are two intrinsic boundary positions here: one (at about 75\% egg length) that occurs in the absence of actomyosin flows, and another (at about 50\% egg length) that occurs with actomyosin flows \cite{zonies2010symmetry}. Section\ \ref{sec:Biochem} showed that the first boundary position can be obtained by propagating a local zone of PAR-3 depletion in the presence of mutual inhibition with pPARs. The second case suggests that flows alter the flux balance between the anterior and posterior domains, thus shifting the boundary positions. Indeed, there is a steady state nonzero flow profile observed during maintenance phase, corresponding to an asymmetry in myosin intensity across the A/P boundary \cite{sailer2015dynamic}.
 
@@ -752,7 +752,7 @@ Because myosin cannot form patterns on its own, there must be an interaction wit
 The last equation\ \eqref{eq:NewNDs} defines the key \emph{new} dimensionless parameters relating to myosin. These differ from\ \eqref{eq:NDparams} because we can only non-dimensionalize time by one quantity, and we choose here to stick with the depolymerization time $1/\kdp_A$. Table\ \ref{tab:paramsMy} gives the dimensional quantities ${\sigma}_0$, $D_M$, and $\koff_M$, from which we obtain $\hat \sigma_0$, $\hat D_M$, and $\hat K^\text{off}_M$. This leaves two parameters which control the myosin profile: the basal rate $\kon_M$, and the amount that CDC-42 promotes myosin, $\hat R_\text{CM}$. Our fitting procedure (results summarized in Table\ \ref{tab:paramsC}) is quite simple:
 \begin{enumerate}
 \item In wild-type and \emph{arx-2} (RNAi) embryos, the minimum amount of bound myosin is 0.2. This sets $\kon_M$ via $\kon_M/(\kon_M+\koff_M h) \approx 0.2$, giving $\kon_M=0.3$ $\mu$m/s.
-\item We then fit the parameter $\hat R_\text{CM}=1$ to match the boundary position in \emph{arx-2} (RNAi) embryos, as shown in Fig.\ \ref{fig:VelProfArx2}.
+\item We then fit the parameter $\hat R_\text{CM}=0.8$ to match the boundary position in \emph{arx-2} (RNAi) embryos, as shown in Fig.\ \ref{fig:VelProfArx2}.
 \end{enumerate}
 The rest of the biochemical parameters are in Tables\ \ref{tab:paramsP3} and \ref{tab:paramsBC}.
 
@@ -764,7 +764,7 @@ Parameter & Description & Value & Units & Ref & Notes \\ \hline
 $\kon_M$ & $M$ attachment rate & 0.3 & $\mu$m/s & & 20\% bound $M$ no CDC \\
 $\hat R_\text{CM}$ & $C$ promoting $M$ & 0.8 & &  & Correct $M$ profile\\ \hline
 \end{tabular}
-\caption{\label{tab:paramsC} Additional parameters and fitting parameters for coupled model\ \eqref{eq:Everything} without branched actin.}
+\caption{\label{tab:paramsC} Additional parameters and fitting parameters for coupled model\ \eqref{eq:Everything}.}
 \end{small}
 \end{table}
 
@@ -785,7 +785,7 @@ We simulate the model\ \eqref{eq:Everything} (with parameters in Tables\ \ref{ta
 \caption{\label{fig:TimeSeqNoCyto} Time progression of an initially peaked profile of posterior PARs in the model\ \eqref{eq:Everything} with $\hat R_\text{CM}=0.8$, with cytoplasmic concentrations frozen at their values at $\hat t=50$. This is the same simulation as in Fig.\ \ref{fig:TimeSeqNoBA}, but here we do not update the cytoplasmic concentrations. Without cytoplasmic depletion of PAR-2, the pPAR domain invades the entire embryo length.}
 \end{figure}
 
-To demonstrate that changes in the cytoplasmic pool are responsible for pinning the boundary \cite{goehring2011polarization}, in Fig.\ \ref{fig:TimeSeqNoCyto} we repeat the simulation from Fig.\ \ref{fig:TimeSeqNoBA}, but withhold any changes to the cytoplasmic pool after $\hat t = 50$. Similar to the case without contractility (Figs.\ \ref{fig:BoundaryNoDiff} and \ref{fig:BoundaryDiff}), the posterior domain invades the anterior domain at a constant speed, resulting in an eventual complete disappearance of the PAR-3 domain (it assumes a uniform small state at $\hat t = 400$). Thus cytoplasmic changes (depletion of PAR-2 and enrichment of the aPARs) are responsible for pinning the boundary at its set position.
+To demonstrate that changes in the cytoplasmic pool are responsible for pinning the boundary \cite{goehring2011polarization}, in Fig.\ \ref{fig:TimeSeqNoCyto} we repeat the simulation from Fig.\ \ref{fig:TimeSeqNoBA}, but withhold any changes to the cytoplasmic pool after $\hat t = 50$. Similar to the case without contractility (Figs.\ \ref{fig:BoundaryNoDiff} and \ref{fig:BoundaryDiff}), the posterior domain invades the anterior domain at a constant speed, resulting in an eventual complete disappearance of the PAR-3 domain (it assumes a uniform small state at $\hat t = 400$). Thus cytoplasmic changes (depletion of PAR-2 and enrichment of the aPARs) are responsible for pinning the boundary at its set position. This is fundamentally the same mechanism as the system with contractility, where the pPARs stop ``winning'' the fight against aPARs after the boundary has shrunk enough. The difference is that here contractility adds to flux pushing against the aPAR boundary. 
 
 \begin{figure}
 \centering
@@ -806,7 +806,7 @@ To further probe this behavior, in Fig.\ \ref{fig:BPosNBA} we plot the size of t
 
 In experimental systems, we know that the anterior domain does not contract off the end of the embryo, nor develop very large values at the anterior cap. There could be two reasons for this: (1) the cell is operating in the regime of relatively small $\hat R_\text{PA}$, so that cytoplasmic depletion is pinning the boundary, or (2) the cell cuts off the dynamics of the shrinking anterior domain by moving on to the next phase of the cell cycle (in this case, cell division). \red{To explore these possibilities, we performed an experiment where we extended interphase, where the same mechanisms apply to pin the anterior boundary, and examined the size of the anterior domain over time. The results show...}
 
-Another piece of experimental data that can help us determine the value of $\hat R_\text{PA}$ comes from the experiments in \cite{tse2012rhoa}, where polarization is carried out in embryos lacking \emph{ect-2} and \emph{nop-1}. Such a knockdown destroys the initial symmetry-breaking step, and results in a maintenance-phase ``rescue'' of polarity. Data in \cite[Fig.~7D]{tse2012rhoa} show that the  PAR-2 domain goes from roughly 12.5\% embryo length to 30\% embryo length in a span of 160 seconds ($\hat t = 12.8$). Our model results for $\hat R_\text{PA}=0.8$ show that it takes about ten times as long for the pPAR domain to expand this much, and $\hat R_\text{PA}=1.2$ gives a five times longer lifetime. Thus, models where the boundary is pinned do not reproduce experimental flow speeds, and models that reproduce experimental flow speeds do not give pinned boundaries. This implies that the cytoplasmic pinning mechanism is \emph{not} responsible for the boundary pinning.
+Another piece of experimental data that can help us determine the value of $\hat R_\text{PA}$ comes from the experiments in \cite{tse2012rhoa}, where polarization is carried out in embryos lacking ect-2 and nop-1. Such a knockdown destroys the initial symmetry-breaking step, and results in a maintenance-phase ``rescue'' of polarity. Data in \cite[Fig.~7D]{tse2012rhoa} show that the aPAR domain goes from roughly 87.5\% embryo length to 70\% embryo length in a span of 160 seconds ($\hat t = 12.8$). Our model results for $\hat R_\text{PA}=0.8$ show that it takes about ten times as long for the aPAR domain to shrink this much, and five times as long with $\hat R_\text{PA}=1.2$. Thus, models where the boundary is pinned do not reproduce experimental flow speeds, and models that reproduce experimental flow speeds do not give pinned boundaries. This implies that the cytoplasmic pinning mechanism is \emph{not} the primary reason the boundary stops moving.
 
 \subsubsection{Comparison with experimental data}
 \begin{figure}
@@ -819,26 +819,41 @@ Let us suppose that the hypercontractile \emph{arx-2} (RNAi) embryos that we obs
 
 
 \subsection{Incorporating branched actin}
-\red{11/23 -- Fix this!} Experiments have indicated that wild-type embryos have a way of ``halting'' the PAR-2 domain growth via branched actin. Our hypothesis is that branched actin is activated above a certain ``threshold'' of CDC-42, and that branched actin inhibits contractility by inhibiting myosin. We encode these properties in the system of equations by modifying the myosin equation in\ \eqref{eq:Everything} and adding an additional equation for branched actin, which we represent by $R$,  
-\begin{subequations} 
-\label{eq:BAll}
+The main issue with the models so far is that realistic flow speeds cause the anterior domain to contract off the end of the embryo. So, there must be some mechanism that could counteract the fast flow speeds. Based on our experiments in \emph{arx-2} (RNAi) embryos, which exhibit a hypercontractile state, it seems logical that branched actin could contribute to halting the progression of the anterior domain. Our hypothesis in particular is that branched actin is activated above a certain ``threshold'' of CDC-42, and that branched actin inhibits contractility by inhibiting myosin. We encode these properties in the system of equations by modifying the myosin equation in \eqref{eq:Everything} and adding an additional equation for branched actin, which we represent by $R$,  
 \begin{align}
-\label{eq:MyBA}
+\nonumber
 &\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) =\hat{D}_M \Dxhat^2 \hat{M} +\KhatonM \left(1+\hat{R}_\text{CM} \hat C\right) \left(1-\int_0^1  \hat{M}(x) \, dx\right)- \KhatoffM \left(1+\hat R_\text{RM} \hat R\right) \hat{M}\\
-\label{eq:BA}
+\label{eq:BAll}
 &\Dthat \hat{R} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{R} \right) =\hat{D}_R \Dxhat^2 \hat{R} +\hat R_\text{CR} \left(\hat C-\hat C_R\right) {\delta}_{\hat C > \hat C_R} \left(1-\int_0^1  \hat{R}(x) \, dx\right)- \hat{K}^\text{off}_R \hat{R}
 \end{align}
-\end{subequations}
-Here branched actin is produced above a threshold level $\hat C_R$ of CDC-42, as indicated by the $\delta$-function in\ \eqref{eq:BA}. Once produced, branched actin inhibits myosin as in\ \eqref{eq:MyBA}. \red{We assume for the moment that branched actin has the same diffusivity (0.05 $\mu$m$^2$/s) and unbinding rate (0.12/s) as myosin.}
+Here branched actin is produced above a threshold level $\hat C_R$ of CDC-42, as indicated by the $\delta$-function. Once produced, branched actin inhibits myosin. \red{We assume for the moment that branched actin has the same diffusivity (0.05 $\mu$m$^2$/s) and unbinding rate (0.12/s) as myosin.}
+
+\begin{table}
+\begin{small}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+Parameter & Description & Value & Units & Ref & Notes \\ \hline
+$D_R$ & Branched actin diffusivity & 0.05 & $\mu$m$^2$/s & & Same as myosin \\
+$\koff_R$ & Branched actin unbinding rate & 0.12 & 1/s & & Same as myosin \\ \hline
+$\hat R_\text{CM}$ & $C$ promoting $M$ & 5 & &  & Correct flow speed\\ 
+$\hat C_R$ & Threshold CDC-42 level for branched actin & 0.2 & & & Between $A$ and $P$ levels\\
+$\hat R_\text{CR}$ & CDC-42 producing branched actin rate  & 1 & & & Arbitrary\\ 
+$\hat R_\text{RM}$ & Branched actin inhibiting myosin rate & 15 & & & Correct boundary position\\  \hline
+\end{tabular}
+\caption{\label{tab:paramsBR} Additional parameters and fitting parameters for coupled model\ \eqref{eq:Everything} with branched actin additions in\ \eqref{eq:BAll}.}
+\end{small}
+\end{table}
+
 
 \subsubsection{Additional parameters}
 There are four new parameters in this model that are unknown: 
 \begin{itemize}
-\item \red{$\hat{R}_\text{CM}$, which is the rate at which CDC-42 produces myosin. Because the myosin intensities in wild-type and \emph{arx-2} embryos have roughly the same mean, if branched actin inhibits myosin in these embryos, the rate at which CDC-42 produces myosin must be higher. We therefore set $\hat{R}_\text{CM}=3$, which is three times the value we used in the previous section.}
-\item The threshold $C_R$ is set by examining the steady state in Fig.\ \ref{fig:TimeSeqNoBA} without branched actin. There we see that, at late times, CDC-42 goes from about 0.05 in the posterior to 0.45 in the anterior. To block contractility, we set $C_R=0.2$. 
-\item The rate at which CDC-42 produces branched actin sets the amount of bound branched actin. This amount is arbitrary, since what matters is not the amount of branched actin but the total amount of myosin inhibition. We set $\hat R_\text{CR}=10$ to get a profile on the same scale as the other aPARs (to make our plots look nice).
-\item We set the rate at which branched actin blocks myosin $\hat R_\text{RM}=1.5$, which is the parameter we use to control the dynamics, to reproduce the boundary position in wild type embryos. 
+\item \red{$\hat{R}_\text{CM}$, which is the rate at which CDC-42 produces myosin. Because the myosin intensities in wild-type and \emph{arx-2} embryos have roughly the same mean, if branched actin inhibits myosin in these embryos, the rate at which CDC-42 produces myosin must be higher. We therefore set $\hat{R}_\text{CM}=5$, which is more than six times the value we used in the previous section.} This value gives a myosin profile initially which can reproduce the speeds of maintenance phase rescue reported in \cite[Fig.~7D]{tse2012rhoa}.
+\item The threshold $\hat C_R$ is set by examining the steady state in Fig.\ \ref{fig:TimeSeqNoBA} without branched actin. There we see that, at late times, CDC-42 goes from about 0.05 in the posterior to 0.45 in the anterior. To block contractility, we set $\hat C_R=0.2$. 
+\item The rate at which CDC-42 produces branched actin sets the amount of bound branched actin. This amount is arbitrary, since what matters is not the amount of branched actin but the total amount of myosin inhibition. We therefore set $\hat R_\text{CR}=1$.
+\item We set the rate at which branched actin blocks myosin $\hat R_\text{RM}=15$, which is the parameter we use to control the dynamics, to reproduce the boundary position in wild type embryos. 
 \end{itemize}
+The parameters are summarized in Table\ \ref{tab:paramsBR}. 
 
 \subsubsection{Dynamics}
 \begin{figure}
@@ -847,7 +862,18 @@ There are four new parameters in this model that are unknown:
 \caption{\label{fig:TimeSeqBA} Time progression of an initially peaked profile of posterior PARs. As shown at $\hat t=0$ at the top left, we begin with 10\% depletion of PAR-3, then simulate the model\ \eqref{eq:Everything} \emph{with branched actin} as in\ \eqref{eq:BAll}. The size of the aPAR domain initially shrinks rapidly, and then stalls as branched actin (cyan) starts to inhibit contractility.}
 \end{figure}
 
-Figure\ \ref{fig:TimeSeqBA} shows the dynamics of the approach to steady state for\ \eqref{eq:Everything} augmented with the branched actin model\ \eqref{eq:BAll}. We see initially the same dynamics as in Fig.\ \ref{fig:TimeSeqNoBA}, with pPARs inhibiting CDC-42 and myosin, which produces an inward flow. However, once the CDC-42 concentration (yellow) gets high enough, branched actin (cyan) starts to be produced and inhibit contractility. This makes the myosin profile decrease, and stalls flow and movement of the boundary. The right panel of Fig.\ \ref{fig:BPosBA} shows that the overall timescale of contraction is about 10--20 minutes ($\hat t =100$ is 20 minutes of real time). 
+Figure\ \ref{fig:TimeSeqBA} shows the dynamics of the approach to steady state for\ \eqref{eq:Everything} augmented with the branched actin model\ \eqref{eq:BAll}. We see initially the same dynamics as in Fig.\ \ref{fig:TimeSeqNoBA}, with pPARs inhibiting CDC-42 and myosin, which produces an inward flow. However, once the CDC-42 concentration (yellow) gets high enough, branched actin (cyan) starts to be produced and inhibit contractility. This makes the myosin profile decrease, and stalls flow and movement of the boundary. The steady state is reached at about $\hat t = 50$, which corresponds to 10 minutes of real time. 
+
+The advantage of incorporating branched actin is that we can essentially have arbitrarily fast initial flow speeds, which are later blocked by branched actin. If we look at Fig.\ \ref{fig:TimeSeqBA}, we see that in the first 3 minutes ($\hat t=0$ to $\hat t = 15$), the PAR-3 boundary moves from 90\% domain length to about 70\%, which roughly matches the observations in \cite[Fig.~7D]{tse2012rhoa}. To further illustrate this point, in Fig.\ \ref{fig:VelRescue} we simulate maintenance phase rescue with and without branched actin and plot the velocity over time. In simulations without branched actin, the velocity can only grow over time. It stops growing due to cytoplasmic depletion, but never decreases. By contrast, simulations that include branched actin allow for a velocity which decreases from its initial peak, which agrees with what we see experimentally. This allows us to have faster initial velocities and timescales for rescue which agree with experiments. 
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{DomainSizeAndVel.eps}
+\caption{\label{fig:VelRescue}Simulating maintenance-phase rescue with and without branched actin. The initial conditions are as in the top left Fig.\ \ref{fig:TimeSeqBA}, with 90\% of the domain enriched in PAR-3. The left plot shows the boundary position over time, while the right plot shows the maximum flow velocity. The parameters for the model without branched actin (plotted using blue lines) are in Table\ \ref{tab:paramsC}, and the parameters with branched actin (plotted using red lines) are in Table\ \ref{tab:paramsBR}. }
+\end{figure}
+
+There is still a role for cytoplasmic depletion in pinning the boundary. Without cytoplasmic depletion, a boundary that is moving will always keep moving, since the fundamental balance in which pPARs outcompete the aPARs does not change unless we account for changes in the cytoplasmic depletion. What branched actin allows for is a change in how the flow speed depends on the myosin concentration in time. Initially, when there is no branched actin, flows are fast. But, as the boundary advances, branched actin builds up and inhibits flows. Thus, branched actin \emph{and} cytoplasmic depletion work together to stall the boundary at a point where the posterior PAR domain can no longer advance through the anterior PARs (because it cannot outcompete PAR-3 at the boundary). 
+
 
 \subsubsection{Steady state vs.\ experiments}
 
@@ -859,7 +885,7 @@ Figure\ \ref{fig:TimeSeqBA} shows the dynamics of the approach to steady state f
 
 Figure\ \ref{fig:StStBA} shows how our modeled steady state compares to wild-type embryos. Qualitatively, the results match: the myosin intensity displays a peak at the anterior cap, then drops off to a level midway between the peak anterior and posterior levels at the anterior pole. The flow also exhibits a maximum off of the anterior cap, then rapidly transitions to a stall point at the edge of the anterior domain.
 
-\red{Quantitatively, our results almost match up with the experiments, but leave a little to be desired. The issue is the lengthscale on which the drop in myosin occurs. Because branched actin is only active on the anterior cap, the lengthscale on which it goes from zero to its peak value is quite small (controlled by the diffusivity, which here is set equal to the diffusivity of myosin; see the last panel of Fig.\ \ref{fig:StStBA}). As such, the myosin is inhibited quickly in the model, and the profile rapidly drops to a flat level in the anterior. This is \emph{not} what is observed in experiments, where we see a more gradual decrease (although the individual embryos do show rapid decreases). The result of this in the flow field is a slightly smaller absolute velocity and a smaller lengthscale once again (relative to the experimental data).}
+\red{Quantitatively, our results almost match up with the experiments, but leave a little to be desired. The issue is the lengthscale on which the drop in myosin occurs. Because branched actin is only active on the anterior cap, the lengthscale on which it goes from zero to its peak value is quite small (controlled by the diffusivity, which here is set equal to the diffusivity of myosin; see the last panel of Fig.\ \ref{fig:StStBA}). As such, the myosin is inhibited quickly in the model, and the profile rapidly drops to a flat level in the anterior. This is \emph{not} what is observed in experiments, where we see a more gradual decrease (although the individual embryos do show rapid decreases).}
 
 \bibliographystyle{plain}
 
