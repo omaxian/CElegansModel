@@ -154,7 +154,11 @@ Substituting into\ \eqref{eq:P3model} gives the rewritten dynamics
 \end{align}
 \end{subequations}
 
-\subsection{Steady state analysis}
+According to \cite{goehring2011polarization}, the \emph{C.\ elegans} embryo has a roughly ellipsoidal shape, with half-axis lengths $27 \times 15 \times 15$ $\mu$m. As such, our model will be a $27 \times 15$ ellipse, which has perimeter $L=134.6$ $\mu$m. In our one-dimensional model, the cytoplasm has a ``thickness'' which is just the area of the ellipse $1272$ $\mu$m$^2$ divided by the perimeter $L$, which gives $h=9.5$ $\mu$m.
+
+Recent experimental measurements \cite{lang2023oligomerization} give accurate measurements for three of the PAR-3-related parameters: the diffusion coefficient $D_A=0.1$ $\mu$m$^2$/s, the detachment rate $\koff_{A}=3$/s, and the \emph{single molecule} depolymerization rate $0.08$/s, which means that $\kdp_A=0.16$/s. The values of these parameters are summarized in Table\ \ref{tab:paramsP3}, and determine the dimensionless parameters $\DhatA$ and $\KhatoffA$. We determine $\KhatonA$, $\KhatpA$, $\KhatfA$, and the form of the feedback function via a systematic fitting procedure as detailed next.
+
+\subsection{Polymerization dynamics}
 Solving\ \eqref{eq:PAR3gen} at steady state implies that the distribution of oligomer sizes is exponential \cite{edelstein1998models,lang2022oligomerization}
 \begin{equation}
 \label{eq:QSS}
@@ -178,10 +182,7 @@ In the absence of diffusion, invoking the steady state\ \eqref{eq:QSS} reduces t
 \end{align}
 For bistability to occur, this equation has to have three roots. Prior to analyzing this, it will be helpful to pin down some of the parameters.
 
-\subsection{Parameters \label{sec:paramsP3}}
-According to \cite{goehring2011polarization}, the \emph{C.\ elegans} embryo has a roughly ellipsoidal shape, with half-axis lengths $27 \times 15 \times 15$ $\mu$m. As such, our model will be a $27 \times 15$ ellipse, which has perimeter $L=134.6$ $\mu$m. In our one-dimensional model, the cytoplasm has a ``thickness'' which is just the area of the ellipse $1272$ $\mu$m$^2$ divided by the perimeter $L$, which gives $h=9.5$ $\mu$m.
 
-Recent experimental measurements \cite{lang2023oligomerization} give accurate measurements for three of the PAR-3-related parameters: the diffusion coefficient $D_A=0.1$ $\mu$m$^2$/s, the detachment rate $\koff_{A}=3$/s, and the \emph{single molecule} depolymerization rate $0.08$/s, which means that $\kdp_A=0.16$/s. The values of these parameters are summarized in Table\ \ref{tab:paramsP3}, and determine the dimensionless parameters $\DhatA$ and $\KhatoffA$. We determine $\KhatonA$, $\KhatpA$, $\KhatfA$, and the form of the feedback function via a systematic fitting procedure as detailed next.
 
 \subsubsection{Fitting the polymerization rate}
 The first parameter we need to fit the polymerization rate is the percentage of PAR-3 bound to the membrane in the uniform state. The uniform state can be realized by considering mutants which lack a functional sperm cue and thus do not polarize \cite[Fig.~S1]{lang2023oligomerization}. These mutants show a peak PAR-3 concentration in late interphase; late maintenance phase then gives a bound concentration that is roughly 50\% of this peak. We will assume that almost all of the PAR-3 is bound in late interphase, so that the uniform state in late maintenance is at $\hat A_u:=\hat{\MA}+2\hat{\PA} \approx 0.5$. The observation that these embryos do not polarize implies that the uniform state is stable, and the estimate for the percentage of bound protein is similar to that obtained for PAR-2 at the end of maintenance phase in \cite[Fig.~S3]{gross2019guiding}. 
@@ -197,7 +198,7 @@ These measurements allow us firstly to determine the relative polymerization rat
 \end{figure}
 
 
-\subsubsection{The form of the feedback strength -- linear feedback models}
+\subsection{The form of the feedback strength }
 Before we get into fitting the feedback parameters, it is important to consider the nature of the feedback model. Our model is based strongly on that of Lang and Munro \cite{lang2022oligomerization}, who used the linear feedback model $f_A^+(A)=A \rightarrow \hat F_A^+(\hat A)=\hat A.$
 To analyze the characteristics of this model, we consider two representative examples in Fig.\ \ref{fig:P3Linear}, where we look at the attachment and detachment fluxes as a function of $\hat A$. The detachment flux is simply $\KhatoffA \hat A_1( \hat A)$, and is set by the red line. The attachment flux varies depending on the model considered. If we consider a uniform state, then the cytoplasmic concentration is simply $1-\hat A$, and there is a single uniform steady state (intersection of dotted blue and red lines). In polarized states, the concentration is not necessarily uniform, and so we analyze the stability of the steady state by taking the cytoplasmic concentration as constant (this is similar to ``local perturbation analysis'' \cite{holmes2015local}, in which the equations are analyzed by ignoring the conservation law and looking at the evolution of an infinitesimally-small perturbation). This results in the darker blue line in Fig.\ \ref{fig:P3Linear}. There we see that the linear feedback model admits only two possibilities: a stable uniform state (when feedback is small relative to the on-rate), and an unstable uniform state which leads to spontaneous polarization (when the feedback is larger). This contradicts our experimental observation of \emph{bistability}, and predicts a tendency of the unstable dynamics to focus the concentration curve to a narrower and narrower peak over time, which is never observed experimentally.
 
@@ -251,6 +252,34 @@ $\Tot{A}$ & Maximum bound PAR-3 density & -- & $\#/\mu$m & & Contained in other 
 \end{small}
 \end{table}
 
+\subsection{Systematic depletion of PAR-3 and how feedback changes \label{sec:howFB}}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{SatHigh_Exs.eps}
+\caption{\label{fig:SatHighEx}Examples for when the feedback saturates at $\Sat{\hat A}=\Sat{A}_0/\Tot{A}=0.35/F$ ($F$ is the fraction of PAR-3 in the system relative to the default). In dimensional variables, this corresponds to a saturation at a fixed number of monomers $\Sat{A}_0$. We show three possible regimes: (left) low uniform steady state with no bistability, (middle) low uniform steady state with bistability, and (right) high uniform steady state with bistability. There is also a fourth regime with an unstable uniform state which is not shown. In the middle regime, the anterior state can become highly enriched at low concentrations (because feedback is relatively higher), and so the A/P ratio is roughly constant with changing A/P.}
+\end{figure}
+
+
+We now systematically tune the oligomerization rate and feedback strength in accordance with a PAR-3 depletion experiment. In light of the scalings in\ \eqref{eq:paramsND}, we consider a fraction of the total PAR-3, denoted by $F=\Tot{A}/\Tot{A}_\text{WT} < 1$, then vary the polymerization rate by $\KhatpA=20F$, and feedback strength via $\KhatfA=5.5F$ (just multiplying the base parameters by the fraction of available PAR-3). The problem here is that we still do not know how to scale the feedback saturation threshold $\Sat{\hat A}$ with $F$. We consider three hypotheses in this section:
+\begin{enumerate}
+\item The feedback saturates at a fixed \emph{number} of monomers $\Sat{A}_0$. In this case, the relative saturation point is $\Sat{A}_0/\Tot{A}$, which scales as $1/F$. We therefore consider a saturation threshold $\Sat{\hat A}=\Sat{\hat A}_\text{WT}/F=0.35/F$ (constant saturation in dimensional variables, which corresponds to saturation proportional to $1/F$ in dimensionless variables). Figure\ \ref{fig:SatHighEx} shows three examples of this scenario, which correspond to three places on the phase plane. We focus on comparing the middle and right panels. In the middle, we see bistable dynamics, but the relative increase in the saturation point leads to a \emph{higher} anterior (and posterior) state when $F=0.6$ than when $F=0.9$. Thus, this feedback model predicts a constant or increasing A/P ratio as we \emph{decrease} the amount of PAR-3. 
+\item The feedback saturates at a fixed \emph{percentage} of monomers $\Sat{\hat A}_0=0.35$ (constant in dimensionless variables, relatively decreasing in dimensional variables). Examples of this are shown in Fig.\ \ref{fig:SatSameEx}. Four regimes are shown: (top left) low uniform steady state with no bistability, (top right) low uniform steady state with bistability, (bottom left) unstable uniform state with bistability, (bottom right) high uniform steady state with bistability. This model predicts a decreasing A/P ratio as we decrease the amount of protein ($F=0.7$ falls on the boundary of bistability). The main issue with it is that it predicts an unstable uniform state at some intermediate protein amounts (e.g., it predicts spontaneous polarization for $F=0.8$).
+\item The feedback saturates at a fixed percentage (74\%, determined from the default parameters) of the uniform state. In this model, we solve for the uniform state $u$ assuming the feedback is saturated at $0.74u$, then substitute to obtain the saturation level in non-uniform states. Examples of this process are shown in Fig.\ \ref{fig:SatUnifEx}. There we see that the uniform state is always stable, and that the A/P asymmetry will increase as $F$ increases. However, the threshold amount of protein for bistability is quite high. Even with 90\% of the protein, we still do not see bistabiity (middle panel of Fig.\ \ref{fig:SatUnifEx}). 
+\item We compare these feedback models to a simpler case where we assume a \emph{recruitment asymmetry} is responsible for the A/P ratios. Examples of this are shown in Fig.\ \ref{fig:RecAEx}. Our procedure for this is to first fix $\kon_A$ so that at the default parameter values there is a uniform state with 50\% bound protein. We then plot the attachment rate (at constant cytoplasmic concentration) at half the basal on rate, to estimate the ``posterior'' state. The prediction of this model is that the asymmetry will persist for any arbitrary amount of bound $\hat A$.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{SatFixed_Exs.eps}
+\caption{\label{fig:SatSameEx}Examples for when the feedback saturates at a fixed percentage of monomers, $\Sat{\hat A}=\Sat{\hat A}_0=0.35$. We show four possible regimes: (top left) low uniform steady state with no bistability, (top right) low uniform steady state with bistability, (bottom left) unstable uniform state with bistability, (bottom right) high uniform steady state with bistability. $F$ is the fraction of PAR-3 in the system relative to the default.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{SatUnif_Exs.eps}
+\caption{\label{fig:SatUnifEx}Examples for when the feedback saturates at $\Sat{\hat A}=(0.35/0.3745)u$ (a fixed percentage of the uniform state). The uniform state is always stable, but there is only a narrow range of protein concentrations that give bistability.  }
+\end{figure}
+
 
 \subsection{Simulated steady states with and without diffusion \red{Not updated yet!}}
 \begin{figure}
@@ -284,33 +313,7 @@ Figure\ \ref{fig:WWoDiff} shows that adding diffusion into the model provides an
 An important observation from Fig.\ \ref{fig:WWoDiff} is the \emph{rate} at which the boundary shifts to the steady state. Because the rate of expansion/contraction is controlled by diffusion of monomers, and because the dimensionless diffusivity $\DhatA \approx 7 \times 10^{-5}$,  the movement of the boundary is quite slow. Indeed, most embryos are in maintenance phase for about 10 minutes, which corresponds to $\hat t = 48$. During this time, the movement of the boundary is at most 5\% of the perimeter, or about 10\% of the embryo length. Similar arguments to this were made in \cite{lang2022oligomerization} to justify the possibility that the uniform steady state is unstable, and that the polarized PAR-3 state (in which PAR-3 is stably enriched on one half of the embryo) \cite{lang2023oligomerization} might be a transient state that transitions to a large peak if we were to wait long enough. Here we propose that the polarized state of PAR-3 in the absence of PAR-1 is a result of the initial sperm cue, and that, if given long enough, the position of the boundary would relax towards the posterior side (but never relax all the way to the uniform state).
 
 
-\subsection{Systematic depletion of PAR-3 and how feedback changes \label{sec:howFB}}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{SatHigh_Exs.eps}
-\caption{\label{fig:SatHighEx}Examples for when the feedback saturates at $\Sat{\hat A}=\Sat{A}_0/\Tot{A}=0.35/F$ ($F$ is the fraction of PAR-3 in the system relative to the default). In dimensional variables, this corresponds to a saturation at a fixed number of monomers $\Sat{A}_0$. We show three possible regimes: (left) low uniform steady state with no bistability, (middle) low uniform steady state with bistability, and (right) high uniform steady state with bistability. There is also a fourth regime with an unstable uniform state which is not shown. In the middle regime, the anterior state can become highly enriched at low concentrations (because feedback is relatively higher), and so the A/P ratio is roughly constant with changing A/P.}
-\end{figure}
 
-
-We now systematically tune the oligomerization rate and feedback strength in accordance with a PAR-3 depletion experiment. In light of the scalings in\ \eqref{eq:paramsND}, we consider a fraction of the total PAR-3, denoted by $F=\Tot{A}/\Tot{A}_\text{WT} < 1$, then vary the polymerization rate by $\KhatpA=20F$, and feedback strength via $\KhatfA=5.5F$ (just multiplying the base parameters by the fraction of available PAR-3). The problem here is that we still do not know how to scale the feedback saturation threshold $\Sat{\hat A}$ with $F$. We consider three hypotheses in this section:
-\begin{enumerate}
-\item The feedback saturates at a fixed \emph{number} of monomers $\Sat{A}_0$. In this case, the relative saturation point is $\Sat{A}_0/\Tot{A}$, which scales as $1/F$. We therefore consider a saturation threshold $\Sat{\hat A}=\Sat{\hat A}_\text{WT}/F=0.35/F$ (constant saturation in dimensional variables, which corresponds to saturation proportional to $1/F$ in dimensionless variables). Figure\ \ref{fig:SatHighEx} shows three examples of this scenario, which correspond to three places on the phase plane. We focus on comparing the middle and right panels. In the middle, we see bistable dynamics, but the relative increase in the saturation point leads to a \emph{higher} anterior (and posterior) state when $F=0.6$ than when $F=0.9$. Thus, this feedback model predicts a constant or increasing A/P ratio as we \emph{decrease} the amount of PAR-3. 
-\item The feedback saturates at a fixed \emph{percentage} of monomers $\Sat{\hat A}_0=0.35$ (constant in dimensionless variables, relatively decreasing in dimensional variables). Examples of this are shown in Fig.\ \ref{fig:SatSameEx}. Four regimes are shown: (top left) low uniform steady state with no bistability, (top right) low uniform steady state with bistability, (bottom left) unstable uniform state with bistability, (bottom right) high uniform steady state with bistability. This model predicts a decreasing A/P ratio as we decrease the amount of protein ($F=0.7$ falls on the boundary of bistability). The main issue with it is that it predicts an unstable uniform state at some intermediate protein amounts (e.g., it predicts spontaneous polarization for $F=0.8$).
-\item The feedback saturates at a fixed percentage (74\%, determined from the default parameters) of the uniform state. In this model, we solve for the uniform state $u$ assuming the feedback is saturated at $0.74u$, then substitute to obtain the saturation level in non-uniform states. Examples of this process are shown in Fig.\ \ref{fig:SatUnifEx}. There we see that the uniform state is always stable, and that the A/P asymmetry will increase as $F$ increases. However, the threshold amount of protein for bistability is quite high. Even with 90\% of the protein, we still do not see bistabiity (middle panel of Fig.\ \ref{fig:SatUnifEx}). 
-\item We compare these feedback models to a simpler case where we assume a \emph{recruitment asymmetry} is responsible for the A/P ratios. Examples of this are shown in Fig.\ \ref{fig:RecAEx}. Our procedure for this is to first fix $\kon_A$ so that at the default parameter values there is a uniform state with 50\% bound protein. We then plot the attachment rate (at constant cytoplasmic concentration) at half the basal on rate, to estimate the ``posterior'' state. The prediction of this model is that the asymmetry will persist for any arbitrary amount of bound $\hat A$.
-\end{enumerate}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{SatFixed_Exs.eps}
-\caption{\label{fig:SatSameEx}Examples for when the feedback saturates at a fixed percentage of monomers, $\Sat{\hat A}=\Sat{\hat A}_0=0.35$. We show four possible regimes: (top left) low uniform steady state with no bistability, (top right) low uniform steady state with bistability, (bottom left) unstable uniform state with bistability, (bottom right) high uniform steady state with bistability. $F$ is the fraction of PAR-3 in the system relative to the default.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{SatUnif_Exs.eps}
-\caption{\label{fig:SatUnifEx}Examples for when the feedback saturates at $\Sat{\hat A}=(0.35/0.3745)u$ (a fixed percentage of the uniform state). The uniform state is always stable, but there is only a narrow range of protein concentrations that give bistability.  }
-\end{figure}
 
 
 \iffalse
