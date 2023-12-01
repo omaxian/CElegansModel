@@ -110,22 +110,29 @@ With regard to mutual inhibition, it is known that asymmetries in the PAR protei
 There has been a large amount of modeling and experimental work \cite{dawes20113, dickinson2017single, lang2022oligomerization, lang2023oligomerization} on how the oligomerization of PAR-3 contributes to bistability. It is known that disrupting PAR-3 \cite{etemad1995asymmetrically} or its oligomerization \cite{dickinson2017single} leads to a failure or severe disruption in establishing polarity. It was recently shown that PAR-3 asymmetries are stable even in the absence of its posterior inhibitor PAR-1, which suggest that the dynamics of PAR-3 \emph{by itself} are intrinsically bistable \cite{lang2023oligomerization}, and might therefore ``anchor'' the bistability of the entire PAR protein system. Experimental evidence has shown that the bistability occurs via a mechanism in which membrane-bound PAR-3 recruits additional cytoplasmic monomers to the membrane, which is not captured in previous models which show a drifting boundary \cite{dawes20113}. In this work, we will therefore consider a model in which positive feedback endows the PAR-3 system with intrinsic bistability, which is amplified by first order mutual inhibition with posterior PARs. Our treatment is based strongly on that of Lang and Munro \cite{lang2022oligomerization}, but is distinct in that we argue for \emph{bi}stability (described by them as ``inducible polarization'') rather than spontaneous \emph{in}stability. Our first order treatment of aPAR/pPAR interactions is not meant to exclude possible nonlinearities in the mutual inhibition, but rather to show that intrinsic bistability of PAR-3 can combine with the simplest possible inhibition kinetics to yield bistability. 
 
 \subsection{Basic equations and framework for PAR-3 \label{sec:Par3}}
-We first formulate our model of PAR-3 dynamics, which is based on that of Lang and Munro \cite{lang2022oligomerization}. The key property of PAR-3 that makes it different from other proteins is its ability to form \emph{oligomers} on the membrane. Unlike monomers, these oligomers do not diffuse in the membrane, and are not found in high concentrations in the cytoplasm. Based on these experimental observations, we will consider a model in which there are two species of PAR-3, 
+We first formulate our model of PAR-3 dynamics, which comes from Lang and Munro \cite{lang2022oligomerization}. The key property of PAR-3 that makes it different from other proteins is its ability to form \emph{oligomers} on the membrane. Unlike monomers, these oligomers do not diffuse in the membrane, and are not found in high concentrations in the cytoplasm. Based on these experimental observations, we will consider a model in which there are two species of PAR-3, 
 \begin{enumerate}
 \item Monomeric PAR-3, which can be found in cytoplasmic form $(\MAC)$ or membrane bound $(\MA)$ form, and can diffuse on the membrane.
 \item Oligomerized PAR-3 $(\PA)$ which is only found on the membrane, and cannot diffuse there. We will let the number of oligomers of size $n$ be denoted by $A_n$. 
 \end{enumerate}
-Given these assumptions, the model equations in dimensional form are as follows
+We will make two other important simplifying assumptions. First, experimental data shows that the unbinding kinetics of oligomers follow a power-law decay, with each additional monomer increasing the oligomer-residence time by a factor of 4. Because of this, we neglect the unbinding of oligomers into the cytoplasm, as in \cite{lang2022oligomerization} (this will simplify the analysis since accounting for size-dependent oligomer unbinding alters the steady state distribution of oligomer sizes from the typical exponential one). Second, experiments in \cite{lang2023oligomerization} have provided evidence for direct positive feedback, where bound PAR-3 molecules promote the recruitment and binding of cytoplasmic ones. Previous simulations \cite{lang2022oligomerization} have shown that accounting for direct binding and unbinding of cytoplasmic subunits will not alter the qualitative behavior of the model (in terms of the types of steady states that emerge), but has the effect of weakening or strengthening the feedback strength depending on the regime considered. For this reason, we will not directly model the (un)binding of cytoplasmic monomers to membrane-bound oligomers, instead assuming that this is implicit in the feedback strength.
+
+Given these assumptions, the model equations in dimensional form are as follows \cite[Eq.~(1)]{lang2022oligomerization}
 \begin{subequations}
 \label{eq:P3model}
 \begin{align}
-\Dt \MA & = \A{D} \Dx^2 \MA + \left(\A{\kon}+\A{\kf}\A{f}^+(A)\right)  \MAC + 2\A{\kdp}\PA -2\A{\kp} \MA^2 - \koff_{A,1}\MA \\
-\Dt A_n & =\A{\kp}\MA A_{n-1}- \A{\kdp}A_n-\koff_{A,n}A_n \qquad n \geq 2 \\ \label{eq:Acyto}
+\Dt \MA & = \A{D} \Dx^2 \MA + \left(\A{\kon}+\A{\kf}\A{f}^+(A)\right)  \MAC  - \koff_A \MA \\ \nonumber &+ 2\A{\kdp}A_2 -2\A{\kp} \MA^2+ \sum_{n=3}^N  \left(\A{\kdp}A_{n}-\A{\kp}\MA A_{n-1}\right) \\
+\label{eq:mostoligs}
+\Dt A_n & =\A{\kp}\MA \left(A_{n-1}-A_n\right)- \A{\kdp}\left(A_n-A_{n+1}\right) \qquad N > n \geq 2 \\ 
+\label{eq:maxolig}
+\Dt A_N & =\A{\kp}\MA A_{N-1}- \A{\kdp}A_N \\  \label{eq:Acyto}
 A_\text{cyto} & = \frac{1}{h L} \left(\Tot{A} L - \int_0^L A(x) \, dx \right) \qquad A(x) =\sum_{n=1}^N n A_n(x)
 \end{align}
 \end{subequations}
 A complete list of parameters with units and values is given in Table\ \ref{tab:paramsP3}, but it will be helpful to point out the important ones in our model. First, the feedback strength $k_A^+$, which has units of length$^2$/time, gives the rate at which cytoplasmic PAR-3 is recruited to the membrane. It is multiplied by the flux function $f_A^+$, which gives the strength of recruitment (in units of inverse length). The overall on rate is proportional to the cytoplasmic concentration, which is defined in\ \eqref{eq:Acyto}. There $\Tot{A}$ expresses the density of bound PAR-3 when all molecules are bound to the membrane (units 1/length). Subtracting the amount of bound PAR-3 and dividing by the membrane area gives
 the cytoplasmic concentration in units of 1/area.
+
+In\ \eqref{eq:P3model}, the depolymerization rate $\kdp_A$ is the rate at which oligomers of size $n$ become oligomers of size $n-1$. Because we assume oligomers are linear, this event can occur from either side, and as such the rate $\kdp_A$ is twice that observed in single-molecule imaging. For most oligomer sizes, the dynamics \eqref{eq:mostoligs} have four terms, corresponding to polymerization of size $n-1$ to become $n$, depolymerization of size $n+1$ to become $n$, and (de-)polymerization of size $n$ to become size $n-1$ or $n+1$. At the maximum oligomer size $N$, \eqref{eq:maxolig} shows that we remove the terms that would yield oligomers of size $N+1$.
 
 \subsection{Dimensionless form}
 A sensible timescale for the system is the time a given PAR-3 molecule spends on the membrane. Because about 80\% of the bound PAR-3 molecules are in oligomer form, and since the depolymerization reaction is much slower than the unbinding reaction, we nondimensionalize time by $1/\A{\kdp}$. This gives the dimensionless (hatted) variables defined by
@@ -137,17 +144,18 @@ Substituting into\ \eqref{eq:P3model} gives the rewritten dynamics
 \label{eq:PAR3gen}
 \begin{align}
 \nonumber
-\Dthat \hat{\MA} & = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \hat F_A^+(\hat A) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right) \\ 
-\label{eq:Amono} &+ 2 \hat{\PA}-2\KhatpA \hat{\MA}^2 - \Khatoff_{A,1} \hat{\MA} \\
+\Dthat \hat{\MA} & = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \hat F_A^+(\hat A) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right)- \KhatoffA \hat{\MA} \\ 
+\label{eq:Amono} &+ 2 \hat{A}_2-2\KhatpA \hat{\MA}^2+\sum_{n=3}^N \left(\hat A_n-\KhatpA \hat A_1 \hat A_{n-1}\right)  \\
 \label{eq:Apoly}
-\Dthat \hat{\PA} & =\KhatpA \hat{\MA} \hat A_{n-1} - \hat{\PA}-\Khatoff_{A,n}\hat A_n \qquad n \geq 2 \\ 
+\Dthat \hat{\PA} & =\KhatpA \hat{\MA} (\hat A_{n-1}-\hat A_n) - (\hat A_n-\hat A_{n+1})  \qquad N > n \geq 2 \\ 
+\Dt A_N & =\KhatpA\hat \MA \hat A_{N-1}- \hat A_N \\ 
 \label{eq:paramsND}
 \DhatA &=\frac{\A{D}}{L^2 \A{\kdp}}, \quad \KhatonA=\frac{\A{\kon}}{\A{\kdp} h }, \quad \KhatfA = \frac{\A{\kf}\Tot{A}}{\A{\kon}}, \quad  \Khatoff_{A,n} = \frac{\koff_{A,n}}{\A{\kdp}}, \\ \nonumber \KhatpA &= \frac{\A{\kp} \Tot{A}}{\A{\kdp}},\quad \hat F_A^+(\hat A) =\frac{\A{f}^+(A)}{\Tot{A}}.
 \end{align}
 \end{subequations}
 
-\subsection{Quasi-steady state approximation}
-We make the quasi-steady state approximation \cite{lang2022oligomerization} that the oligomerization kinetics are in equilibrium relative to the other processes. This means that the distribution of oligomer sizes is exponential \cite{edelstein1998models,lang2022oligomerization}
+\subsection{Steady state analysis}
+Solving\ \eqref{eq:PAR3gen} at steady state implies that the distribution of oligomer sizes is exponential \cite{edelstein1998models,lang2022oligomerization}
 \begin{equation}
 \label{eq:QSS}
 \hat A_n =  \KhatpA \hat A_1 \hat A_{n-1}:=\alpha \hat A_{n-1} \quad n \geq 2.
@@ -163,53 +171,35 @@ This equation can then be solved for $\hat A_1$ to obtain \cite[Eq.~(12)]{lang20
 \end{equation}
 which gives the number of bound monomers as a function of the total bound $\hat A$. 
 
-The quasi-steady state approximation reduces the dynamics\ \eqref{eq:PAR3gen} to a single equation for $\hat A=\sum n \hat A_n$, obtained by summing \eqref{eq:Amono} and \eqref{eq:Apoly} and invoking\ \eqref{eq:QSS}
-\begin{equation}
-\Dthat \hat A = \DhatA \Dxhat^2 A_1+\KhatonA \left(1+\KhatfA \hat F_A^+(\hat A) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right) - \sum_{n=1}^\infty n \Khatoff_{A,n}  \alpha^{n-1} \hat A_1.
-\end{equation}
-We will consider two cases for the off-rate: in the first case, we assume that only monomers can unbind, which gives \cite[Eq.~(14)]{lang2023oligomerization}
-\begin{equation}
-\label{eq:MonUnOnly}
-\Dthat \hat A = \DhatA \Dxhat^2 A_1+\KhatonA \left(1+\KhatfA \hat F_A^+(\hat A) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right) - \Khatoff_{A,1}  \hat A_1.
-\end{equation}
-In the second case, we use the experimentally-fit curve $\Khatoff_{A,n}=\Khatoff_{A,1} \beta^{n-1}$, which gives 
-\begin{gather}
-\nonumber
-\sum_{n=1}^\infty n \Khatoff_{A,n}  \alpha^{n-1} \hat A_1 = \Khatoff_{A,1} \hat A_1 \sum_{n=1}^\infty n \left(\beta \alpha\right)^{n-1}= \frac{\koff_{A,1} \hat A_1}{\left(1-\beta \alpha\right)^2}\\
-\label{eq:SingleSpec}
-\Dthat \hat A = \DhatA \Dxhat^2 \hat A_1+\KhatonA \left(1+\KhatfA \hat F_A^+(\hat A) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right) - \Khatoff_{A,1}  \frac{\hat A_1}{\left(1-\beta \KhatpA \hat A_1\right)^2}
-\end{gather}
-Seeing as setting $\beta=0$ in\ \eqref{eq:SingleSpec} gives\ \eqref{eq:MonUnOnly}, we can see that \eqref{eq:SingleSpec} is the most general single-species equation that we can write. This is the equation we will solve going forward.
+In the absence of diffusion, invoking the steady state\ \eqref{eq:QSS} reduces the monomer equation\ \eqref{eq:Amono} to 
+\begin{align}
+0&= \underbrace{\KhatonA \left(1+\KhatfA \hat F_A^+(\hat A) \right)\hat A_c}_\text{On flux} - \underbrace{\KhatoffA  \hat A_1}_\text{Off flux}\\ \nonumber
+\hat A_c &= \left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right)
+\end{align}
+For bistability to occur, this equation has to have three roots. Prior to analyzing this, it will be helpful to pin down some of the parameters.
 
 \subsection{Parameters \label{sec:paramsP3}}
 According to \cite{goehring2011polarization}, the \emph{C.\ elegans} embryo has a roughly ellipsoidal shape, with half-axis lengths $27 \times 15 \times 15$ $\mu$m. As such, our model will be a $27 \times 15$ ellipse, which has perimeter $L=134.6$ $\mu$m. In our one-dimensional model, the cytoplasm has a ``thickness'' which is just the area of the ellipse $1272$ $\mu$m$^2$ divided by the perimeter $L$, which gives $h=9.5$ $\mu$m.
 
-Recent experimental measurements \cite{lang2023oligomerization} give accurate measurements for three of the PAR-3-related parameters: the diffusion coefficient $D_A=0.1$ $\mu$m$^2$/s, the detachment rate $\koff_{A,n}=3\beta^{n-1}$ with $\beta=0.25$, and the depolymerization rate $\kdp_A=0.08$/s. The values of these parameters are summarized in Table\ \ref{tab:paramsP3}, and determine the dimensionless parameters $\DhatA$ and $\KhatoffA$. We determine $\KhatonA$, $\KhatpA$, $\KhatfA$, and the form of the feedback function via a systematic fitting procedure as detailed next.
+Recent experimental measurements \cite{lang2023oligomerization} give accurate measurements for three of the PAR-3-related parameters: the diffusion coefficient $D_A=0.1$ $\mu$m$^2$/s, the detachment rate $\koff_{A}=3$/s, and the \emph{single molecule} depolymerization rate $0.08$/s, which means that $\kdp_A=0.16$/s. The values of these parameters are summarized in Table\ \ref{tab:paramsP3}, and determine the dimensionless parameters $\DhatA$ and $\KhatoffA$. We determine $\KhatonA$, $\KhatpA$, $\KhatfA$, and the form of the feedback function via a systematic fitting procedure as detailed next.
 
 \subsubsection{Fitting the polymerization rate}
 The first parameter we need to fit the polymerization rate is the percentage of PAR-3 bound to the membrane in the uniform state. The uniform state can be realized by considering mutants which lack a functional sperm cue and thus do not polarize \cite[Fig.~S1]{lang2023oligomerization}. These mutants show a peak PAR-3 concentration in late interphase; late maintenance phase then gives a bound concentration that is roughly 50\% of this peak. We will assume that almost all of the PAR-3 is bound in late interphase, so that the uniform state in late maintenance is at $\hat A_u:=\hat{\MA}+2\hat{\PA} \approx 0.5$. The observation that these embryos do not polarize implies that the uniform state is stable, and the estimate for the percentage of bound protein is similar to that obtained for PAR-2 at the end of maintenance phase in \cite[Fig.~S3]{gross2019guiding}. 
 
 When there is no posterior inhibitor, the concentration of bound PAR-3 during late maintenance phase in the anterior is roughly $\hat A_a=1.2u \approx 0.6$ (this comes from comparing flourescence in PAR-1 mutant and spd-5 mutant embryos shown in Figs.\ 2 and S1 of \cite{lang2023oligomerization}). In PAR-1 mutants, the concentration in the posterior is then roughly 10\% of the anterior, or $\hat A_p=0.06$. 
 
-These measurements allow us firstly to determine the relative polymerization rate $\KhatpA$. The distribution of oligomer sizes in PAR-1 mutant embryos was measured in \cite{lang2023oligomerization} on both the anterior and posterior side. There it was shown that the distribution is roughly exponential, with $\alpha=0.42$ on the posterior side (30\% in monomer form), and $\alpha=0.73$ on the anterior side (10\% in monomer form). When we substitute $\KhatpA=20$ into\ \eqref{eq:AmonA}, we obtain $\alpha(\hat A = 0.06)=0.41$ and $\alpha(\hat A = 0.6)=0.75$. This is shown in the left panel of Fig.\ \ref{fig:FracMonDissoc}.
+These measurements allow us firstly to determine the relative polymerization rate $\KhatpA$. The distribution of oligomer sizes in PAR-1 mutant embryos was measured in \cite{lang2023oligomerization} on both the anterior and posterior side. There it was shown that the distribution is roughly exponential, with $\alpha=0.42$ on the posterior side (30\% in monomer form), and $\alpha=0.73$ on the anterior side (10\% in monomer form). As shown in Fig.\ \ref{fig:FracMon}, we substitute $\KhatpA=20$ into\ \eqref{eq:AmonA}, we obtain $\alpha(\hat A = 0.06)=0.41$ and $\alpha(\hat A = 0.6)=0.75$. 
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{FracMonAndDissoc.eps}
-\caption{\label{fig:FracMonDissoc}Comparing polymerization dynamics with different parameters. Left panel: the fraction of monomers as a function of bound $\hat A$ with three different values of $\KhatpA$. The polymerization rate $\KhatpA=20$ best fits the data. Right panel: the effective dissociation rate as a function of $\hat A$ with two different assumptions: only monomers can dissociate (blue curve), and dissociation occurs with the experimentally determined rate $\koff_{A,n}=\koff_{A,1} \beta^{n-1}$ for $\beta=0.25$ (red curve).}
+\includegraphics[width=0.6\textwidth]{FracMonAndDissoc.eps}
+\caption{\label{fig:FracMon}Comparing polymerization dynamics with different parameters. We show the fraction of monomers as a function of bound $\hat A$ with three different values of $\KhatpA$. The polymerization rate $\KhatpA=20$ best fits the data. }
 \end{figure}
 
-\subsubsection{The dissociation rate}
-The formula for the number of monomers \eqref{eq:AmonA} shows that, as $\hat A$ increases, we expect to get a constant number of monomers on the membrane. If we only consider dissociation of monomers, then we expect the dissociation rate to be a constant as $\hat A$ increases, which can render the steady state extremely sensitive to changes in $\hat A$ (if the attachment rate shifts upwards slightly, $\hat A$ has to increase by a lot for the detachment rate to compensate). This behavior is shown in the right panel of Fig.\ \ref{fig:FracMonDissoc}. There we see that the dissociation rate 
-\begin{equation}
-\label{eq:Dissoc}
-\Khatoff_{A,1}  \frac{\hat A_1}{\left(1-\beta \KhatpA \hat A_1\right)^2}
-\end{equation}
-is roughly constant as $\hat A$ increases when $\beta=0$, and only monomers unbind. When we use the experimental profile with $\beta=0.25$, we see a curve with a larger slope at $\hat A=1$. This is the curve we will consider going forward.
 
 \subsubsection{The form of the feedback strength -- linear feedback models}
 Before we get into fitting the feedback parameters, it is important to consider the nature of the feedback model. Our model is based strongly on that of Lang and Munro \cite{lang2022oligomerization}, who used the linear feedback model $f_A^+(A)=A \rightarrow \hat F_A^+(\hat A)=\hat A.$
-To analyze the characteristics of this model, we consider two representative examples in Fig.\ \ref{fig:P3Linear}, where we look at the attachment and detachment fluxes as a function of $\hat A$. The detachment flux is simply \eqref{eq:Dissoc}, and is therefore set by the red line. The attachment flux varies depending on the model considered. If we consider a uniform state, then the cytoplasmic concentration is simply $1-\hat A$, and there is a single uniform steady state (intersection of dotted blue and red lines). In polarized states, the concentration is not necessarily uniform, and so we analyze the stability of the steady state by taking the cytoplasmic concentration as constant (this is similar to ``local perturbation analysis'' \cite{holmes2015local}, in which the equations are analyzed by ignoring the conservation law and looking at the evolution of an infinitesimally-small perturbation). This results in the darker blue line in Fig.\ \ref{fig:P3Linear}. There we see that the linear feedback model admits only two possibilities: a stable uniform state (when feedback is small relative to the on-rate), and an unstable uniform state which leads to spontaneous polarization (when the feedback is larger). This contradicts our experimental observation of \emph{bistability}, and predicts a tendency of the unstable dynamics to focus the concentration curve to a narrower and narrower peak over time, which is never observed experimentally.
+To analyze the characteristics of this model, we consider two representative examples in Fig.\ \ref{fig:P3Linear}, where we look at the attachment and detachment fluxes as a function of $\hat A$. The detachment flux is simply $\KhatoffA \hat A_1( \hat A)$, and is set by the red line. The attachment flux varies depending on the model considered. If we consider a uniform state, then the cytoplasmic concentration is simply $1-\hat A$, and there is a single uniform steady state (intersection of dotted blue and red lines). In polarized states, the concentration is not necessarily uniform, and so we analyze the stability of the steady state by taking the cytoplasmic concentration as constant (this is similar to ``local perturbation analysis'' \cite{holmes2015local}, in which the equations are analyzed by ignoring the conservation law and looking at the evolution of an infinitesimally-small perturbation). This results in the darker blue line in Fig.\ \ref{fig:P3Linear}. There we see that the linear feedback model admits only two possibilities: a stable uniform state (when feedback is small relative to the on-rate), and an unstable uniform state which leads to spontaneous polarization (when the feedback is larger). This contradicts our experimental observation of \emph{bistability}, and predicts a tendency of the unstable dynamics to focus the concentration curve to a narrower and narrower peak over time, which is never observed experimentally.
 
 \begin{figure}
 \centering
@@ -228,7 +218,7 @@ The uniform steady state is stable if $\Sat{\hat A} < u = 0.5$, which provides o
 \begin{figure}
 \centering
 \includegraphics[width=0.6\textwidth]{FluxAnalysisLinFeedCap.eps}
-\caption{\label{fig:P3Cap}Flux plane analysis for capped linear feedback in the bistable case ($\KhatfA=5.5$ and $\kon_A=1$ $\mu$m/s). The stability analysis is determined by how the attachment rate (solid blue line, with constant cytoplasmic concentration) compares to the detachment rate (red) near the steady state. }
+\caption{\label{fig:P3Cap}Flux plane analysis for capped linear feedback in the bistable case ($\KhatfA=2.8$ and $\kon_A=0.8$ $\mu$m/s). The stability analysis is determined by how the attachment rate (solid blue line, with constant cytoplasmic concentration) compares to the detachment rate (red) near the steady state. }
 \end{figure}
 
 Once $\Sat{\hat A}=0.35$ is set, there are two unknown parameters, the on rate $\kon_A$ and the strength of the feedback $\KhatfA$. In Fig.\ \ref{fig:P3Cap}, we set these two parameters so that, at the cytoplasmic concentration of the uniform state, the system has a second steady state at roughly 10\% of the uniform state. The bistable solution exists for a narrow range of cytoplasmic concentration -- when the cytoplasmic concentration is too small or too large, the attachment flux only crosses the detachment flux once, which means that there is no stable state for these cytoplasmic concentrations. Suppose we have the cytoplasmic concentration $A_c$, and let $\hat A_1$ and $\hat A_2$ be the two stable states at this concentration. Then in the absence of diffusion, the equation 
@@ -249,12 +239,11 @@ Parameter & Description & Value & Units & Ref & Notes \\ \hline
 $L$ & Domain length & 134.6 & $\mu$m &  \cite{goehring2011polarization} & radii $27 \times 15$ $\mu$m ellipse\\
 $h$ & Cytoplasmic ``thickness'' & 9.5 & $\mu$m &  \cite{goehring2011polarization}  &  (area/circumference)\\ \hline
 $\A{D} $ & Monomeric PAR-3 diffusivity & 0.1 & $\mu$m$^2$/s & \cite{lang2023oligomerization} & \\
-$\A{\kon}$ & Monomeric PAR-3 attachment rate & 1& $\mu$m/s & & Fit for uniform state $\hat A=0.5$ \\
-$\koff_{A,1}$ & Monomeric PAR-3 detachment rate &  3& 1/s & \cite{lang2023oligomerization} & (Fig.\ 3K)\\
-$\beta$ & $\koff_{A,n}=\koff_{A,1}\beta^{n-1}$ & 0.25 & & \cite{lang2023oligomerization} & (Fig.\ 4E) \\
-$\A{\kdp}$ & PAR-3 depolymerization rate & 0.08 & 1/s & \cite{lang2023oligomerization} & (Fig.\ 4E) \\
+$\A{\kon}$ & Monomeric PAR-3 attachment rate & 0.8& $\mu$m/s & & Fit for uniform state $\hat A=0.5$ \\
+$\koff_{A}$ & Monomeric PAR-3 detachment rate &  3& 1/s & \cite{lang2023oligomerization} & (Fig.\ 3K)\\
+$\A{\kdp}$ & PAR-3 depolymerization rate & 0.16 & 1/s & \cite{lang2023oligomerization} & (Fig.\ 4E) \\
 $\KhatpA$ & PAR-3 polymerization rate & 20 & & & Fit for correct \% monomers \cite{lang2023oligomerization}  \\
-$\KhatfA$ & PAR-3 self recruitment rate &5.5 & & & Fit for bistability\\
+$\KhatfA$ & PAR-3 self recruitment rate &3 & & & Fit for bistability\\
 $\hat F_A^+$ & PAR-3 feedback function &$\text{min}\left(\hat A,0.35\right)$ &  &\cite{lang2022oligomerization} &  Stable uniform state\\
 $\Tot{A}$ & Maximum bound PAR-3 density & -- & $\#/\mu$m & & Contained in other unknowns \\ \hline
 \end{tabular}
@@ -263,7 +252,7 @@ $\Tot{A}$ & Maximum bound PAR-3 density & -- & $\#/\mu$m & & Contained in other 
 \end{table}
 
 
-\subsection{Simulated steady states with and without diffusion}
+\subsection{Simulated steady states with and without diffusion \red{Not updated yet!}}
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{PAR3Boundary.eps}
@@ -313,23 +302,15 @@ We now systematically tune the oligomerization rate and feedback strength in acc
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{SatSame_Exs.eps}
+\includegraphics[width=\textwidth]{SatFixed_Exs.eps}
 \caption{\label{fig:SatSameEx}Examples for when the feedback saturates at a fixed percentage of monomers, $\Sat{\hat A}=\Sat{\hat A}_0=0.35$. We show four possible regimes: (top left) low uniform steady state with no bistability, (top right) low uniform steady state with bistability, (bottom left) unstable uniform state with bistability, (bottom right) high uniform steady state with bistability. $F$ is the fraction of PAR-3 in the system relative to the default.}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{SatUnif_Exs.eps}
-\caption{\label{fig:SatUnifEx}Examples for when the feedback saturates at $\Sat{\hat A}=0.74u$ (a fixed percentage of the uniform state). The uniform state is always stable, but there is only a narrow range of protein concentrations that give bistability.  }
+\caption{\label{fig:SatUnifEx}Examples for when the feedback saturates at $\Sat{\hat A}=(0.35/0.3745)u$ (a fixed percentage of the uniform state). The uniform state is always stable, but there is only a narrow range of protein concentrations that give bistability.  }
 \end{figure}
-
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{RecrAsym_Exs.eps}
-\caption{\label{fig:RecAEx}Examples for when there is a recruitment asymmetry instead of feedback. We set $\kon_A=3$ $\mu$m/s to get 50\% bound at the uniform state. This gives the cytoplasmic concentration at uniform steady state, and the solid blue curve is the binding rate at this concentration. We then consider a recruitment asymmetry where the posterior half has $\kon_A=1.5$ $\mu$m/s, and draw the binding curve again in dashed-dotted blue. The ``posterior state'' is the intersection of this curve with the unbinding curve. These plots show $F=0.5,0.7$, and 0.9 from left to right.}
-\end{figure}
-
 
 
 \iffalse
@@ -349,21 +330,6 @@ We now systematically tune the oligomerization rate and feedback strength in acc
 We repeat the analysis in Fig.\ \ref{fig:P3FluxP} systematically over a wide range of polymerization strengths $\KhatpA$ and feedback strengths $\KhatfA$. For each pair of values, we determine if there is bistability and record the mean oligomer size at the uniform state. The resulting phase diagram is shown in Fig.\ \ref{fig:P3PD}, where the blue region indicates the space where bistable solutions exist in the absence of diffusion, and the red region indicates a single uniform spatial steady state. The yellow dot represents the ``base'' set of parameters in Table\ \ref{tab:paramsP3}, which exhibits bistable behavior. Unsurprisingly, bistability occurs for high feedback strengths and high mean oligomer sizes, with the necessary feedback strength for bistability getting lower as the mean oligomer size increases. This demonstrates how feedback and oligomerization work together to generate bistability. 
 \fi
 
-\subsubsection{Systematic depletion of PAR-3}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{PAR3DepletionExp.eps}
-\caption{\label{fig:P3Depl}PAR-3 depletion experiment. We consider a fraction of the total PAR-3 $F=\Tot{A}/\Tot{A}_\text{WT}$, then vary the polymerization rate by $\KhatpA=20F$, and feedback strength according to $\KhatfA=5.5F$ (for $F=1$, these are the base parameters in Table\ \ref{tab:paramsP3}). The left plot shows the mean oligomer size (at the uniform state) as a function of the amount of bound PAR-3 at the uniform state. The right plot shows the A/P asymmetry as a function of the mean oligomer size \red{(in the uniform state, slightly different)}. Blue circles are experimental data. The lines show the four models for feedback and asymmetry that we outline in Section \ref{sec:howFB}.}
-\end{figure}
-
-In Fig.\ \ref{fig:P3Depl}, we put our models for feedback together into one summary plot and compare with experimental data. The left plot shows the dependence of the mean oligomer size (at the uniform steady state) on the amount of bound PAR-3; this is a weak function of feedback and primarily a function of polymerization rate. As such, all of our feedback models give results that match the data. The right plot shows the A/P asymmetry as a function of mean oligomer size. It is here that the behavior of our different models diverges strongly. We see that 
-\begin{enumerate}
-\item The feedback model with $\Sat{\hat A}=0.35/F$ (red line) bifurcates from a state with no asymmetry to one where the anterior is 10 times enriched relative to the posterior. The asymmetry is not a strong function of oligomer size (this is expected from Fig.\ \ref{fig:SatHighEx}).
-\item The feedback model with $\Sat{\hat A}=0.35$ (yellow line) has no asymmetry with mean oligomer sizes less than 1.8. Once the mean oligomer size goes above this, there is an asymmetry which generally grows with mean oligomer size  (this is also expected from Fig.\ \ref{fig:SatSameEx}).
-\item The feedback model with $\Sat{\hat A}=0.73u$ (fixed fraction of uniform state) has no asymmetry with mean oligomer sizes less than 3. Once the mean oligomer size goes above 3, there is a rapid transition to a large asymmetry (as Fig.\ \ref{fig:SatUnifEx} showed, this model has only a narrow bistability range). 
-\item The recruitment asymmetry model has asymmetries which persist even when only monomers are bound to the membrane (mean oligomer size of 1), as expected from Fig.\ \ref{fig:RecAEx}.
-\end{enumerate}
 
 \subsubsection{Replicating experimental conditions}
 Figure\ \ref{fig:P3Depl} looked at PAR-3 depletion around the uniform state using a kind of local perturbation analysis. In this section, we repeat the analysis considering dynamics which more closely resemble experimental conditions. Specifically, we first set the fraction $F$ of total PAR-3, then scale the dimensionless feedback strength and polymerization rate accordingly. To mimic the end of establishment phase, we initialize a simulation with all protein bound to the membrane with half the domain having 10 times more bound protein than the other. We then run the dynamics\ \eqref{eq:SingleSpec} forward in time until we reach $\hat t = 19.2$, which is 4 minutes of real time, corresponding exactly to the time interval used in experiments. At $\hat t = 19.2$, we record the mean oligomer size on the anterior and the A/P asymmetry. The results for our different feedback models are shown in Fig.\ \ref{fig:P3DeplF}
@@ -371,7 +337,6 @@ Figure\ \ref{fig:P3Depl} looked at PAR-3 depletion around the uniform state usin
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{PAR3DepletionExp_F.eps}
-\includegraphics[width=0.8\textwidth]{PAR3DepletionExp_ForPaper.eps}
 \caption{\label{fig:P3DeplF}Dynamic PAR-3 depletion experiment. We consider a fraction of the total PAR-3 $F$, then vary the polymerization rate by $\KhatpA=20F$, and feedback strength according to $\KhatfA=5.5F$ (for $F=1$, these are the base parameters in Table\ \ref{tab:paramsP3}). For each set of parameters, we mimic the end of establishment phase by setting up the domain with 100\% bound protein, with the A/P ratio 10/1  at time zero. We then evolve until $\hat t=19.2$ (4 minutes of real time) and record the A/P asymmetry and mean oligomer size on the anterior. The top plots compare the recruitment models to the data, while the bottom plot is a cleaned-up version for paper main text. }
 \end{figure}
 

@@ -2,11 +2,11 @@ DA = 0.1;
 L = 134.6;
 h = 9.5;
 koffA = 3;
-beta = 0.25;
-kdpA = 0.08;
+beta = 0;
+kdpA = 0.16;
 %Kp_Hat = 20; % Correct distribution of mon/polys
-konA = 1; % First unknown (set from when feedback is off)
-%Kf_Hat = 5.5;
+konA = 0.8; % First unknown (set from when feedback is off)
+%Kf_Hat = 2.8;
 %Asat = 0.35;%/Factors(iF);
 Roots=[];
 

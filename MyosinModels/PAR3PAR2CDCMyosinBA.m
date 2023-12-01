@@ -87,7 +87,7 @@ RDiffMat = speye(N)/dt-DR_Hat*DSq;
 [RDiff_L,RDiff_U,RDiff_P]=lu(RDiffMat);
 
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.95];
+iSizes=[0.9];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );

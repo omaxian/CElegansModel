@@ -56,7 +56,7 @@ RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.2;    
 AcForK = 0.05;
-RhatCM = 1.2;    % CDC-42 promotes myosin (fitting parameter)
+RhatCM = 0.8;    % CDC-42 promotes myosin (fitting parameter)
 
 % Initialization
 dt = 2e-3;
@@ -99,6 +99,7 @@ AllPs = zeros(nSave,N);
 AllCs = zeros(nSave,N);
 AllMs = zeros(nSave,N);
 AllKs = zeros(nSave,N);
+vmaxes = zeros(nSave,1);
 v =0;
 
 er = 1;
@@ -111,6 +112,7 @@ for iT=0:nT-1
         AllCs(iSave,:)=C;
         AllKs(iSave,:)=K;
         AllMs(iSave,:)=M;
+        vmaxes(iSave)=max(v);
         hold off
         plot(x,A,x,K,x,C,x,P,x,M)
         drawnow
@@ -172,4 +174,5 @@ AllP3Sizes(:,iS)=PAR3Size;
 AllP2Sizes(:,iS)=PAR2Size;
 AllP3Ratios(:,iS)=PAR3Ratio;
 AllP2Ratios(:,iS)=PAR2Ratio;
+Allvmaxes(:,iS)=vmaxes;
 end
