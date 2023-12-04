@@ -1,27 +1,29 @@
-Factors = 0.5:0.01:1.2;
+Factors = 1;
 for iFac=1:length(Factors)
-clf;
+%clf;
 Kp_Hat = Factors(iFac)*20;
 Kf_Hat = Factors(iFac)*2.8;
-Asat = 0.35/Factors(iFac); % if you want to inversely scale saturation
+Asat = 0.35;%/Factors(iFac); % if you want to inversely scale saturation
 PAR3SteadyStates; % get parameters that are not fixed here
 dt = 2e-2;
-N = 2000;
+N = 1000;
 dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
 AMonDiffMat = speye(N)/dt-D_Hat*DSq;
 [AMonDiff_L,AMonDiff_U,AMonDiff_P]=lu(AMonDiffMat);
-iSizes = [0.5]; % start half the domain enriched
+iSizes = [0.1:0.15:1]; % start half the domain enriched
+iSizes(end)=iSizes(end)-0.01;
 %figure;
 MaxOligSize = 50;
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
-A = Art.*Inside;
+A = Inside.*Art;
+%A = Art+0.07*cos(2*pi*x);
 A(A==0)=0.1*Art;
 Ac0=1-sum(A)*dx;
-A = A/(1-Ac0); % put nothing in the cytoplasm initially
+%A = A/(1-Ac0); % put nothing in the cytoplasm initially
 A1 = AMon(A,Kconst);
 alpha = A1*Kp_Hat;
 
@@ -31,8 +33,8 @@ for iP=1:MaxOligSize
 end
 A = sum((1:MaxOligSize).*AllAs,2);
 er = 1;
-tf = 38.4;
-saveEvery=0.1/dt;
+tf = 1000;%38.4;
+saveEvery=1/dt;
 nT = floor(tf/dt+1+1e-6);
 
 plot(x,A,':')
@@ -83,8 +85,8 @@ title(strcat('Fraction protein = ',num2str(Factors(iFac))))
 %hold on
 %plot(xlim,[Arts(1) Arts(1)],':k')
 %plot(xlim,[Arts(2) Arts(2)],':k')
-%AllSizes{Fac+1}(:,iis)=EnrichSize;
-%AllRatios{Fac+1}(:,iis)=APRatios;
+AllSizes(:,iis)=EnrichSize;
+AllRatios(:,iis)=APRatios;
 drawnow
 TotalPAR3(iFac) = max(A);
 AllAPRatios(iFac) = max(A)/min(A);

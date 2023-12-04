@@ -4,13 +4,13 @@ L = 134.6;
 h = 9.5;
 % PAR-3
 DA = 0.1;
-konA = 1; 
+konA = 0.8; 
 koffA = 3;
-betaA = 0.25;
-kdpA = 0.08; 
+kdpA = 0.16; 
 KpA_Hat = 20; 
-KfA_Hat = 5.5;
+KfA_Hat = 2.8;
 Asat = 0.35;
+MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
 konP = 0.13;
@@ -37,19 +37,21 @@ KoffC_Hat = koffC*Timescale;
 DK_Hat = DK/L^2*Timescale;
 KoffK_Hat = koffK*Timescale;
 % Reaction networks
-RhatPA = 2;
+RhatPA = 5;
 RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.2;    
 AcForK = 0.05;
 
 % Initialization
-dt = 2e-3;
-N = 2000;
+dt = 2e-2;
+N = 1000;
 dx = 1/N;
 DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
 % Precompute LU factorization
+AMonDiffMat = speye(N)/dt-DA_Hat*DSq;
+[AMonDiff_L,AMonDiff_U,AMonDiff_P]=lu(AMonDiffMat);
 PDiffMat = speye(N)/dt-DP_Hat*DSq;
 [PDiff_L,PDiff_U,PDiff_P]=lu(PDiffMat);
 KDiffMat = speye(N)/dt-DK_Hat*DSq;
@@ -64,33 +66,40 @@ InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %Inside = ~(x > 0.75-((1-InitialSize)/2) & x < 0.75+((1-InitialSize)/2));
 A = 0.5*Inside + 0.05*~Inside;
+A1 = AMon(A,KpA_Hat);
+alpha = A1*KpA_Hat;
+AllAs  = zeros(N,MaxOligSize);
+for iP=1:MaxOligSize
+    AllAs(:,iP)=alpha.^(iP-1).*A1;
+end
+A = sum((1:MaxOligSize).*AllAs,2);
 C = konC/(konC+koffC*h)*ones(N,1);
 K = zeros(N,1);
 P = ~Inside;
-plot(x,A,':',x,K,':',x,C,':',x,P,':')
-hold on
+%plot(x,A,':',x,K,':',x,C,':',x,P,':')
+%hold on
 
-tf = 400;
+tf = 100;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
-AllAs = zeros(nSave,N);
-AllPs = zeros(nSave,N);
-AllCs = zeros(nSave,N);
-AllKs = zeros(nSave,N);
+AsTime = zeros(nSave,N);
+PsTime = zeros(nSave,N);
+CsTime = zeros(nSave,N);
+KsTime = zeros(nSave,N);
 
 er = 1;
 for iT=0:nT-1
     t = iT*dt;
     if (mod(iT,saveEvery)==0)
         iSave = iT/saveEvery+1;
-        AllAs(iSave,:)=A;
-        AllPs(iSave,:)=P;
-        AllCs(iSave,:)=C;
-        AllKs(iSave,:)=K;
-%         hold off
-%         plot(x,A,x,K,x,C,x,P)
-%         drawnow
+        AsTime(iSave,:)=A;
+        PsTime(iSave,:)=P;
+        CsTime(iSave,:)=C;
+        KsTime(iSave,:)=K;
+        hold off
+        plot(x,A,x,K,x,C,x,P)
+        drawnow
     end
     
     % Initialization and cytoplasmic
@@ -99,14 +108,28 @@ for iT=0:nT-1
     Pc = 1 - sum(P)*dx;
     Kc = 1 - sum(K)*dx;
     Cc = 1 - sum(C)*dx;
-    
+
     % PAR-3 update
     KpsWithP = KpA_Hat./(1+P.*RhatPA);
-    A_On =  AttachmentPAR3(A,KonA_Hat,KfA_Hat,Asat,Ac);
-    A_Off = DetachmentPAR3(A,KoffA_Hat,betaA,KdpA_Hat,KpsWithP);
-    A1 = AMon(A,KpsWithP/KdpA_Hat);
-    RHS_A = A_On - A_Off;
-    A = A + dt*(RHS_A+DA_Hat*DSq*A1);
+    % Monomers
+    NewAllAs = AllAs;
+    A1 = AllAs(:,1);
+    AttRate =  AttachmentPAR3(A,KonA_Hat,KfA_Hat,Asat,Ac);
+    RHS_1 = AttRate - KoffA_Hat*A1- 2*KpsWithP.*A1.^2 + 2*AllAs(:,2);
+    for iN=3:MaxOligSize
+        RHS_1 = RHS_1 + AllAs(:,iN) - KpsWithP.*A1.*AllAs(:,iN-1);
+    end
+    NewAllAs(:,1) = AMonDiff_U\ (AMonDiff_L\(AMonDiff_P*(A1/dt+RHS_1)));
+    % Oligomers
+    for iN=2:MaxOligSize-1
+        NewAllAs(:,iN)=AllAs(:,iN)+dt*(KpsWithP.*A1.*(AllAs(:,iN-1)-AllAs(:,iN)) ...
+            -(AllAs(:,iN)-AllAs(:,iN+1)));
+    end
+    iN=MaxOligSize;
+    NewAllAs(:,iN)=AllAs(:,iN)+dt*(KpsWithP.*A1.*AllAs(:,iN-1) - AllAs(:,iN));
+    chk = (NewAllAs(1,:)-AllAs(1,:))/dt- (DA_Hat*DSq*A1 + RHS_1);
+    AllAs = NewAllAs;
+
     % Other proteins
     RHS_C = KonC_Hat*Cc - KoffC_Hat*(1+RhatPC*P).*C;
     RHS_P = KonP_Hat*Pc - KoffP_hat*(1+RhatKP*K).*P;
@@ -114,6 +137,7 @@ for iT=0:nT-1
     P = PDiff_U\ (PDiff_L\(PDiff_P*(P/dt+RHS_P)));
     C =  CDiff_U\ (CDiff_L\(CDiff_P*(C/dt+RHS_C)));
     K =  KDiff_U\ (KDiff_L\(KDiff_P*(K/dt+RHS_K)));
+    A = sum((1:MaxOligSize).*AllAs,2);
     %chk = (C-Cprev)/dt- (DC_Hat*DSq*C + RHS_C);
 end
 set(gca,'ColorOrderIndex',1)
@@ -124,10 +148,10 @@ PAR3Ratio = zeros(nSave,1);
 PAR2Size = zeros(nSave,1);
 PAR2Ratio = zeros(nSave,1);
 for iT=1:nSave
-    MyA = AllAs(iT,:);
+    MyA = AsTime(iT,:);
     PAR3Ratio(iT) = max(MyA)/min(MyA); 
     PAR3Size(iT) = sum(MyA > 0.8*max(MyA))*dx;
-    MyP = AllPs(iT,:);
+    MyP = PsTime(iT,:);
     PAR2Ratio(iT) = max(MyP)/min(MyP);
     PAR2Size(iT) = sum(MyP > 0.8*max(MyP))*dx;
 end

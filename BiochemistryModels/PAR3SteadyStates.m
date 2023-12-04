@@ -1,14 +1,25 @@
+%Facs=0.5:0.01:1.2;
+%plFacs = [0.5 0.7 0.9 1.1];
+%tiledlayout(3,2,'Padding', 'none', 'TileSpacing', 'compact');
+Roots=[];
+%for iF=1:length(Facs)
+%if (sum(abs(Facs(iF)-plFacs) < 1e-5) > 0)
+%    doplot=1;
+%    nexttile
+%else
+%    doplot=0;
+%end
+doplot=0;
 DA = 0.1;
 L = 134.6;
 h = 9.5;
 koffA = 3;
 beta = 0;
 kdpA = 0.16;
-%Kp_Hat = 20; % Correct distribution of mon/polys
+%Kp_Hat = 20*Facs(iF); % Correct distribution of mon/polys
 konA = 0.8; % First unknown (set from when feedback is off)
-%Kf_Hat = 2.8;
-%Asat = 0.35;%/Factors(iF);
-Roots=[];
+%Kf_Hat = 2.8*Facs(iF);
+%Asat = 0.35;%Facs(iF);
 
 % Non-dimensionalization
 D_Hat = DA/(L^2*kdpA);
@@ -29,30 +40,54 @@ Ac0 = 1-Art;
 % Compute mean oligomer size
 %alpha = 1-1./MeanOligs;
 %Kps = (2*alpha-alpha.^2)./(2*Art*(1-alpha).^4);
-Atots=(0:0.001:1)';
+Atots=(0:0.001:2)';
 AttRate = AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,-1);
 DetRate = DetachmentPAR3(Atots,Koff_Hat,beta,Kdp_Hat,Kp_Hat);
-%plot(Atots,AttRate,':')
-%hold on
-%plot(Atots,DetRate)
+if (doplot)
+plot(Atots,AttRate,':')
+hold on
+plot(Atots,DetRate)
+end
 % ylimlim=ylim;
 % ylim([0 ylimlim(2)])
 
 % Now plot with fixed Ac at the steady state
 AttRate =  AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,Ac0);
-%set(gca,'ColorOrderIndex',1)
-%plot(Atots,AttRate)
+if (doplot)
+set(gca,'ColorOrderIndex',1)
+plot(Atots,AttRate)
+title(strcat('$F=$',num2str(Facs(iF))))
+xlim([0 1])
+end
 %xlabel('$\hat A$')
 NetFluxAtEq = AttRate-DetRate;
 Signs = NetFluxAtEq(1:end-1).*NetFluxAtEq(2:end);
 SignChanges=sum(Signs<0);
 SignLocs = find(Signs<0);
 LowRoot = Atots(SignLocs(1));
+try
+MedRoot = Atots(SignLocs(2));
+catch
+MedRoot = LowRoot;
+end
 HighRoot = Atots(SignLocs(end));
 alpha=Kp_Hat*AMon(Art,Kp_Hat);
 MeanOligs = 1/(1-alpha);
 %[LowRoot HighRoot]
-%Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot LowRoot]
+Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot MedRoot LowRoot];
+% end
+% nexttile
+% plot(Facs,Roots(:,5),'-k')
+% hold on
+% plot(Facs,Roots(:,6),':k')
+% plot(Facs,Roots(:,7),'-k')
+% plot(Facs,Roots(:,3),'-.')
+% xlabel('$F$')
+% title('Bifurcation diagram')
+% nexttile
+% plot(Facs,Roots(:,5)./Roots(:,7),'-k')
+% xlabel('$F$')
+% title('A/P ratio')
 %end
 %end
 %xlim([0 1])
