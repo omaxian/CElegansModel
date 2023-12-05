@@ -12,7 +12,7 @@ DSq = SecDerivMat(N,dx);
 x = (0:N-1)'*dx;
 AMonDiffMat = speye(N)/dt-D_Hat*DSq;
 [AMonDiff_L,AMonDiff_U,AMonDiff_P]=lu(AMonDiffMat);
-iSizes = [0.1:0.15:1]; % start half the domain enriched
+iSizes = [0.5]; % start half the domain enriched
 iSizes(end)=iSizes(end)-0.01;
 %figure;
 MaxOligSize = 50;
@@ -54,9 +54,9 @@ for iT=0:nT-1
             EnrichSize(iSave)=0;
         end
         APRatios(iSave)=max(A)/min(A);
-%         hold off
-%         plot(x,A)
-%         drawnow
+        hold off
+        plot(x,A)
+        drawnow
     end
     Aprev = A; 
     Ac = 1 - sum(A)*dx;

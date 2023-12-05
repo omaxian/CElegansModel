@@ -37,11 +37,11 @@ KoffC_Hat = koffC*Timescale;
 DK_Hat = DK/L^2*Timescale;
 KoffK_Hat = koffK*Timescale;
 % Reaction networks
-RhatPA = 5;
+RhatPA = 50;
 RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
-RhatACK = 0.2;    
-AcForK = 0.05;
+RhatACK = 0.1;    
+AcForK = 0.06;
 
 % Initialization
 dt = 2e-2;
@@ -79,7 +79,7 @@ P = ~Inside;
 %plot(x,A,':',x,K,':',x,C,':',x,P,':')
 %hold on
 
-tf = 100;
+tf = 200;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -127,7 +127,7 @@ for iT=0:nT-1
     end
     iN=MaxOligSize;
     NewAllAs(:,iN)=AllAs(:,iN)+dt*(KpsWithP.*A1.*AllAs(:,iN-1) - AllAs(:,iN));
-    chk = (NewAllAs(1,:)-AllAs(1,:))/dt- (DA_Hat*DSq*A1 + RHS_1);
+    %chk = (NewAllAs(:,1)-A1)/dt- (DA_Hat*DSq*NewAllAs(:,1) + RHS_1);
     AllAs = NewAllAs;
 
     % Other proteins

@@ -382,8 +382,8 @@ $\kon_P$ & PAR-2 attachment rate & 0.13 & $\mu$m/s & \cite{gross2019guiding} & $
 $\hat{R}_\text{KP}$ & $K$ inhibiting $P$ &50  &  &  & Strong inhibition\\
 $\hat R_\text{PC}$ & $P$ inhibiting $C$ & \eqref{eq:RPC}  & & \cite{sailer2015dynamic} & CDC/CHIN-1 relationship (Fig.\ A5)\\ 
 $\kon_C$ & CDC-42 attachment rate & 0.1 & $\mu$m/s & & 20\% bound with inhibition\ \\ 
-$\hat A_0$ & PAR-3 threshold for PAR-6 & 0.05&  & \cite{sailer2015dynamic}& 10\% anterior level \\
-$\hat{R}_\text{ACK}$ & $A$ and $C$ creating $K$ & 0.2  &  &  & 20\% bound $K$\\
+$\hat A_0$ & PAR-3 threshold for PAR-6 & 0.06&  & \cite{sailer2015dynamic}& 10\% anterior level \\
+$\hat{R}_\text{ACK}$ & $A$ and $C$ creating $K$ & 0.1  &  &  & 20\% bound $K$\\
 $\hat{R}_\text{PA}$ & $P$ inhibiting $A$ & 2  &  &  & $\alpha$ on posterior in wild-type\\ \hline
 \end{tabular}
 \caption{\label{tab:paramsBC}Additional parameter values for the PAR-3 model when other biochemistry is included.}
@@ -422,9 +422,9 @@ we have $\tilde{C} \approx 1/(1+13.3\hat{P})$, which implies that
 \item In \cite[Fig.~S3i]{gross2019guiding}, it is reported that roughly 25\% of PAR-6 is bound in wild-type embryos. Assuming that CDC-42 has a similar set of properties, we can assume 25\% of the protein is bound. Setting $\kon_C=0.1$ $\mu$m/s and combining with the inhibition strength\ \eqref{eq:RPC} gives about 20\% bound CDC-42 at steady state.
 \item Let's assume $\hat C = 0.25$; then we want to set $\hat{R}_\text{ACK}$ to obtain about 25\% bound PAR-6 (when there is sufficient PAR-3) as well. Plugging this into the steady state version of\ \eqref{eq:Keqn}, we obtain
 \begin{equation*}
-\hat{R}_\text{ACK}(0.25)(0.75)- (0.125)(0.25)=0 \rightarrow \hat{R}_\text{ACK}=0.17\approx 0.2.
+\hat{R}_\text{ACK}(0.25)(0.75)- (0.0625)(0.25)=0 \rightarrow \hat{R}_\text{ACK}=0.08\approx 0.1.
 \end{equation*}
-\item In embryos depleted of PAR-1 and CHIN-1, the level of PAR-3 at the anterior is roughly 10\% of the posterior, and PAR-6 can load onto the membrane everywhere. We therefore set $\hat A_0=0.05$, as this is 10\% of the uniform state.
+\item In embryos depleted of PAR-1 and CHIN-1, the level of PAR-3 at the anterior is roughly 10\% of the posterior, and PAR-6 can load onto the membrane everywhere. We therefore set $\hat A_0=0.06$, since we've already tuned the PAR-3 parameters so that the polarized state has $\hat A \approx 0.6$ on the anterior and $\hat A \approx 0.06$ on the posterior.
 \end{enumerate}
 We will for the moment leave the parameter $\hat R_\text{PA}$ unset, and look at how the model changes when we vary it. The way the rest of parameters are set is summarized in Table\ \ref{tab:paramsBC}.
 
@@ -439,14 +439,14 @@ We now try to understand how the biochemistry model\ \eqref{eq:AllBC} can behave
 
 Based on the results in Fig.\ \ref{fig:BCRegimes}, we distinguish three different regimes of inhibition:
 \begin{enumerate}
-\item In the regime where $\hat R_\text{PA}$ is small (top right), there is not enough inhibition of PAR-3 to prevent it from accumulating on the posterior at 10\% of its anterior level. Because of this, the PAR-6/PKC-3 complex accumulates uniformly on the membrane. Consequently, posterior PARs and CDC-42 all accumulate uniformly. 
+\item In the regime where $\hat R_\text{PA}$ is small (top right), there is not enough inhibition of PAR-3 to prevent it from accumulating on the posterior at 10\% of its anterior level. Because of this, the PAR-6/PKC-3 complex accumulates uniformly on the membrane. Consequently, posterior PARs and CDC-42 all accumulate uniformly (there are still some small residual asymmetries left over from the initial data in the plot). 
 \item In the regime where $\hat R_\text{PA}$ is large (bottom right), a small amount of pPARs are sufficient to drive PAR-3 down to its smallest value. Thus, the pPARs outcompete PAR-3, which sets up a state where \emph{all} of the proteins are distributed uniformly. 
-\item For intermediate values of $\hat R_\text{PA}$ (bottom left, the exact range is $5 \lesssim \hat R_\text{PA} \lesssim 50$), PAR-1 locally drives PAR-3 into its monomer form, which leads to more unbinding. In these regions, the pPARs outcompete PAR-3 and bind to the membrane, and there is a steady state where PAR-3 and the pPARs are separated by a buffer zone of PAR-6/PKC-3.
+\item For intermediate values of $\hat R_\text{PA}$ (bottom left, the exact range is $1 \lesssim \hat R_\text{PA} \lesssim 20$), PAR-1 locally drives PAR-3 into its monomer form, which leads to more unbinding. In these regions, the pPARs outcompete PAR-3 and bind to the membrane, and there is a steady state where PAR-3 and the pPARs are separated by a buffer zone of PAR-6/PKC-3.
 \end{enumerate}
-Obviously, the wild-type system must fall into the third regime. While this gives a large range of parameters for $R_\text{PA}$, if the inhibition is too large then even a small amount of $P$ (as on the anterior) could affect the polymerization dynamics of PAR-3. We want to avoid this regime, and so we set $\hat R_\text{PA}=5$ (the minimum value that gives the correct behavior). With this value, the steady state A/P ratio of PAR-3 goes from about 7:1 without $P$ inhibition to 20:1 with $P$ inhibition, which qualitatively matches the experimental dynamics of a roughly 5 fold change \cite[Fig.~4c]{sailer2015dynamic}. 
+Obviously, the wild-type system must fall into the third regime. While this gives a large range of parameters for $R_\text{PA}$, if the inhibition is too large then even a small amount of $P$ (as on the anterior) could affect the polymerization dynamics of PAR-3. We want to avoid this regime, and so we set $\hat R_\text{PA}=2$. With this value, the steady state A/P ratio of PAR-3 goes from about 7:1 without $P$ inhibition to 20:1 with $P$ inhibition, which qualitatively matches the experimental dynamics of a roughly 5 fold change \cite[Fig.~4c]{sailer2015dynamic}. 
 
 \subsubsection{The boundary position without diffusion of PAR-3}
-\red{Pick up here.} We now try to understand how the boundary position is set in the absence of diffusion. We recall that, for PAR-3 by itself, the boundary position without diffusion is set by the initial condition. But with mutual inhibition, we saw in Fig.\ \ref{fig:BCRegimes} that intermediate values of $\hat R_\text{PA}$ result in shifted boundary positions. Figure\ \ref{fig:BoundaryNoDiff} shows how this process plays out over times $\hat t = 50$ (10 minutes of real time) to $\hat t = 800$ (over 2.5 hours, which is too long realistically but long enough to establish a steady state). To exaggerate the effect, here we have used the large value of $\hat R_\text{PA}=4$, which at steady state gives $\alpha=0.1$ on the posterior (compared to $\alpha \approx 0.4$ without mutual inhibition) and $\alpha=0.74$ on the anterior (unchanged from the case without mutual inhibition). We observe contraction of the PAR-3 domain, with a peak that grows over time, and expansion of the PAR-2 domain, with peak values for PAR-2 that decrease over time. 
+\red{Pick up here -- but first simulate maintenane phase rescue.} We now try to understand how the boundary position is set in the absence of diffusion. We recall that, for PAR-3 by itself, the boundary position without diffusion is set by the initial condition. But with mutual inhibition, we saw in Fig.\ \ref{fig:BCRegimes} that intermediate values of $\hat R_\text{PA}$ result in shifted boundary positions. Figure\ \ref{fig:BoundaryNoDiff} shows how this process plays out over times $\hat t = 50$ (10 minutes of real time) to $\hat t = 800$ (over 2.5 hours, which is too long realistically but long enough to establish a steady state). To exaggerate the effect, here we have used the large value of $\hat R_\text{PA}=4$, which at steady state gives $\alpha=0.1$ on the posterior (compared to $\alpha \approx 0.4$ without mutual inhibition) and $\alpha=0.74$ on the anterior (unchanged from the case without mutual inhibition). We observe contraction of the PAR-3 domain, with a peak that grows over time, and expansion of the PAR-2 domain, with peak values for PAR-2 that decrease over time. 
 
 \begin{figure}
 \centering
