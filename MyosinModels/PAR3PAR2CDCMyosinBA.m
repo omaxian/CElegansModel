@@ -6,11 +6,11 @@ h = 9.5;
 DA = 0.1;
 konA = 1; 
 koffA = 3;
-betaA = 0.25;
-kdpA = 0.08; 
+kdpA = 0.16; 
 KpA_Hat = 20; 
-KfA_Hat = 5.5;
+KfA_Hat = 3;
 Asat = 0.35;
+MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
 konP = 0.13;
@@ -25,12 +25,12 @@ koffK = 0.01;
 % Myosin
 DM = 0.05;
 koffM = 0.12;
-konM = 0.3; % Fitting parameter
+konM = 0.1; % Fitting parameter
 eta = 0.1;
 gamma = 1e-3;
 Sigma0 = 4.2e-3;
 % Branched actin
-DR = 0.05;
+DR = 1
 koffR = 0.12;
 % Dimensionless
 % Biochem
@@ -59,22 +59,28 @@ KoffR_Hat = koffR*Timescale;
 RhatPA = 2;
 RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
-RhatACK = 0.2;    
-AcForK = 0.05;
+RhatACK = 0.1;    
+AcForK = 0.06;
 RhatCM = 5;    % CDC-42 promotes myosin (fitting parameter)
 RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
 Thres = 0.2; % Threshold where CDC-42 -> branched actin Fitting parameter
-RhatRM = 15; % Branched actin killing myosin (fitting parameter)
+RhatRM = 25; % Branched actin killing myosin (fitting parameter)
 
 % Initialization
-dt=2e-3;
-N=2000;
+dt=2e-2;
+tf = 192;
+saveEvery=1/dt;
+nT = tf/dt+1;
+nSave = (nT-1)/saveEvery;
+N=1000;
 dx = 1/N;
 DSq = SecDerivMat(N,dx);
 DOneCenter = FirstDerivMatCenter(N,dx);
 x = (0:N-1)'*dx;
 advorder = 1;
 % Precompute LU factorization
+AMonDiffMat = speye(N)/dt-DA_Hat*DSq;
+[AMonDiff_L,AMonDiff_U,AMonDiff_P]=lu(AMonDiffMat);
 PDiffMat = speye(N)/dt-DP_Hat*DSq;
 [PDiff_L,PDiff_U,PDiff_P]=lu(PDiffMat);
 KDiffMat = speye(N)/dt-DK_Hat*DSq;
@@ -88,46 +94,64 @@ RDiffMat = speye(N)/dt-DR_Hat*DSq;
 
 % Start with small zone of PAR-2 on posterior cap
 iSizes=[0.9];
+AllP3Sizes = zeros(nSave,length(iSizes));
+AllP2Sizes = zeros(nSave,length(iSizes));
+AllP3Ratios = zeros(nSave,length(iSizes));
+AllP2Ratios= zeros(nSave,length(iSizes));
+Allvmaxes= zeros(nSave,length(iSizes));
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %Inside = ~(x > 0.75-((1-InitialSize)/2) & x < 0.75+((1-InitialSize)/2));
-A = 0.5*Inside + 0.05*~Inside;
+A = 0.5*ones(N,1);%Inside + 0.02*~Inside;
+A = A./(1-sum(A)*dx);
+A1 = AMon(A,KpA_Hat);
+alpha = A1*KpA_Hat;
+AllAs  = zeros(N,MaxOligSize);
+for iP=1:MaxOligSize
+    AllAs(:,iP)=alpha.^(iP-1).*A1;
+end
+A = sum((1:MaxOligSize).*AllAs,2);
 C = konC/(konC+koffC*h)*ones(N,1);
 K = zeros(N,1);
-P = ~Inside;
+P = zeros(N,1);
 M = 0.5*ones(N,1);
 R = zeros(N,1);
 plot(x,A,':',x,K,':',x,C,':',x,P,':',x,M,':',x,R,':')
 hold on
 
-tf = 200;
-saveEvery=1/dt;
-nT = tf/dt+1;
-nSave = (nT-1)/saveEvery;
-AllAs = zeros(nSave,N);
-AllPs = zeros(nSave,N);
-AllCs = zeros(nSave,N);
-AllMs = zeros(nSave,N);
-AllRs = zeros(nSave,N);
-AllKs = zeros(nSave,N);
+AsTime = zeros(nSave,N);
+PsTime = zeros(nSave,N);
+CsTime = zeros(nSave,N);
+MsTime = zeros(nSave,N);
+RsTime = zeros(nSave,N);
+KsTime = zeros(nSave,N);
 vmaxes = zeros(nSave,1);
 v =0;
-
+f=figure;
 er = 1;
 for iT=0:nT-1
     t = iT*dt;
     if (mod(iT,saveEvery)==0)
         iSave = iT/saveEvery+1;
-        AllAs(iSave,:)=A;
-        AllPs(iSave,:)=P;
-        AllCs(iSave,:)=C;
-        AllMs(iSave,:)=M;
-        AllKs(iSave,:)=K;
-        AllRs(iSave,:)=R;
+        AsTime(iSave,:)=A;
+        PsTime(iSave,:)=P;
+        CsTime(iSave,:)=C;
+        MsTime(iSave,:)=M;
+        KsTime(iSave,:)=K;
+        RsTime(iSave,:)=R;
         vmaxes(iSave)=max(abs(v));
         hold off
         plot(x,A,x,K,x,C,x,P,x,M,x,R)
+        legend('$A$ (PAR-3)','$K$ (PAR-6)','$C$ (CDC-42)',...
+            '$P$ (pPARs)','$M$ (Myosin)','$R$ (Br Act)','Location','North','NumColumns',2)
+        ylim([0 1.5])
+        xlabel('Distance from anterior')
+        ylabel('Protein density')
+        xticks(0:0.25:1);
+        xticklabels(-0.5:0.25:0.5)
+        title(strcat('$t=$',sprintf('%.2f', iT*dt/kdpA),' s'))
+        movieframes(iSave)=getframe(f);
         drawnow
     end
     
@@ -144,31 +168,54 @@ for iT=0:nT-1
     Sigma_active = ActiveStress(M);
     v = (speye(N)-LRatio^2*DSq) \ (LRatio*DOneCenter*Sigma_active);
     vHalf = 1/2*(v+circshift(v,-1));
-   % Advection (explicit)
+    % Advection (explicit)
+    AllMinusdxAv = zeros(N,MaxOligSize);
+    for iN=1:MaxOligSize
+        AllMinusdxAv(:,iN)=AdvectionRHS(t,AllAs(:,iN),dx,vHalf,advorder);
+    end
     MinusdxMv = AdvectionRHS(t,M,dx,vHalf,advorder);
-    MinusdxAv = AdvectionRHS(t,A,dx,vHalf,advorder);
     MinusdxPv = AdvectionRHS(t,P,dx,vHalf,advorder);
     MinusdxCv = AdvectionRHS(t,C,dx,vHalf,advorder);
     MinusdxKv = AdvectionRHS(t,K,dx,vHalf,advorder);
     MinusdxRv = AdvectionRHS(t,R,dx,vHalf,advorder);
 
     % Reactions
+    % PAR-3 update
     KpsWithP = KpA_Hat./(1+P.*RhatPA);
-    A_On =  AttachmentPAR3(A,KonA_Hat,KfA_Hat,Asat,Ac);
-    A_Off = DetachmentPAR3(A,KoffA_Hat,betaA,KdpA_Hat,KpsWithP);
-    A1 = AMon(A,KpsWithP/KdpA_Hat);
-    RHS_A = SigmaHat*MinusdxAv + A_On - A_Off;
-    A = A + dt*(RHS_A+DA_Hat*DSq*A1);
+    % Monomers
+    NewAllAs = AllAs;
+    A1 = AllAs(:,1);
+    AttRate =  AttachmentPAR3(A,KonA_Hat,KfA_Hat,Asat,Ac);
+    RHS_1 = SigmaHat*AllMinusdxAv(:,1)+AttRate - KoffA_Hat*A1- 2*KpsWithP.*A1.^2 + 2*AllAs(:,2);
+    for iN=3:MaxOligSize
+        RHS_1 = RHS_1 + AllAs(:,iN) - KpsWithP.*A1.*AllAs(:,iN-1);
+    end
+    NewAllAs(:,1) = AMonDiff_U\ (AMonDiff_L\(AMonDiff_P*(A1/dt+RHS_1)));
+    % Oligomers
+    for iN=2:MaxOligSize-1
+        NewAllAs(:,iN)=AllAs(:,iN)+dt*(SigmaHat*AllMinusdxAv(:,iN)+...
+            KpsWithP.*A1.*(AllAs(:,iN-1)-AllAs(:,iN)) -(AllAs(:,iN)-AllAs(:,iN+1)));
+    end
+    iN=MaxOligSize;
+    NewAllAs(:,iN)=AllAs(:,iN)+dt*(SigmaHat*AllMinusdxAv(:,iN)...
+        +KpsWithP.*A1.*AllAs(:,iN-1) - AllAs(:,iN));
+    chk = (NewAllAs(:,1)-A1)/dt- (DA_Hat*DSq*NewAllAs(:,1) + RHS_1);
+    AllAs = NewAllAs;
+   
     RHS_C = SigmaHat*MinusdxCv + KonC_Hat*Cc - KoffC_Hat*(1+RhatPC*P).*C;
     RHS_P = SigmaHat*MinusdxPv + KonP_Hat*Pc - KoffP_hat*(1+RhatKP*K).*P;
     RHS_K = SigmaHat*MinusdxKv + RhatACK*C.*(A > AcForK)*Kc - KoffK_Hat*K;
     RHS_M = SigmaHat*MinusdxMv + (KonM_Hat+RhatCM*C)*Mc - KoffM_Hat*(1+RhatRM*R).*M;
+    if (t < 10)
+        RHS_M = RHS_M - KoffM_Hat*(~Inside);
+    end
     RHS_R = SigmaHat*MinusdxRv + RhatCR*max(C-Thres,0)*Rc - KoffR_Hat*R;
     P = PDiff_U\ (PDiff_L\(PDiff_P*(P/dt+RHS_P)));
     C =  CDiff_U\ (CDiff_L\(CDiff_P*(C/dt+RHS_C)));
     K =  KDiff_U\ (KDiff_L\(KDiff_P*(K/dt+RHS_K)));
     M =  MDiff_U\ (MDiff_L\(MDiff_P*(M/dt+RHS_M)));
     R = RDiff_U\ (RDiff_L\(RDiff_P*(R/dt+RHS_R)));
+    A = sum((1:MaxOligSize).*AllAs,2);
     chk = (R-Rprev)/dt- (DR_Hat*DSq*R + RHS_R);
 end
 set(gca,'ColorOrderIndex',1)
@@ -180,16 +227,16 @@ PAR3Ratio = zeros(nSave,1);
 PAR2Size = zeros(nSave,1);
 PAR2Ratio = zeros(nSave,1);
 for iT=1:nSave
-    MyA = AllAs(iT,:);
+    MyA = AsTime(iT,:);
     PAR3Ratio(iT) = max(MyA)/min(MyA); 
-    PAR3Size(iT) = sum(MyA > 0.8*max(MyA))*dx;
-    MyP = AllPs(iT,:);
+    PAR3Size(iT) = sum(MyA > 0.5*max(MyA))*dx;
+    MyP = PsTime(iT,:);
     PAR2Ratio(iT) = max(MyP)/min(MyP);
-    PAR2Size(iT) = sum(MyP > 0.8*max(MyP))*dx;
+    PAR2Size(iT) = sum(MyP > 0.5*max(MyP))*dx;
 end
 AllP3Sizes(:,iS)=PAR3Size;
 AllP2Sizes(:,iS)=PAR2Size;
 AllP3Ratios(:,iS)=PAR3Ratio;
 AllP2Ratios(:,iS)=PAR2Ratio;
-AllvMaxes(:,iS)=vmaxes;
+Allvmaxes(:,iS)=vmaxes(1:nSave);
 end

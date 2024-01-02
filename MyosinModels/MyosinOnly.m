@@ -20,9 +20,9 @@ Sigma0_Hat = Sigma0/sqrt(eta*gamma)/(L*koffM);
 %% Numerical parameters
 dt = 1e-3;
 tf = 5;
-saveEvery = floor(0.005/dt);
+saveEvery = floor(0.01/dt);
 nT = floor(tf/dt);
-N = 100;
+N = 1000;
 dx = 1/N;
 x = (0:N-1)'*dx;
 advorder = 1;
@@ -34,7 +34,7 @@ DOneCenter = FirstDerivMatCenter(N,dx);
 r = 0.05*randn(N,1);
 r = r-mean(r);
 M0 = KonM_Hat/(1+KonM_Hat);
-M = M0*ones(N,1)+r;
+M = M0*ones(N,1);
 ks=1:20;
 lambda_1=Sigma0_Hat*4*pi^2*ks.^2*M0*LRatio./(1+4*pi^2*ks.^2*LRatio^2)...
     -DM_Hat*4*pi^2*ks.^2-1;
@@ -43,6 +43,8 @@ plot(x,M)
 hold on
 nIts = 1;
 er = 1;
+f = figure;
+iFrame =0;
 for iT=0:nT
     Mprev = M;
     Mc = 1 - sum(M)*dx;
@@ -53,17 +55,25 @@ for iT=0:nT
     vHalf = 1/2*(v+circshift(v,-1));
     chk = v-eta/(gamma*L^2)*DSq*v - sqrt(eta/gamma)/L*DOneCenter*Sigma_active;
     if (mod(iT,saveEvery)==0)
+        clf;
         saveIndex = iT/saveEvery+1;
         AllMs(saveIndex,:)=M;
         Allvs(saveIndex,:)=v;
         plot(x,M)
-        %title(strcat('$t=$',num2str(iT*dt)))
-        drawnow
-        hold off
+        title(strcat('$t=$',sprintf('%.2f', iT*dt/koffM),' s'))
+        iFrame = iFrame+1;
+        xlabel('$\hat x$')
+        ylabel('$\hat M$')
+        ylim([0.1 0.35])
+        yyaxis right
+        plot(x,v*Sigma0/sqrt(eta*gamma)*60)
+        ylabel('$v$ ($\mu$m/min)')
+        ylim([-2 2])
+        movieframes(iFrame+1)=getframe(f);
     end
     % Advection (explicit)
     MinusdxMv = AdvectionRHS(t,M,dx,vHalf,advorder);
-    RHS_M = Sigma0_Hat*MinusdxMv + KonM_Hat*Mc - M;
+    RHS_M = Sigma0_Hat*MinusdxMv + KonM_Hat*Mc - M.*(1+(x>0.4 & x < 0.6).*(t < 3));
     M = (speye(N)/dt-DM_Hat*DSq) \ (M/dt+RHS_M);
     %er2 = (M-Mprev)/dt-sigma0_Hat*MinusdxMv - DM_Hat*DSq*M-KonM_Hat*Mc + Mprev;
     mv = (M-Mprev)/dt;

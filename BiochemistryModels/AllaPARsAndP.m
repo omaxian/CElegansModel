@@ -4,12 +4,12 @@ L = 134.6;
 h = 9.5;
 % PAR-3
 DA = 0.1;
-konA = 0.8; 
+konA = 1; 
 koffA = 3;
 kdpA = 0.16; 
-KpA_Hat = 20; 
-KfA_Hat = 2.8;
-Asat = 0.35;
+KpA_Hat = 15; 
+KfA_Hat = 3.6;
+Asat = 0.34;
 MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
@@ -37,7 +37,7 @@ KoffC_Hat = koffC*Timescale;
 DK_Hat = DK/L^2*Timescale;
 KoffK_Hat = koffK*Timescale;
 % Reaction networks
-RhatPA = 50;
+RhatPA = 2;
 RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.1;    
@@ -60,7 +60,7 @@ CDiffMat = speye(N)/dt-DC_Hat*DSq;
 [CDiff_L,CDiff_U,CDiff_P]=lu(CDiffMat);
 
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.5];
+iSizes=[0.8];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
@@ -79,7 +79,7 @@ P = ~Inside;
 %plot(x,A,':',x,K,':',x,C,':',x,P,':')
 %hold on
 
-tf = 200;
+tf = 1000;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;

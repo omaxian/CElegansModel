@@ -76,7 +76,7 @@ title('Normalized stress')
 %plot(MyFilt,SmoothStr./MyFilt)
 nEm=10;
 close all;
-N=2000;
+N=1000;
 tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
 nexttile
 plot(xog,MyBright')
