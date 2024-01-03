@@ -34,7 +34,7 @@ DOneCenter = FirstDerivMatCenter(N,dx);
 r = 0.05*randn(N,1);
 r = r-mean(r);
 M0 = KonM_Hat/(1+KonM_Hat);
-M = M0*ones(N,1);
+M = M0*ones(N,1)+r;
 ks=1:20;
 lambda_1=Sigma0_Hat*4*pi^2*ks.^2*M0*LRatio./(1+4*pi^2*ks.^2*LRatio^2)...
     -DM_Hat*4*pi^2*ks.^2-1;
@@ -73,7 +73,7 @@ for iT=0:nT
     end
     % Advection (explicit)
     MinusdxMv = AdvectionRHS(t,M,dx,vHalf,advorder);
-    RHS_M = Sigma0_Hat*MinusdxMv + KonM_Hat*Mc - M.*(1+(x>0.4 & x < 0.6).*(t < 3));
+    RHS_M = Sigma0_Hat*MinusdxMv + KonM_Hat*Mc - M;
     M = (speye(N)/dt-DM_Hat*DSq) \ (M/dt+RHS_M);
     %er2 = (M-Mprev)/dt-sigma0_Hat*MinusdxMv - DM_Hat*DSq*M-KonM_Hat*Mc + Mprev;
     mv = (M-Mprev)/dt;

@@ -4,12 +4,12 @@ L = 134.6;
 h = 9.5;
 % PAR-3
 DA = 0.1;
-konA = 0.8; 
+konA = 1; 
 koffA = 3;
 kdpA = 0.16; 
-KpA_Hat = 20; 
-KfA_Hat = 2.8;
-Asat = 0.35;
+KpA_Hat = 15; 
+KfA_Hat = 3.6;
+Asat = 0.34;
 MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
@@ -17,7 +17,7 @@ konP = 0.13;
 koffP = 7.3e-3;
 % CDC-42
 DC = 0.1;
-konC = 0.1; % Fitting parameter
+konC = 0.1; 
 koffC = 0.01;
 % PAR-6
 DK = 0.1;
@@ -56,12 +56,12 @@ RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.1;    
 AcForK = 0.06;
-RhatCM = 0.2;    % CDC-42 promotes myosin (fitting parameter)
+RhatCM = 0.6;    % CDC-42 promotes myosin (fitting parameter)
 
 % Initialization
 dt = 2e-2;
-tf = 2000;
-saveEvery=1/dt;
+tf = 38.4;
+saveEvery=0.96/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
 N = 1000;
@@ -83,7 +83,7 @@ MDiffMat = speye(N)/dt-DM_Hat*DSq;
 [MDiff_L,MDiff_U,MDiff_P]=lu(MDiffMat);
 
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.9];
+iSizes=[0.5];
 AllP3Sizes = zeros(nSave,length(iSizes));
 AllP2Sizes = zeros(nSave,length(iSizes));
 AllP3Ratios = zeros(nSave,length(iSizes));
@@ -92,8 +92,8 @@ Allvmaxes= zeros(nSave,length(iSizes));
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
-%Inside = ~(x > 0.75-((1-InitialSize)/2) & x < 0.75+((1-InitialSize)/2));
-A = 0.5*Inside + 0.02*~Inside;
+A = 0.6*Inside + 0.05*~Inside;
+% End establishment phase
 A = A./(1-sum(A)*dx);
 A1 = AMon(A,KpA_Hat);
 alpha = A1*KpA_Hat;
@@ -133,17 +133,18 @@ for iT=0:nT-1
         plot(x,A,x,K,x,C,x,P,x,M)
         drawnow
     end
+    if (sum(isnan(A)) > 0)
+        keyboard
+    end
     
     % Initialization and cytoplasmic
+    A = sum((1:MaxOligSize).*AllAs,2);
     Aprev = A; Pprev = P; Cprev=C; Mprev=M;
-    %if (t < 500)
     Ac = 1 - sum(A)*dx;
     Pc = 1 - sum(P)*dx;
     Kc = 1 - sum(K)*dx;
     Cc = 1 - sum(C)*dx;
     Mc = 1 - sum(M)*dx;
-    %end
-
     
     % Flows
     Sigma_active = ActiveStress(M);
@@ -166,7 +167,8 @@ for iT=0:nT-1
     NewAllAs = AllAs;
     A1 = AllAs(:,1);
     AttRate =  AttachmentPAR3(A,KonA_Hat,KfA_Hat,Asat,Ac);
-    RHS_1 = SigmaHat*AllMinusdxAv(:,1)+AttRate - KoffA_Hat*A1- 2*KpsWithP.*A1.^2 + 2*AllAs(:,2);
+    RHS_1 = SigmaHat*AllMinusdxAv(:,1)+AttRate - KoffA_Hat*A1 ...
+        - 2*KpsWithP.*A1.^2 + 2*AllAs(:,2);
     for iN=3:MaxOligSize
         RHS_1 = RHS_1 + AllAs(:,iN) - KpsWithP.*A1.*AllAs(:,iN-1);
     end
@@ -190,7 +192,6 @@ for iT=0:nT-1
     C =  CDiff_U\ (CDiff_L\(CDiff_P*(C/dt+RHS_C)));
     K =  KDiff_U\ (KDiff_L\(KDiff_P*(K/dt+RHS_K)));
     M =  MDiff_U\ (MDiff_L\(MDiff_P*(M/dt+RHS_M)));
-    A = sum((1:MaxOligSize).*AllAs,2);
     %chk = (M-Mprev)/dt- (DM_Hat*DSq*M + RHS_M);
 end
 set(gca,'ColorOrderIndex',1)
@@ -203,10 +204,10 @@ PAR2Ratio = zeros(nSave,1);
 for iT=1:nSave
     MyA = AsTime(iT,:);
     PAR3Ratio(iT) = max(MyA)/min(MyA); 
-    PAR3Size(iT) = sum(MyA > 0.8*max(MyA))*dx;
+    PAR3Size(iT) = sum(MyA > 0.5*max(MyA))*dx;
     MyP = PsTime(iT,:);
     PAR2Ratio(iT) = max(MyP)/min(MyP);
-    PAR2Size(iT) = sum(MyP > 0.8*max(MyP))*dx;
+    PAR2Size(iT) = sum(MyP > 0.5*max(MyP))*dx;
 end
 AllP3Sizes(:,iS)=PAR3Size;
 AllP2Sizes(:,iS)=PAR2Size;

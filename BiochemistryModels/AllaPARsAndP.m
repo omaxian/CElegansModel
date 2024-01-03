@@ -60,7 +60,7 @@ CDiffMat = speye(N)/dt-DC_Hat*DSq;
 [CDiff_L,CDiff_U,CDiff_P]=lu(CDiffMat);
 
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.8];
+iSizes=[0.5];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );

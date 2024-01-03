@@ -7,9 +7,9 @@ DA = 0.1;
 konA = 1; 
 koffA = 3;
 kdpA = 0.16; 
-KpA_Hat = 20; 
-KfA_Hat = 3;
-Asat = 0.35;
+KpA_Hat = 15; 
+KfA_Hat = 3.6;
+Asat = 0.34;
 MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
@@ -17,7 +17,7 @@ konP = 0.13;
 koffP = 7.3e-3;
 % CDC-42
 DC = 0.1;
-konC = 0.1; % Fitting parameter
+konC = 0.1;
 koffC = 0.01;
 % PAR-6
 DK = 0.1;
@@ -25,12 +25,12 @@ koffK = 0.01;
 % Myosin
 DM = 0.05;
 koffM = 0.12;
-konM = 0.1; % Fitting parameter
+konM = 0.3; % Fitting parameter
 eta = 0.1;
 gamma = 1e-3;
 Sigma0 = 4.2e-3;
 % Branched actin
-DR = 1
+DR = 0.05;
 koffR = 0.12;
 % Dimensionless
 % Biochem
@@ -61,14 +61,14 @@ RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.1;    
 AcForK = 0.06;
-RhatCM = 5;    % CDC-42 promotes myosin (fitting parameter)
+RhatCM = 3;    % CDC-42 promotes myosin (fitting parameter)
 RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
 Thres = 0.2; % Threshold where CDC-42 -> branched actin Fitting parameter
-RhatRM = 25; % Branched actin killing myosin (fitting parameter)
+RhatRM = 10; % Branched actin killing myosin (fitting parameter)
 
 % Initialization
 dt=2e-2;
-tf = 192;
+tf = 200;
 saveEvery=1/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -103,7 +103,7 @@ for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %Inside = ~(x > 0.75-((1-InitialSize)/2) & x < 0.75+((1-InitialSize)/2));
-A = 0.5*ones(N,1);%Inside + 0.02*~Inside;
+A = 0.5*Inside + 0.05*~Inside;
 A = A./(1-sum(A)*dx);
 A1 = AMon(A,KpA_Hat);
 alpha = A1*KpA_Hat;
@@ -114,7 +114,7 @@ end
 A = sum((1:MaxOligSize).*AllAs,2);
 C = konC/(konC+koffC*h)*ones(N,1);
 K = zeros(N,1);
-P = zeros(N,1);
+P = 1*~Inside;
 M = 0.5*ones(N,1);
 R = zeros(N,1);
 plot(x,A,':',x,K,':',x,C,':',x,P,':',x,M,':',x,R,':')
@@ -143,19 +143,20 @@ for iT=0:nT-1
         vmaxes(iSave)=max(abs(v));
         hold off
         plot(x,A,x,K,x,C,x,P,x,M,x,R)
-        legend('$A$ (PAR-3)','$K$ (PAR-6)','$C$ (CDC-42)',...
-            '$P$ (pPARs)','$M$ (Myosin)','$R$ (Br Act)','Location','North','NumColumns',2)
-        ylim([0 1.5])
-        xlabel('Distance from anterior')
-        ylabel('Protein density')
-        xticks(0:0.25:1);
-        xticklabels(-0.5:0.25:0.5)
-        title(strcat('$t=$',sprintf('%.2f', iT*dt/kdpA),' s'))
-        movieframes(iSave)=getframe(f);
+        %legend('$A$ (PAR-3)','$K$ (PAR-6)','$C$ (CDC-42)',...
+        %    '$P$ (pPARs)','$M$ (Myosin)','$R$ (Br Act)','Location','North','NumColumns',2)
+        %ylim([0 1.5])
+        %xlabel('Distance from anterior')
+        %ylabel('Protein density')
+        %xticks(0:0.25:1);
+        %xticklabels(-0.5:0.25:0.5)
+        %title(strcat('$t=$',sprintf('%.2f', iT*dt/kdpA),' s'))
+        %movieframes(iSave)=getframe(f);
         drawnow
     end
     
     % Initialization and cytoplasmic
+    A = sum((1:MaxOligSize).*AllAs,2);
     Aprev = A; Pprev = P; Cprev=C; Mprev=M; Rprev=R;
     Ac = 1 - sum(A)*dx;
     Pc = 1 - sum(P)*dx;
@@ -186,7 +187,8 @@ for iT=0:nT-1
     NewAllAs = AllAs;
     A1 = AllAs(:,1);
     AttRate =  AttachmentPAR3(A,KonA_Hat,KfA_Hat,Asat,Ac);
-    RHS_1 = SigmaHat*AllMinusdxAv(:,1)+AttRate - KoffA_Hat*A1- 2*KpsWithP.*A1.^2 + 2*AllAs(:,2);
+    RHS_1 = SigmaHat*AllMinusdxAv(:,1)+AttRate - KoffA_Hat*A1...
+        - 2*KpsWithP.*A1.^2 + 2*AllAs(:,2);
     for iN=3:MaxOligSize
         RHS_1 = RHS_1 + AllAs(:,iN) - KpsWithP.*A1.*AllAs(:,iN-1);
     end
@@ -199,24 +201,20 @@ for iT=0:nT-1
     iN=MaxOligSize;
     NewAllAs(:,iN)=AllAs(:,iN)+dt*(SigmaHat*AllMinusdxAv(:,iN)...
         +KpsWithP.*A1.*AllAs(:,iN-1) - AllAs(:,iN));
-    chk = (NewAllAs(:,1)-A1)/dt- (DA_Hat*DSq*NewAllAs(:,1) + RHS_1);
+    %chk = (NewAllAs(:,1)-A1)/dt- (DA_Hat*DSq*NewAllAs(:,1) + RHS_1);
     AllAs = NewAllAs;
    
     RHS_C = SigmaHat*MinusdxCv + KonC_Hat*Cc - KoffC_Hat*(1+RhatPC*P).*C;
     RHS_P = SigmaHat*MinusdxPv + KonP_Hat*Pc - KoffP_hat*(1+RhatKP*K).*P;
     RHS_K = SigmaHat*MinusdxKv + RhatACK*C.*(A > AcForK)*Kc - KoffK_Hat*K;
     RHS_M = SigmaHat*MinusdxMv + (KonM_Hat+RhatCM*C)*Mc - KoffM_Hat*(1+RhatRM*R).*M;
-    if (t < 10)
-        RHS_M = RHS_M - KoffM_Hat*(~Inside);
-    end
     RHS_R = SigmaHat*MinusdxRv + RhatCR*max(C-Thres,0)*Rc - KoffR_Hat*R;
     P = PDiff_U\ (PDiff_L\(PDiff_P*(P/dt+RHS_P)));
     C =  CDiff_U\ (CDiff_L\(CDiff_P*(C/dt+RHS_C)));
     K =  KDiff_U\ (KDiff_L\(KDiff_P*(K/dt+RHS_K)));
     M =  MDiff_U\ (MDiff_L\(MDiff_P*(M/dt+RHS_M)));
     R = RDiff_U\ (RDiff_L\(RDiff_P*(R/dt+RHS_R)));
-    A = sum((1:MaxOligSize).*AllAs,2);
-    chk = (R-Rprev)/dt- (DR_Hat*DSq*R + RHS_R);
+    %chk = (R-Rprev)/dt- (DR_Hat*DSq*R + RHS_R);
 end
 set(gca,'ColorOrderIndex',1)
 plot(x,A,x,K,x,C,x,P,x,M,x,R)
