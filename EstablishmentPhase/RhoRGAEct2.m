@@ -3,6 +3,11 @@ close all;
 L = 134.6;
 koffM = 0.12; % set timescale
 D = 0.1/(L^2*koffM);
+dist = 10; % Centrosome distance
+load('AIR1Diffusion.mat')
+index = find(AllDists==dist);
+Air = AlluBd(:,index);
+xa = arcLengths/L+1/2;
 % ECT-2 parameters
 KonE = 0.5;
 KoffE = 0.5/koffM;
@@ -14,13 +19,13 @@ KonM = 0.05;
 ell = 0.1;
 Sigma0 = 2.6e-2*2;
 % Reactions
-K_EPM = 2;           % Active rho and myosin recruiting ECT-2 (relative to basal)
-K_EP =  100;           % ECT-2  activating Rho
-K_MP = 0.5;           % Actomyosin (RhoGAP) inhibiting Rho (relative to basal)
-K_PM = 30;           % Rho producing actomyosin  
-Kfb = 0.1;
-KRhoMy=0.05;
-KERho = 0.1;
+K_AE = 1;   % ECT-2 inactivation by AIR-1
+K_EPM = 0;           % Active rho and myosin recruiting ECT-2 (relative to basal)
+K_EP =  150;           % ECT-2  activating Rho
+K_MP = 1;           % Actomyosin (RhoGAP) inhibiting Rho (relative to basal)
+K_PM = 100;           % Rho producing actomyosin  
+Kfb = 0.2;
+KRhoMy=0.2;
 
 %% Numerical parameters
 dt = 1e-3;
@@ -30,9 +35,17 @@ nT = floor(tf/dt);
 N = 100;
 dx = 1/N;
 x = (0:N-1)'*dx;
-FracOff=0.1;
-InAnt = 1.0*~(x < FracOff/2 | x > 1-FracOff/2);
-InAnt(InAnt==0)=1/2;
+A = zeros(N,1);
+% Interpolate the AIR-1 signal
+for iX=1:N
+    xn = x(iX);
+    [~,ind]=max(1./(xa-xn)); % The one above it
+    indb = ind-1;
+    if (indb==0)
+        indb=length(xa);
+    end
+    A(iX) = (Air(ind)-Air(indb))/(xa(ind)-xa(indb))*(xn-xa(indb))+Air(indb);
+end
 advorder = 1;
 % Second derivative matrix
 DSq = SecDerivMat(N,dx);
@@ -60,7 +73,7 @@ for iT=0:nT
         iFrame=iFrame+1;
         plot(x,E,x,PInActive,x,PActive,x,M)
         title(strcat('$t=$',sprintf('%.2f', iT*dt/koffM),' s'))
-        xlabel('\% egg length from anterior')
+        xlabel('\% egg length from posterior')
         xlim([0 1])
         xticks([0 1/4 1/2 3/4 1])
         xticklabels({'-50','-25','0','25','50'})
@@ -89,7 +102,7 @@ for iT=0:nT
     % 3) Reaction (check these!)
     ActivatingRho = K_EP*E.^2.*PActive./(Kfb+PActive).*PInActive + ...
         -K_MP*M.*PActive;
-    RHS_E = MinusdxEv + KonE*(InAnt + K_EPM*PActive.*M)*Ec - KoffE*E;
+    RHS_E = MinusdxEv + KonE*Ec - KoffE*(1+K_AE*A).*E;
     RHS_PInAct = MinusdxPInActv + KonRho*Pc - KoffRho*PInActive - ActivatingRho;
     RHS_PAct = MinusdxPActv + ActivatingRho;
     RHS_M = MinusdxMv + KonM*(1 + K_PM*PActive./(KRhoMy+PActive))*Mc - M;
