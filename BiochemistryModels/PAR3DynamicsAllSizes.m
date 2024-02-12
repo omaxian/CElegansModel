@@ -1,12 +1,19 @@
-close all;
+%close all;
 Factors =1;
+Kons=0.6;
+Kfs=4.2;
+AllAVals=[];
+AllPVals=[];
+RecrAsymp =[];
+Roots=[];
 for iFac=1:length(Factors)
-%clf;
-konA = 1;
-Kp_Hat = Factors(iFac)*15;
-Kf_Hat = Factors(iFac)*3.6;
+for iKf = 1
+Kp_Hat = 15*Factors(iFac);
+Kon_Hat = Kons;
+Kf_Hat = Kfs*Factors(iFac);
 Asat = 0.8; % percentage of uniform state
 PAR3SteadyStates; % get parameters that are not fixed here
+%if (Bistable)
 dt = 2e-2;
 N = 1000;
 dx = 1/N;
@@ -21,11 +28,12 @@ MaxOligSize = 50;
 for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
-A(Inside) = 10*Art;
-A(~Inside)=Art;
+A = zeros(N,1);
+A(Inside) = min(2*Art,2/1.1);
+A(~Inside)=min(0.2*Art,0.2/1.1);
 %A = Art*(1+0.2*cos(10*pi*x)+0.1*sin(4*pi*x));
 Ac0=1-sum(A)*dx;
-A=A/(1-Ac0); % put nothing in the cytoplasm initially
+A=A/(1-Ac0);
 A1 = AMon(A,Kconst);
 alpha = A1*Kp_Hat;
 
@@ -35,12 +43,12 @@ for iP=1:MaxOligSize
 end
 A = sum((1:MaxOligSize).*AllAs,2);
 er = 1;
-tf = 38.4;
-saveEvery=9.6/dt;
+tf = 57.6;
+saveEvery=0.1/dt;
 nT = floor(tf/dt+1+1e-6);
 
-plot(x,A,':')
-hold on
+%plot(x,A,':')
+%hold on
 nSave = floor((nT-1)/saveEvery);
 AllAsTime = zeros(nSave,N);
 EnrichSize = zeros(nSave,1);
@@ -83,29 +91,32 @@ for iT=0:nT-1
     AllAs = NewAllAs;
     A = sum((1:MaxOligSize).*AllAs,2);
 end
-plot(x,A)
-legend('Initial condition','$t=4$ min')
-title(strcat('Fraction protein = ',num2str(Factors(iFac))))
+%plot(x,A)
+%legend('Initial condition','$t=4$ min')
+%title(strcat('Fraction protein = ',num2str(Factors(iFac))))
 %hold on
 %plot(xlim,[Arts(1) Arts(1)],':k')
 %plot(xlim,[Arts(2) Arts(2)],':k')
 AllSizes(:,iis)=EnrichSize;
-AllAVals(:,iis)=AValues;
-AllPVals(:,iis)=PValues;
-drawnow
-hold off
+AllAVals(:,iis) = AValues;
+AllPVals(:,iis) = PValues;
+RecrAsymp = [RecrAsymp; max(AttRate)/min(AttRate)];
+%drawnow
+%hold off
 TotalPAR3(iFac) = max(A);
 AllAPRatios(iFac) = max(A)/min(A);
 [~,ind] = max(A);
 AllMeanOligsA(iFac) = sum((1:50).*AllAs(ind,:))/sum(AllAs(ind,:));
 end
 end
+end
+%end
 % figure
 % for iT=1:10:nSave+1
 % plot(x,AllAsTime(iT,:),'Color',[0.92 0.8 1]+iT/(nSave+1)*([0.29 0 0.48]-[0.92 0.8 1]))
 % hold on
 % end
-figure;
-plot(AllMeanOligsA,AllAPRatios,'o')
-xlabel('Mean oligomer size (anterior)')
-ylabel('A/P ratio')
+%figure;
+%%plot(AllMeanOligsA,AllAPRatios,'o')
+%xlabel('Mean oligomer size (anterior)')
+%ylabel('A/P ratio')

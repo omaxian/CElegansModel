@@ -1,13 +1,12 @@
 DA = 0.1;
 L = 134.6;
-h = 9.5;
 koffA = 3;
 beta = 0;
 kdpA = 0.16;
 %Kps=1:0.5:50;
 %Kfs = 1.6;
 %KOns=1;
-Roots=[];
+%Roots=[];
 %for iKf=1:length(Kfs)
 %for iKon=1:length(KOns)
 %Kp_Hat = 15;%Kps(iKp);
@@ -18,7 +17,6 @@ doplot=0;
 
 % Non-dimensionalization
 D_Hat = DA/(L^2*kdpA);
-Kon_Hat = konA/(kdpA*h); 
 Koff_Hat = koffA/kdpA;
 Kdp_Hat = 1;
 RHSfcn = @(x) RHS(x,Kon_Hat,Koff_Hat,beta,Kf_Hat,Kdp_Hat,Kp_Hat,Asat);
@@ -84,7 +82,12 @@ alpha=Kp_Hat*AMon(Art,Kp_Hat);
 MeanOligs = 1/(1-alpha);
 %[LowRoot HighRoot]
 %if (FoundRoots)
-%Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot MedRoot LowRoot Kon_Hat];
+if (length(SignLocs) >2)
+    Bistable = 1;
+    Roots=[Roots;Kp_Hat Kf_Hat 1-Ac0 MeanOligs HighRoot MedRoot LowRoot Kon_Hat];
+else
+    Bistable=0;
+end
 %end
 %end
 %end
@@ -93,11 +96,11 @@ MeanOligs = 1/(1-alpha);
 % % Saturating feedback
 % if (Asat < inf)
 % Roots2=Roots(Roots(:,4) < 5,:);
-% EqInds=Roots2(:,end-1)./Roots2(:,end)<1.1;
-% scatter(Roots2(EqInds,4),Roots2(EqInds,2),36,'filled')
+% EqInds=Roots2(:,end-3)./Roots2(:,end-1)<1.1;
+% scatter(Roots2(EqInds,end),Roots2(EqInds,2),36,'filled')
 % hold on
-% scatter(Roots2(~StInds,4),Roots2(~StInds,2),...
-%     36,Roots2(~EqInds,end-1)./Roots2(~EqInds,end),'filled')
+% scatter(Roots2(~EqInds,end),Roots2(~EqInds,2),...
+%     36,Roots2(~EqInds,end-3)./Roots2(~EqInds,end-1),'filled')
 % else
 % % Linear feedback
 % Roots2=Roots(Roots(:,4) < 5,:);

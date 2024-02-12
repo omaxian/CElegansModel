@@ -3,13 +3,13 @@
 L = 134.6;
 h = 9.5;
 % PAR-3
-DA = 0.1;
-konA = 1; 
+DA = 0;
 koffA = 3;
 kdpA = 0.16; 
+KonA_Hat = 0.6;
 KpA_Hat = 15; 
-KfA_Hat = 3.6;
-Asat = 0.34;
+KfA_Hat = 4.2;
+Asat = 0.3332; % 80% of uniform state
 MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
@@ -17,7 +17,7 @@ konP = 0.13;
 koffP = 7.3e-3;
 % CDC-42
 DC = 0.1;
-konC = 0.1; 
+konC = 0.1; % Fitting parameter
 koffC = 0.01;
 % PAR-6
 DK = 0.1;
@@ -28,12 +28,11 @@ koffM = 0.12;
 konM = 0.3; % Fitting parameter
 eta = 0.1;
 gamma = 1e-3;
-Sigma0 = 4.2e-3;
+Sigma0 = 7.1e-3;
 % Dimensionless
 % Biochem
 Timescale=1/kdpA;
 DA_Hat = DA/L^2*Timescale;
-KonA_Hat = konA/h*Timescale;
 KoffA_Hat = koffA*Timescale;
 KdpA_Hat = 1;
 DP_Hat = DP/L^2*Timescale;
@@ -56,12 +55,12 @@ RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.1;    
 AcForK = 0.06;
-RhatCM = 0.6;    % CDC-42 promotes myosin (fitting parameter)
+RhatCM = 1;    % CDC-42 promotes myosin (fitting parameter)
 
 % Initialization
 dt = 2e-2;
-tf = 38.4;
-saveEvery=0.96/dt;
+tf = 72;
+saveEvery=0.16/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
 N = 1000;
@@ -83,7 +82,7 @@ MDiffMat = speye(N)/dt-DM_Hat*DSq;
 [MDiff_L,MDiff_U,MDiff_P]=lu(MDiffMat);
 
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.5];
+iSizes=[0.9];
 AllP3Sizes = zeros(nSave,length(iSizes));
 AllP2Sizes = zeros(nSave,length(iSizes));
 AllP3Ratios = zeros(nSave,length(iSizes));
@@ -94,7 +93,7 @@ InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 A = 0.6*Inside + 0.05*~Inside;
 % End establishment phase
-A = A./(1-sum(A)*dx);
+%A = A./(1-sum(A)*dx);
 A1 = AMon(A,KpA_Hat);
 alpha = A1*KpA_Hat;
 AllAs  = zeros(N,MaxOligSize);
@@ -105,7 +104,7 @@ A = sum((1:MaxOligSize).*AllAs,2);
 C = konC/(konC+koffC*h)*ones(N,1);
 K = zeros(N,1);
 P = ~Inside;
-M = 0.5*ones(N,1);
+M = 0.3*ones(N,1);
 plot(x,A,':',x,K,':',x,C,':',x,P,':',x,M,':')
 hold on
 

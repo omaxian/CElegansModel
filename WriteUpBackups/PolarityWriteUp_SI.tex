@@ -91,6 +91,21 @@
 \begin{document}
 \maketitle 
 
+\section{Maintenance-phase as a steady state}
+In Figs.\ \ref{fig:Ect2MyMin} and \ref{fig:Ect2FlowMin}, we plot the myosin intensity profile and flow speed as a function of time by looking at the average over each minute of maintenance phase.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{Ect2MyosinByMinute.eps}
+\caption{\label{fig:Ect2MyMin} Average myosin intensity profile over four minutes of maintenance phase in \emph{ts ect-2} mutants.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{Ect2FlowsByMinute.eps}
+\caption{\label{fig:Ect2FlowMin} Average flow speeds over four minutes of maintenance phase in \emph{ts ect-2} mutants. }
+\end{figure}
+
 \section{Stability of myosin in maintenance phase \label{sec:myosin}}
 To understand the threshold for instability of Eq.\ (1) in the main text, it is useful to scale the equations by appropriate time ($1/\My{\koff}$), length ($L$), density ($\Tot{M}$, the membrane concentration if all myosin were uniformly bound), and velocity ($\sigma_0/\sqrt{\eta \gamma}$) scales. Defining the dimensionless (hatted) variables
 \begin{equation}
@@ -137,7 +152,7 @@ $\My{\koff} $ & Myosin detachment rate & 0.12 & 1/s & \cite{gross2019guiding}& \
 $\Tot{M}$ & Maximum bound myosin density & -- & $\#/\mu$m & & Scales out of equations \\ \hline
 $\eta$ & Cytoskeletal fluid viscosity & 0.1 & Pa$\cdot$s & &100 $\times$ water \\
 $\gamma$ & Myosin drag coefficient & $10^{-3}$ & Pa$\cdot$s/$\mu$m$^2$ &  & $\ell=\sqrt{\eta/\gamma}=10 \, \mu$m \cite{saha2016determining}\\ 
-$\sigma_0$ & Stress coefficient and form& 0.0042 & Pa & & Fit in Sec.\ \ref{sec:MyVelFit}\\
+$\sigma_0$ & Stress coefficient and form& 0.0071 & Pa & & Fit in Sec.\ \ref{sec:MyVelFit}\\
 $\hat \sigma_a(\hat M)$ & Stress function of myosin& $\hat M$ & & & Fit in Sec.\ \ref{sec:MyVelFit}\\ \hline
 \end{tabular}
 \caption{\label{tab:paramsMy} Parameter values for myosin model. All of these parameters listed with a citation are lifted directly from the corresponding paper. Remaining parameters: the on rate $\My{\kon}$ is chosen to give 30\% bound myosin \cite[Fig.~S3]{gross2019guiding}. Later this rate will change in the presence of CDC-42. We make an assumption about the fluid viscosity $\eta$, which then gives us the drag coefficient $\gamma$ from $\ell=10$ $\mu$m \cite{gross2019guiding}. The remaining parameters are fit in Section\ \ref{sec:MyVelFit} from the wild-type data of \cite{sailer2015dynamic}. }
@@ -155,13 +170,11 @@ For the fluid parameters, we assume that the viscosity of the cytoskeletal fluid
 \centering
 \includegraphics[width=\textwidth]{VelocityProfile.eps}
 \includegraphics[width=\textwidth]{StressFromVelocityProfile.eps}
-\caption{\label{fig:VelProf} Extracting the velocity profile and active stress from wild-type embryos. Top: the experimental data for myosin intensity (left) and velocity in $\mu$m/min (right). We show the raw data in black (which goes from anterior to posterior), the periodized version in blue, and a two-term (three terms if we include the constant) Fourier series representation in red. Bottom left: the recovered stress profile $\sigma_a(\hat x)$ in dimensional units. Bottom right: comparing the recovered stress to the myosin intensity, after normalizing by $\sigma_0=0.0042$ Pa. It is clear that $\hat \sigma_a = \hat M$ is a reasonable approximation.}
+\caption{\label{fig:VelProf} Extracting the velocity profile and active stress from wild-type embryos. Top: the experimental data for myosin intensity (left, with the outer 20\% of the embryo on each side adjusted to be constant) and velocity in $\mu$m/min (right). We show the raw data in black (which goes from anterior to posterior), the periodized version in blue, and a three-term (four terms if we include the constant) Fourier series representation in red. Bottom left: the recovered stress profile $\sigma_a(\hat x)$ in dimensional units. Bottom right: comparing the recovered stress to the myosin intensity, after normalizing by $\sigma_0=0.0071$ Pa. It is clear that $\hat \sigma_a = \hat M$ is a reasonable approximation.}
 \end{figure}
 
 
-Because we can measure the cortical velocity and myosin intensity, we can actually infer the function $\sigma_a(M)$ in dimensional units from the experimental data \cite{sailer2015dynamic}. We in particular isolate the myosin intensity and flow speed during ``late maintenance'' phase in wild type embroys \cite[Fig.~1B(bottom)]{sailer2015dynamic}, plotting the results in the top panels of Fig.\ \ref{fig:VelProf}. In the top left plot, we plot the myosin intensity, normalized so that the mean amount of bound myosin is 0.3, in accordance with wild-type measurements in \cite[Fig.~S3]{gross2019guiding}. 
-
-In the top right plot, we show the velocity in $\mu$m/min. In both cases, the data are plotted on $\hat x \in [0.25,0.75]$, which corresponds to half of the embryo (one of the lines going from anterior to posterior end). We then periodically extend this data so that we fill the whole circumference $\hat x \in [0,1]$; these are the blue lines in Fig.\ \ref{fig:VelProf}. Finally, to remove the noise from our measurements (e.g., the strange dips in the myosin concentration at the anteior and posterior pole), we fit the periodized version with a two-term (+constant) Fourier representation, which gives the red lines in Fig.\ \ref{fig:VelProf}. 
+Because we can measure the cortical velocity and myosin intensity, we can actually infer the function $\sigma_a(M)$ in dimensional units from the experimental data \cite{sailer2015dynamic}. We in particular isolate the myosin intensity and flow speed during ``late maintenance'' phase in wild type embroys \cite[Fig.~1B(bottom)]{sailer2015dynamic}, plotting the results in the top panels of Fig.\ \ref{fig:VelProf}. In the top left plot, we plot the myosin intensity, normalized so that the mean amount of bound myosin is 0.3, in accordance with wild-type measurements in \cite[Fig.~S3]{gross2019guiding}. In the top right plot, we show the velocity in $\mu$m/min. In both cases, the data are plotted on $\hat x \in [0.25,0.75]$, which corresponds to half of the embryo (one of the lines going from anterior to posterior end). For the myosin intensity, we adjust for the sensitivity of our measurements near the embryo edges by setting the myosin intensity at the outer 20\% of the embryo to be constant and equal to that measured at the 20\% boundary. We then periodically extend this data so that we fill the whole circumference $\hat x \in [0,1]$, then fit it with a 3-term (4 terms including the constant) Fourier series. 
 
 To extract the stress profile from the smoothed velocity and myosin intensity, we consider a hybrid dimensional form of the velocity equation ((1b) in main text)
 \begin{equation*}
@@ -174,16 +187,9 @@ Let the Fourier series representation for $v(\hat x)= \sum_k \tilde v(k) \exp{\l
 \end{equation}
 The $k=0$ mode is undefined because $\sigma_a$ only appears differentiated; we therefore set it such that the real space stress has a minimum value of zero. 
 
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{VelocityProfileArx2.eps}
-\includegraphics[width=\textwidth]{StressFromVelocityProfileArx2.eps}
-\caption{\label{fig:VelProfArx2} Same plot as Fig.\ \ref{fig:VelProf}, but in \emph{arx-2} (RNAi) embryos. In the bottom right plot, we normalize by $\sigma_0=4.2 \times 10^{-3}$ Pa. This makes the stress (when shifted by an arbitrary constant) roughly the same as the myosin profile (also normalized so its maximum is 1).}
-\end{figure}
-
-We plug the parameters from Table\ \ref{tab:paramsMy} into\ \eqref{eq:SigmaAF} and show the resulting real space stress in the bottom left panel of Fig.\ \ref{fig:VelProf}. This is the dimensional stress $\sigma_a$. In the right panel of Fig.\ \ref{fig:VelProf}, we normalize and shift the stress so that it has the same mean and range as the myosin profile $\hat M$. Obtaining the same range allows us to read off the constant $\sigma_0=4.2 \times 10^{-3}$ Pa that controls the magnitude of the advective flows. In particular, the dimensionless parameter $\hat{\sigma}_0$ defined in\ \eqref{eq:NDparams} is seen to be equal to
+We plug the parameters from Table\ \ref{tab:paramsMy} into\ \eqref{eq:SigmaAF} and show the resulting real space stress in the bottom left panel of Fig.\ \ref{fig:VelProf}. This is the dimensional stress $\sigma_a$. In the right panel of Fig.\ \ref{fig:VelProf}, we normalize and shift the stress so that it has the same mean and range as the myosin profile $\hat M$. Obtaining the same range allows us to read off the constant $\sigma_0=7.1 \times 10^{-3}$ Pa that controls the magnitude of the advective flows. In particular, the dimensionless parameter $\hat{\sigma}_0$ defined in\ \eqref{eq:NDparams} is seen to be equal to
 \begin{equation}
-\hat{\sigma}_0 = \left(\frac{\sigma_0/ \sqrt{\eta \gamma} }{L \My{\koff}}\right)  = 0.026.
+\hat{\sigma}_0 = \left(\frac{\sigma_0/ \sqrt{\eta \gamma} }{L \My{\koff}}\right)  = 0.044.
 \end{equation}
 In additiom, the bottom right panel of Fig.\ \ref{fig:VelProf}, also shows that we can roughly set
 \begin{equation}
@@ -191,7 +197,7 @@ In additiom, the bottom right panel of Fig.\ \ref{fig:VelProf}, also shows that 
 \end{equation}
 as a good approximation to the stress. The function itself is ambiguous, since $\hat M=0.3$ defines two different values of the stress depending on the side of the domain, but $\hat \sigma_a=\hat M$ appears to be a good approximation.
 
-We confirm this in Fig.\ \ref{fig:VelProfArx2}, where we repeat the velocity fitting procedure in \emph{arx-2} (RNAi) embryos, which lack branched actin and consequently have a simpler velocity profile. To compute the myosin profile, we assume that the experimentally-measured intensity can be converted to the dimensionless concentration $\hat M$ via the same factor (0.21) as wild-type embryos. Consequently, the myosin profile we obtain is in the top left of Fig.\ \ref{fig:VelProfArx2}. The velocity is shown in the top right panel, and we extract the stress profile in the bottom left in exactly the same way as in wild-type. Then, to compute normalize stress we divide out by $\hat{\sigma}_0=4.2 \times 10^{-3}$ Pa (obtained from wild-type). The normalized stress, when shifted by an arbitrary constant, lines up almost perfectly with the smoothed myosin profile, demonstrating that our rough approach from wild-type embryos extends to other embryos as well. Thus, this section gives us $\sigma_a = \left(4.2 \times 10^{-3}\right) \hat M$.
+%We confirm this in Fig.\ \ref{fig:VelProfArx2}, where we repeat the velocity fitting procedure in \emph{arx-2} (RNAi) embryos, which lack branched actin and consequently have a simpler velocity profile. To compute the myosin profile, we assume that the experimentally-measured intensity can be converted to the dimensionless concentration $\hat M$ via the same factor (0.21) as wild-type embryos. Consequently, the myosin profile we obtain is in the top left of Fig.\ \ref{fig:VelProfArx2}. The velocity is shown in the top right panel, and we extract the stress profile in the bottom left in exactly the same way as in wild-type. Then, to compute normalize stress we divide out by $\hat{\sigma}_0=4.2 \times 10^{-3}$ Pa (obtained from wild-type). The normalized stress, when shifted by an arbitrary constant, lines up almost perfectly with the smoothed myosin profile, demonstrating that our rough approach from wild-type embryos extends to other embryos as well. Thus, this section gives us $\sigma_a = \left(4.2 \times 10^{-3}\right) \hat M$.
 
 
 \subsection{Linear stability analysis \label{sec:StabMy}}
@@ -227,7 +233,7 @@ for PAR-3, which are exactly those we used in \cite{lang2023oligomerization}, ex
 \label{eq:QSSP}
 \KhatpAP (\hat P )=\frac{\kp_A \Tot{A}}{\kdp_A\left(1+\hat R_\text{PA} \hat P\right)} =\frac{\KhatpA}{1+\hat R_\text{PA} \hat P}
 \end{gather}
-where $\hat R_\text{PA} = r_\text{PA}\Tot{P}/\kdp_A$ describes the rate at which pPARs inhibit cluster accumulation relative to the normal rate of depolymerization $\kdp_A$. When $\hat R_\text{PA}$, we recover the dimensionless grouping used in \cite{lang2023oligomerization}.
+where $\hat R_\text{PA} = r_\text{PA}\Tot{P}/\kdp_A$ describes the rate at which pPARs inhibit cluster accumulation relative to the normal rate of depolymerization $\kdp_A$. When $\hat R_\text{PA}=0$, we recover the dimensionless grouping used in \cite{lang2023oligomerization}.
 
 The dimensionless forms of the equations for CDC-42, PAR-6/PKC-3, and pPARs are 
 \begin{align}
@@ -238,26 +244,6 @@ The dimensionless forms of the equations for CDC-42, PAR-6/PKC-3, and pPARs are
 \Dthat \hat{P} & =\DhatP \Dxhat^2 \hat{P} +\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \left(1+\hat{R}_\text{KP}\hat{K}\right)\hat{P}.
 \end{align}
 \end{subequations}
-
-\subsection{Parameters \label{sec:param23}}
-\begin{table}
-\begin{small}
-\centering
-\begin{tabular}{|c|c|c|c|c|c|}\hline
-Parameter & Description & Value & Units \\ \hline
-$L$ & Domain length & 134.6 & $\mu$m \\
-$h$ & Cytoplasmic ``thickness'' & 9.5 & $\mu$m \\
-$D_A $ & Monomeric PAR-3 diffusivity & 0.1 & $\mu$m$^2$/s  \\
-$\A{\kon}$ & Monomeric PAR-3 attachment rate & 1& $\mu$m/s  \\
-$\koff$ & Monomeric PAR-3 detachment rate &  3& 1/s \\
-$\A{\kdp}$ & PAR-3 depolymerization rate & 0.16 & 1/s  \\
-$\KhatpA$ & PAR-3 polymerization rate & 15 &   \\
-$\KhatfA$ & PAR-3 self recruitment rate &3.6 & \\
-$N$ & Max oligomer size & 50 & \\ \hline
-\end{tabular}
-\caption{\label{tab:paramsP3}Parameter values for the PAR-3 model. All of these parameters come from \cite{lang2023oligomerization}.}
-\end{small}
-\end{table}
 
 \begin{table}
 \begin{small}
@@ -286,7 +272,7 @@ The first set of parameters for the model\ \eqref{eq:AllBC} have to do with the 
 \begin{equation*}
 \DhatA =\frac{D_A}{L^2 \A{\kdp}}, \quad \KhatonA=\frac{\A{\kon}}{\A{\kdp} h }, \quad \KhatfA = \frac{\A{\kf}\Tot{A}}{\A{\kon}}, \quad  \KhatoffA = \frac{\koff}{\A{\kdp}} \qquad \KhatpA = \frac{\A{\kp} \Tot{A}}{\A{\kdp}}.
 \end{equation*}
-All of these parameters have been either experimentally measured or fit in \cite{lang2023oligomerization}. The values we use are in Table\ \ref{tab:paramsP3}. For the feedback function we use a saturated linear feedback $\hat F(\hat A) = \min\left(\hat A, \Sat{\hat A}\right)$, where the saturation threshold is chosen at 80\% of the uniform steady state to ensure its stability. See \cite{lang2023oligomerization} for more details on this. 
+All of these parameters have been either experimentally measured or fit in \cite{lang2023oligomerization} (see Table M1 therein for values).  For the feedback function we use a saturated linear feedback $\hat F(\hat A) = \min\left(\hat A, \Sat{\hat A}\right)$, where the saturation threshold is chosen at 80\% of the uniform steady state to ensure its stability. See \cite{lang2023oligomerization} for more details on this. 
 
 The other dimensionless parameters that appear in\ \eqref{eq:AllBC} are 
 \begin{subequations}
@@ -355,7 +341,7 @@ When we operate in the regime where there is stable polarized state (PAR-3 enric
 When we start the system at the end of establishment phase, we find that the PAR-3 boundary is quasi-stable when $\hat R_\text{PA} \leq 2$. For $\hat R > 2$, there is a shift to a smaller domain size on a timescale of $\hat t = 100$ (10 minutes of real time). Because the system is in a quasi-stable state, it is logical to look at the $\alpha$ value on the posterior as a way to constrain the value of $\hat R_\text{PA}$. Figure\ \ref{fig:BCSS} shows that $\alpha=0.42$ without PAR-1 inhibition (30\% in monomer form) \cite{lang2023oligomerization}, while when $\hat R_\text{PA}=1,2$, and 4 we have $\alpha=0.19$, 0.12, and 0.08, respectively. These values of $\alpha$ correspond roughly to 65, 75, and 85\% in monomer form. \red{We choose $\hat R_\text{PA}=2$, so that the steady state has roughly 75\% in monomer form on the posterior. As shown in Fig.\ \ref{fig:BCSS}, this inhibition strength has little effect on the anterior, where pPARs are scarce. This matches experimental observations.}
 
 \section{Coupling contractility to biochemistry \label{sec:WithMy}}
-Because myosin cannot form patterns on its own, there must be an interaction with PAR proteins that amplifies gradients in contractility to rescue the correct polarized state. To account for this, we add the myosin dynamics\ \eqref{eq:MyOnly} to the biochemistry system\ \eqref{eq:AllBC}. In doing this, we also incorporate advective terms that ensure that each protein moves with the local cortical velocity \cite{illukkumbura2023design}, and make CDC-42 a promoter of myosin by adding a term of the form $\hat R_\text{CM} \hat C \hat{M}_\text{cyto}$. In dimensionless form, the coupled system is 
+The dimensionless form of the system (3) from the main text is
 \begin{subequations}
 \label{eq:Everything}
 \begin{align}
@@ -373,37 +359,6 @@ Because myosin cannot form patterns on its own, there must be an interaction wit
 \end{align}
 \end{subequations}
 The last equation\ \eqref{eq:NewNDs} defines the key \emph{new} dimensionless parameters relating to myosin. These differ from\ \eqref{eq:NDparams} because we can only non-dimensionalize time by one quantity, and we choose here to stick with the depolymerization time $1/\kdp_A$. Table\ \ref{tab:paramsMy} gives the dimensional quantities ${\sigma}_0$, $D_M$, and $\koff_M$, from which we obtain $\hat \sigma_0$, $\hat D_M$, and $\hat K^\text{off}_M$. This leaves two parameters which control the myosin profile: the basal rate $\kon_M$, and the amount that CDC-42 promotes myosin, $\hat R_\text{CM}$. In wild-type and \emph{arx-2} (RNAi) embryos, the minimum amount of bound myosin is 0.2. This sets $\kon_M$ via $\kon_M/(\kon_M+\koff_M h) \approx 0.2$, giving $\kon_M=0.3$ $\mu$m/s. Our task now is to see if there is a value of $\hat R_\text{CM}$ which will reproduce maintenance phase rescue.
-
-\subsection{First attempt to simulate maintenance-phase rescue}
-We begin by simulating the model\ \eqref{eq:Everything} (with parameters in Tables\ \ref{tab:paramsMy}--\ref{tab:paramsBC}) with different choices of $\hat R_\text{CM}$. Two time sequences are shown in Fig.\ \ref{fig:TimeSeqNoBA} ($\hat R_\text{CM}=0.2$) and Fig.\ \ref{fig:TimeSeqNoBARH} ($\hat R_\text{CM}=1$). In both cases, the initial dynamics are the same: an initially peaked profile of PAR-2 invades the anterior domain, concentrating anterior PARs in the middle and thereby increasing the concentration of pPARs in the posterior. As a result of this, CDC-42 gets inhibited in the posterior, which gives a gradient of myosin from posterior to anterior. The gradient of myosin generates a flow which further compacts the anterior domain.
-
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{JourneyToSS_NoBA.eps}
-\caption{\label{fig:TimeSeqNoBA} Time progression of an initially peaked profile of posterior PARs in the model\ \eqref{eq:Everything} with $\hat R_\text{CM}=0.2$. As shown at $\hat t=0$ at top left, we begin with 10\% depletion of PAR-3, then simulate the model\ \eqref{eq:Everything} with the parameters in Tables\ \ref{tab:paramsMy}--\ref{tab:paramsBC}.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{JourneyToSS_NoBARH.eps}
-\caption{\label{fig:TimeSeqNoBARH} Time progression of an initially peaked profile of posterior PARs in the model\ \eqref{eq:Everything} with $\hat R_\text{CM}=1$. }
-\end{figure}
-
-The fundamental difference between Figs.\ \ref{fig:TimeSeqNoBA} and\ \ref{fig:TimeSeqNoBARH} is the strength of the myosin gradient and the resulting flows. In Fig.\ \ref{fig:TimeSeqNoBA}, the rate at which CDC-42 promotes myosin is only 20\% of the basal rate, and as a result the myosin gradient and resulting flow speeds are small. As a result, the boundary slowly contracts and is halted by cytoplasmic depletion of PAR-2 \cite{goehring2011polarization}, similar to what we see without any flows at all. Figure\ \ref{fig:TimeSeqNoBARH} shows what happens when CDC-42 promotes myosin at 100\% of the basal rate. There we see a strong myosin gradient and flow, which eventually focuses the PAR-3 domain into the center of the embryo. In the model, this peak will grow until it is balanced by diffusion (this is not shown in Fig.\ \ref{fig:TimeSeqNoBARH}, because PAR-3 levels can reach $\hat A=300$ when the peak keeps contracting). 
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{RsscueSimsNoBA.eps}
-\caption{\label{fig:RescueNoBA}Simulations of rescue without branched actin. We repeat the simulation in Fig.\ \ref{fig:TimeSeqNoBA} with a variety of values of $\hat R_\text{CM}$ and plot the size of the PAR-3 domain over time (left) and the maximum cortical velocity over time (right). }
-\end{figure}
-
-
-Thus the model has identified two regimes of behavior, depending on the sensitivity of myosin to the CDC-42 concentration. Roughly speaking, if CDC-42 promotes myosin at a rate much smaller than the basal rate, the cytoplasmic dynamics are sufficient to stop the pPARs from invading too far into the anterior domain. But if CDC-42 promotes myosin at a rate comparable to the basal rate, the dynamics show a rapid concentration of the anterior domain into a peaked profile at the anterior pole. 
-To further probe this behavior, in Fig.\ \ref{fig:RescueNoBA} we plot the size of the PAR-3 domain over time for four different values of $\hat R_\text{CM}$, including the case of $\hat R_\text{CM}=0$, when there are no flows at all. We see again our two regimes of behavior: rescue can occur by slow diffusion of the boundary aided by flows, with an eventual steady state boundary position, or rapid flows can contract the anterior domain off the edge of the embryo. 
-
-The two regimes are most obvious when we look at the flow profiles in the right panel of Fig.\ \ref{fig:RescueNoBA}: in the case when the boundary stops by cytoplasmic depletion (red lines), there is a slow increase in the velocity to a steady value. Alternatively, the velocity grows without bound when the domain contracts off the end of the embryo. Our problem is that neither of these two regimes is consistent with the data, where rescue of polarity occurs with an initially fast flow on the order 5--10 $\mu$m/min, followed by a slowing down of the flow and a settling to the steady state boundary position. Indeed, in embryos which lack ect-2 and nop-1 \cite{tse2012rhoa}, maintenance-phase ``rescue'' of polarity occurs on timescales of a few minutes, and the aPAR domain goes from roughly 90\% embryo length to 70\% embryo length in a span of 160 seconds ($\hat t = 25.6$) \cite[Fig.~7D]{tse2012rhoa}. We can replicate this behavior only if we set $\hat R_\text{CM}=3$, in which case the PAR-3 domain contracts off the end of the embryo in ten minutes' time. Thus, our model cannot predict a transition to a stable boundary with the flow speeds characteristic of maintenance-phase rescue. 
-
 
 \subsection{Incorporating branched actin}
 The main issue with the models so far is that realistic flow speeds cause the anterior domain to contract off the end of the embryo. So, there must be some mechanism that could counteract the fast flow speeds. Based on our experiments in \emph{arx-2} (RNAi) embryos, which exhibit a hypercontractile state, it seems logical that branched actin could contribute to halting the progression of the anterior domain. Our hypothesis in particular is that branched actin is activated above a certain ``threshold'' of CDC-42, and that branched actin inhibits contractility by inhibiting myosin. We encode these properties in the system of equations by modifying the myosin equation in \eqref{eq:Everything} and adding an additional equation for branched actin, which we represent by $R$,  

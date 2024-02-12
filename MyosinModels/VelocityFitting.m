@@ -1,9 +1,15 @@
-load('LateMaintenanceFlowBright.mat')
+load('LateMaintenanceFlowBright_WT.mat')
 MicronsPerPixel = 1/10;
 xFlows = n2*MicronsPerPixel; % in microns/second
-MyBright = OneBrt2/2;%-min(mean(MyBright));
+% Replace first and last 20% embryo length to avoid artifacts
+for j=1:4
+OneBrt2(:,j)=OneBrt2(:,5);
+end
+for j=18:21
+OneBrt2(:,j)=OneBrt2(:,17);
+end
 % Periodic versions
-PerMy = [MyBright fliplr(MyBright(:,2:end-1))];
+PerMy = [OneBrt2 fliplr(OneBrt2(:,2:end-1))];
 PerMy = [PerMy(:,end-9:end) PerMy(:,1:end-10)];
 PerVel = [xFlows -fliplr(xFlows(:,2:end-1))];
 PerVel = [PerVel(:,end-9:end) PerVel(:,1:end-10)];
@@ -12,13 +18,13 @@ MeanVel = mean(PerVel);
 xog = 0.25:0.025:0.75;
 x = 0:0.025:0.975;
 Factor = 1/(sum(MeanMy)*0.025)*0.3;
-MyBright = MyBright*Factor;
+OneBrt2 = OneBrt2*Factor;
 PerMy = PerMy*Factor;
 MeanMy = MeanMy*Factor;
 % Filter high-frequency stuff (2 fourier modes)
 MyHat = fft(MeanMy);
 nModes = 40;
-nnz = 2;
+nnz = 3;
 MyHat(nnz+2:end-nnz)=0;
 kvals = [0:nModes/2 -nModes/2+1:-1]*2*pi;
 MyFilt=ifft(MyHat);
@@ -27,7 +33,7 @@ nexttile
 h(1)=plot([x 1],[MeanMy MeanMy(1)]);
 hold on
 h(2)=plot([x 1],[MyFilt MyFilt(1)]);
-h(3)=errorbar(xog,mean(MyBright),std(MyBright)/sqrt(10),'-k','LineWidth',1.0);
+h(3)=errorbar(xog,mean(OneBrt2),std(OneBrt2)/sqrt(10),'-k','LineWidth',1.0);
 title('Myosin intensity')
 xlabel('$\hat x$')
 ylabel('$\hat M$')
@@ -69,7 +75,7 @@ plot([x 1],[SmoothStr SmoothStr(1)])
 hold on
 plot([x 1],[MyFilt MyFilt(1)])
 xlabel('$\hat x$')
-legend('$\sigma_a/(0.0042)$+Shift','$\hat M$','Location','Southwest')
+legend('$\sigma_a/(0.0071)$+Shift','$\hat M$','Location','Southwest')
 ylabel('$\hat \sigma_a$')
 title('Normalized stress')
 %figure
@@ -79,9 +85,9 @@ close all;
 N=1000;
 tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
 nexttile
-plot(xog,MyBright')
+plot(xog,OneBrt2')
 hold on
-errorbar(xog,mean(MyBright),std(MyBright)/sqrt(nEm),'-k','LineWidth',1.0);
+errorbar(xog,mean(OneBrt2),std(OneBrt2)/sqrt(nEm),'-k','LineWidth',1.0);
 plot(0:1/N:1-1/N,circshift(M,-N/4),'-k')
 xlim([0.25 0.75])
 legend('Embryo','','','','','','','','','','Mean','Model')

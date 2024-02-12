@@ -4,12 +4,12 @@ L = 134.6;
 h = 9.5;
 % PAR-3
 DA = 0.1;
-konA = 1; 
 koffA = 3;
 kdpA = 0.16; 
+KonA_Hat = 0.6;
 KpA_Hat = 15; 
-KfA_Hat = 3.6;
-Asat = 0.34;
+KfA_Hat = 4.2;
+Asat = 0.3332; % 80% of uniform state
 MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
@@ -25,7 +25,6 @@ koffK = 0.01;
 % Dimensionless
 Timescale=1/kdpA;
 DA_Hat = DA/L^2*Timescale;
-KonA_Hat = konA/h*Timescale;
 KoffA_Hat = koffA*Timescale;
 KdpA_Hat = 1;
 DP_Hat = DP/L^2*Timescale;
@@ -60,7 +59,7 @@ CDiffMat = speye(N)/dt-DC_Hat*DSq;
 [CDiff_L,CDiff_U,CDiff_P]=lu(CDiffMat);
 
 % Start with small zone of PAR-2 on posterior cap
-iSizes=[0.5];
+iSizes=[0.1:0.1:0.9 0.95];
 for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
@@ -79,8 +78,8 @@ P = ~Inside;
 %plot(x,A,':',x,K,':',x,C,':',x,P,':')
 %hold on
 
-tf = 1000;
-saveEvery=1/dt;
+tf = 1152;
+saveEvery=1.6/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
 AsTime = zeros(nSave,N);
@@ -98,8 +97,8 @@ for iT=0:nT-1
         CsTime(iSave,:)=C;
         KsTime(iSave,:)=K;
         hold off
-        plot(x,A,x,K,x,C,x,P)
-        drawnow
+        %plot(x,A,x,K,x,C,x,P)
+        %drawnow
     end
     
     % Initialization and cytoplasmic

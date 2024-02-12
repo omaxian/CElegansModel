@@ -3,6 +3,7 @@
 \usepackage{graphicx,epstopdf,subfigure,mathtools,mathrsfs, arydshln, amsmath, amssymb} 
 \usepackage[font=small,labelfont=bf]{caption}
 \usepackage{float}
+\usepackage[shortlabels]{enumitem}
 \usepackage{authblk}
 \usepackage[title]{appendix}
 \PassOptionsToPackage{usenames,dvipsnames}{xcolor}
@@ -113,11 +114,35 @@ Finally, we use modeling to show that branched actin-mediated inhibition of myos
 
 In Section\ \ref{sec:myosin}, we first rule out the hypothesis that maintenance-phase rescue is driven by spontaneous polarization of myosin, as the flows generated are simply too small to spontaneously polarize the embryo (similar to observations made in establishment phase \cite{nishikawa2017controlling}). We therefore need to incorporate biochemistry to guide the dynamics of myosin. In previous work by some of us \cite{lang2023oligomerization}, we showed that the maintenance-phase dynamics of PAR-3 are bistable even in the absence of the posterior inhibitor PAR-1. Because of this, it is our hypothesis that PAR-3 provides an anchor for the bistability of the entire system. We utilize this hypothesis in Section\ \ref{sec:BCOnly}, where we set up a model describing the maintenance phase biochemistry. While this model is capable of amplifying small asymmetries to produce polarized states, the timescale on which this occurs is roughly ten times larger than the duration of maintenance phase, indicating the need for contractility to speed up the process. Therefore, in Section\ \ref{sec:WithMy}, we demonstrate how combining our biochemistry and contractility models can reproduce maintenance-phase experimental observations.
 
+\section{The biochemical distinction between establishment and maintenance}
+\begin{enumerate}[(A)]
+ \item Cell cycle progression controls a regime change from rho-dependent contractility to CDC-dependent contractility.
+\item Relaxation of pseudo-cleavage is a marker for this transition (so is onset of centration).
+\item CDC-42 also involved in biochemistry (complexing with PAR-6/PKC-3 to inhibit pPARs), so biochemistry and contractility are intimately coupled in maintenance phase (different from establishment phase where rho has its own pulsatile/oscillatory dynamics). 
+\end{enumerate}
 
+\section{The steady state of maintenance phase }
 
-\section{Model reveals existing mechanisms cannot explain rescue \label{sec:myosin}}
+\subsection{Persistent pattern of cortical flow}
+\red{Need to do PIV on the extended maintenance phase data to establish that the pattern of cortical flow and boundary position is a true steady state.}
 
-\subsection{Myosin without additional feedback cannot spontaneously polarize}
+\subsection{Maintenance-phase rescue}
+In addition to stabilizing asymmetries that are set up during establishment phase, the biochemical and mechanical interactions in maintenance phase can also rescue the steady polarized state that we examined in the previous section. While this has been observed qualitatively in previous studies  in \emph{ect-2} mutants \cite{zonies2010symmetry, tse2012rhoa}, which lack Rho functionality during establishment phase, it has yet to be shown that the steady polarized state that results is the same as in wild-type embryos. To establish this, we systematically image rescue of symmetry breaking in temperature-sensitive \emph{ect-2} mutants, marking the beginning of maintenance phase via the transition of myosin from large to small clusters, and the end of maintenance phase as the onset of embryo rotation prior to cytokinesis. This gives a roughly four minute window of maintenance phase for each embryo, in which we track the average myosin intensity profile and flow speed.
+
+In the SI, we plot the myosin intensity profile and flow speed as a function of time by looking at the average over each minute of maintenance phase. In minutes 1--3 of maintenance phase, the myosin boundary shifts to the left, and the flow speed increases. In minute 4, the boundary appears to be roughly pinned, and we see a corresponding decrease in the flow speed towards the typical value (2 $\mu$m/min) observed in wild-type embryos. To establish the comparison more clearly, in Fig.\ \ref{fig:Ect2VsWT} we show the myosin intensity and flow speed over 30 second intervals, and compare the result to the steady myosin intensities and flow speeds observed in wild-type embryos \cite{sailer2015dynamic}. There we a myosin peak which initially advances rapidly, and is subsequently pinned at about 40\% embryo length. The pinning of the myosin peak corresponds to a decrease in the maximum flow speed from about 4.5 $\mu$m/min to 2 $\mu$m/min in the last 30 seconds of maintenance phase (see the inset of Fig.\ \ref{fig:Ect2VsWT}). In the last 30 seconds of maintenance phase, the flow profile in \emph{ts ect-2} embryos is roughly the same as that observed during late maintenance phase in wild-type embryos. The myosin intensity appears quantitatively different, but has the same fundamental shape: there is a gradient of myosin in both the anterior and posterior, with a maximum occurring at around 40\% of the embryo length.  
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth]{Ect2MyosinVsWT.eps}
+\includegraphics[width=0.49\textwidth]{Ect2FlowsVsWT.eps}
+\caption{\label{fig:Ect2VsWT} Comparing the end of maintenance phase in \emph{ts ect-2} mutants to wild-type embryos. Left panel: myosin intensity profile. Right panel: flow speeds (inset shows the maximum flow speed over time). The blue colored lines show 30-second intervals of maintenance phase in \emph{ts ect-2} embryos, with darker blue denoting later times. The black line shows the profile extracted from the last minute of maintenance phase in wild type embryos \cite{sailer2015dynamic}.}
+\end{figure}
+
+\subsection{Rescue requires MRCK}
+
+\section{Model reveals existing mechanisms cannot explain rescue }
+
+\subsection{Myosin without additional feedback cannot spontaneously polarize \label{sec:myosin}}
 Movies of the maintenance phase rescue process make it appear as though the system spontaneously breaks symmetry. With that in mind, we explore a possible mechanism whereby the dynamics of myosin could be intrinsically unstable, and those dynamics could generate flows which pattern the PAR proteins. To analyze this, we describe the dynamics of myosin $M(x,t)$ using the advection-diffusion-reaction equations \cite{bois2011pattern}
 \begin{subequations}
 \label{eq:MyOnly}
@@ -142,7 +167,7 @@ describes the fraction of the embryo perimeter over which a myosin molecule is t
 \end{figure}
 
 
-To analyze stability, we introduce a perturbation around the uniform steady state of myosin, $\hat M=\hat{M}_0+\delta \hat M$, where $\delta \hat M = \delta \hat M_0 e^{\lambda(k) \hat{t}+2 \pi i k \hat{x}}$, and linearize \eqref{eq:MyOnly} to solve for the eigenvalue $\lambda(k)$ (see supplemental text). Figure\ \ref{fig:DispRelMy} shows the value of $\lambda(k)$ as a function of wavelength $k$ and dimensionless flow speed $\hat \sigma_0$. We observe strong flow coupling required for instability; with $\hat{\sigma}_0=0.2$ (flow transports myosins around 20\% of the cell before they come off), we still do not see any instability. In wild-type embryos, we estimate $\hat \sigma_0 \approx 0.03$ (see SI), it is clear that myosin cannot self-polarize in the zygote. As discussed in the SI, in maintenance phase embryos, the main factor working \emph{against} build-up of myosin is the short residence time (about 10 s). Specifically, the advective flow must be strong enough to overcome the local increase in unbinding that happens in areas enriched in myosin. Our data clearly demonstrate that this does not occur in maintenance phase, making the dynamics of myosin by itself stable to perturbations. This means that maintenance-phase rescue must be a result of PAR proteins signaling myosin. The next section lays out our model of the maintenance phase PAR protein circuit that we use for this purpose. 
+To analyze stability, we introduce a perturbation around the uniform steady state of myosin, $\hat M=\hat{M}_0+\delta \hat M$, where $\delta \hat M = \delta \hat M_0 e^{\lambda(k) \hat{t}+2 \pi i k \hat{x}}$, and linearize \eqref{eq:MyOnly} to solve for the eigenvalue $\lambda(k)$ (see supplemental text). Figure\ \ref{fig:DispRelMy} shows the value of $\lambda(k)$ as a function of wavelength $k$ and dimensionless flow speed $\hat \sigma_0$. We observe strong flow coupling required for instability; with $\hat{\sigma}_0=0.2$ (flow transports myosins around 20\% of the cell before they come off), we still do not see any instability. In wild-type embryos, we estimate $\hat \sigma_0 \approx 0.04$ (see SI), it is clear that myosin cannot self-polarize in the zygote. As discussed in the SI, in maintenance phase embryos, the main factor working \emph{against} build-up of myosin is the short residence time (about 10 s). Specifically, the advective flow must be strong enough to overcome the local increase in unbinding that happens in areas enriched in myosin. Our data clearly demonstrate that this does not occur in maintenance phase, making the dynamics of myosin by itself stable to perturbations. This means that maintenance-phase rescue must be a result of PAR proteins signaling myosin. The next section lays out our model of the maintenance phase PAR protein circuit that we use for this purpose. 
 
 
 \subsection{Basic maintenance-phase biochemistry circuit \label{sec:BCOnly}}
@@ -157,7 +182,7 @@ Our biochemistry model is based on the diagram shown in Fig.\ \ref{fig:ModelSch}
 \label{eq:AllBC}
 \begin{align}
 \label{eq:P31}
-\Dt \MA & = D_A \Dx^2 \MA +\kon_A \left(1+k^+_A f^+_A(A) \right)A_\text{cyto}- \koff_A \MA  \\  \nonumber
+\Dt \MA & = D_A \Dx^2 \MA + \left(\kon_A+k^+_A f^+_A(A) \right)A_\text{cyto}- \koff_A \MA  \\  \nonumber
  &+ 2 \kdp_A(P) \hat{A}_2-2\kp_A \hat{\MA}^2+\sum_{n=3}^N \left(A_n-\kdp_A(P) A_1 A_{n-1}\right)  \\ 
 \Dt \PA & =\kp_{A}\MA (A_{n-1}-A_n) -\kdp_A(P)(A_n-A_{n+1})  \qquad N > n \geq 2 \\ 
 \label{eq:P33}
@@ -175,85 +200,67 @@ PAR-3 also gates the association of CDC-42 with PAR-6/PKC-3 ($K$), which is a co
 
 In the supplemental appendix, we nondimensionalize\ \eqref{eq:AllBC}, then use sets of existing experimental observations about the relative amount of each species on the anterior/posterior side of the embryo, as well as estimates of the amounts in the cortex vs.\ cytoplasm, to constrain the parameters. 
 
-\subsection{The slow journey to a stable boundary position}
-\red{Update with real times and clean up as it's a little messy right now.} In previous work on PAR-3 \cite{lang2023oligomerization}, we demonstrated that the diffusion of the smaller oligomer sizes (monomers in our model) sets a unique boundary position. Because the shift in the boundary is controlled by the slow process of diffusion, it ocurs on timescales of hours, meaning that the boundary never reaches a steady position in practice. In Fig.\ \ref{fig:BoundaryDiff}, we demonstrate that this observation still holds when we account for the full biochemistry. In particular, we show the contraction of a PAR-3 domain that initially takes up 90\% of the embryo (pPARs are enriched in the other 10\%). Initially, the boundary shifts because a high concentration of pPARs shifts the local equilibrium of PAR-3 oligomerization towards the monomer state, which makes bistability impossible \cite{lang2023oligomerization}. Consequently, we observe contraction of the PAR-3 domain, with a peak that grows over time, and expansion of the PAR-2 domain, both of which eventually reach a steady state. 
+\subsection{PAR proteins without contractility amplify asymmetries, but too slowly}
+In previous work on PAR-3 \cite{lang2023oligomerization}, we demonstrated that the diffusion of the smaller oligomer sizes (monomers in our model) sets a unique boundary position. Because the shift in the boundary is controlled by the slow process of diffusion, it occurs on timescales of hours, meaning that the boundary never reaches a steady position in practice. In Fig.\ \ref{fig:BoundaryDiff}, we demonstrate that this observation still holds when we account for the full biochemistry. In particular, we show the contraction of a PAR-3 domain that initially takes up 90\% of the embryo (pPARs are enriched in the other 10\%). Initially, the boundary shifts because a high concentration of pPARs shifts the local equilibrium of PAR-3 oligomerization towards the monomer state, which makes bistability impossible \cite{lang2023oligomerization}. Consequently, we observe contraction of the PAR-3 domain, with a peak that grows over time, and expansion of the PAR-2 domain, both of which eventually reach a steady state. 
 
-The concentration of PAR-2 at the edge of the domain decreases over time, which suggests that cytoplasmic depletion might be responsible for halting the boundary, as there is at some point too much $A$ and not enough $P$ for $P$ to win the competition (the decrease in $P$ comes from both cytoplasmic depletion and cytoplasmic enrichment of CDC-42/PAR-6/PKC-3, which inhibit $P$). To demonstrate that the cytoplasmic dynamics are key to arresting posterior domain expansion, in the right panel of Fig.\ \ref{fig:BoundaryDiff} we simulate with a cytoplasmic pool that is ``frozen'' at its value at $\hat t = 50$. The result is an anterior domain which shrinks at a constant rate with constant peak concentration, and a posterior domain which expands at a constant rate with the same concentration at the edge. If given enough time, the posterior domain would invade the entire embryo length. 
+The concentration of PAR-2 at the edge of the domain decreases over time, which suggests that cytoplasmic depletion might be responsible for halting the boundary, as there is at some point too much $A$ and not enough $P$ for $P$ to win the competition (the decrease in $P$ comes from both cytoplasmic depletion and cytoplasmic enrichment of CDC-42/PAR-6/PKC-3, which inhibit $P$). To demonstrate that the cytoplasmic dynamics are key to arresting posterior domain expansion, in the right panel of Fig.\ \ref{fig:BoundaryDiff} we simulate with a cytoplasmic pool that is ``frozen'' at its value at $t = 10$ mins. The result is an anterior domain which shrinks at a constant rate with constant peak concentration, and a posterior domain which expands at a constant rate with the same concentration at the edge. Given enough time (2 hours in this case), the posterior domain invades the entire embryo length. 
 
 
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{BoundaryCytoBiochemDiff.eps}
-\caption{\label{fig:BoundaryDiff}Simulating the biochemistry dynamics\ \eqref{eq:AllBC} with (left) and without (right) cytoplasmic depletion. We show a sequence of 11 time points from $\hat t = 0$ (the lightest colors) to $\hat t = 500$ (the darkest colors). The left plot shows results with the equations as written, while the right plot removes the cytoplasmic pool updates after $\hat t = 50$. For clarity of the plot, we show only PAR-3 in purple and pPARs in blue. \red{UPDATE THIS.}}
+\caption{\label{fig:BoundaryDiff}Simulating the biochemistry dynamics\ \eqref{eq:AllBC} with (left) and without (right) cytoplasmic depletion. We show a sequence of 12 time points from $t = 10$ mins (the lightest colors) to $\hat t = 120$ mins (the darkest colors). The left plot shows results with the equations as written, while the right plot removes the cytoplasmic pool updates after $t=10$ mins. For clarity of the plot, we show only PAR-3 in blue and pPARs in purple.}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{BCDomainSizeDiff.eps}
-\caption{\label{fig:BCDSD} Size of the PAR-3 (left) and PAR-2 (right) domain over time for simulations of the model\ \eqref{eq:AllBC}. Here the domain size is measured by the length of domain where a particular protein concentration is 80\% of its maximum or larger. }
+\caption{\label{fig:BCDSD} Size of the PAR-3 (left) and PAR-2 (right) domain over time for simulations of the model\ \eqref{eq:AllBC}. Here the domain size is measured by the length of domain where a particular protein concentration is 80\% of its maximum or larger. Darker lines here denote domain sizes that are initially larger in PAR-3 (corresponding to the realistic situation).}
 \end{figure}
 
 
-What about the position of the boundary? Fig.\ \ref{fig:BCDSD} shows that the combination of cytoplasmic depletion and diffusion of PAR-3 monomers set a unique boundary position. Small amounts (10\%) of initial PAR-3 enrichment lead to a different boundary position because PAR-3 assumes its intrinsic bistable state while the other proteins are distributed uniformly. Initial PAR-3 domain sizes 20\% or larger lead to a single steady state boundary with about 50\% PAR-3 enrichment and 25\% PAR-2 enrichment. The rest of the domain is where the gradient of PKC-3 is set up.
-
-If we begin with 90\% PAR-3 enrichment, Fig.\ \ref{fig:BCDSD} shows that the PAR-3 domain size shrinks to roughly 80\% after 5 minutes of real time. Considering that 5 minutes is the duration of maintenance phase, the process by which biochemistry amplifies asymmetries is intrinsically too slow to explain the maintenance-phase rescue process we see in live embryos. In the next section, we couple the contractility of Section\ \ref{sec:myosin} to biochemistry to speed up the rescue process. 
+As shown in Fig.\ \ref{fig:BCDSD}, cytoplasmic depletion can indeed pin the aPAR/pPAR boundary at a unique position, but the timescales involved are much slower than the total timescale of maintenance phase. If we begin with 90\% PAR-3 enrichment, Fig.\ \ref{fig:BCDSD} shows that the PAR-3 domain size shrinks to roughly 80\% after 5 minutes of real time. Considering that 5 minutes is the (longest) duration of maintenance phase, the process by which biochemistry amplifies asymmetries is intrinsically too slow to explain the maintenance-phase rescue process we see in live embryos. In the next section, we couple the contractility of Section\ \ref{sec:myosin} to biochemistry to speed up the rescue process. 
 
 
-
-
-\section{Coupling contractility to biochemistry \label{sec:WithMy}}
-Because myosin cannot form patterns on its own, there must be an interaction with PAR proteins that amplifies gradients in contractility to rescue the correct polarized state. To account for this, we add the myosin dynamics\ \eqref{eq:MyOnly} to the biochemistry system\ \eqref{eq:AllBC}. In doing this, we also incorporate advective terms that ensure that each protein moves with the local cortical velocity \cite{illukkumbura2023design}, and make CDC-42 a promoter of myosin by adding a term of the form $\hat R_\text{CM} \hat C \hat{M}_\text{cyto}$. In dimensionless form, the coupled system is 
+\subsection{Coupling contractility to biochemistry reproduces initial stages of rescue \label{sec:WithMy}}
+Because myosin cannot form patterns on its own, there must be an interaction with PAR proteins that amplifies gradients in contractility to rescue the correct polarized state. To account for this, we add the myosin dynamics\ \eqref{eq:MyOnly} to the biochemistry system\ \eqref{eq:AllBC}. In doing this, we also incorporate advective terms that ensure that each protein moves with the local cortical velocity \cite{illukkumbura2023design}, and make CDC-42 a promoter of myosin by adding a term of the form $r_\text{CM}C M_\text{cyto}$. The dimensional equations corresponding to this situation are
 \begin{subequations}
 \label{eq:Everything}
 \begin{align}
-& \Dthat \hat{\MA} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\MA} \right)  = \DhatA \Dxhat^2 \MA +\KhatonA \left(1+\KhatfA \hat F_A(\hat A) \right)\left(1 - \int_0^1 \hat A(x) \, d\hat{x} \right)- \KhatoffA \hat{\MA} \\ \nonumber
- &+ 2 \hat{A}_2-2\KhatpAP \hat{\MA}^2+\sum_{n=3}^N \left(\hat A_n-\KhatpAP \hat A_1 \hat A_{n-1}\right)  \\
-&\Dthat \hat{\PA} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{\PA} \right) =\KhatpAP \hat{\MA} (\hat A_{n-1}-\hat A_n) - (\hat A_n-\hat A_{n+1})  \qquad N > n \geq 2 \\ 
-& \Dt \hat A_N +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat A_N \right)  =\KhatpAP \hat \MA \hat A_{N-1}- \hat A_N \\ 
-&\Dthat \hat{C}+\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{C} \right)  =\DhatC \Dxhat^2 \hat{C} +\KhatonC \left(1 - \int_0^1 \hat{C}(\hat x) \, d\hat{x} \right)  - \KhatoffC \left(1+\hat{R}_\text{PC}\hat P\right)\hat{C}\\
-&\Dthat \hat{K} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{K} \right) = \DhatK \Dxhat^2 \hat{K} + \hat{R}_\text{ACK} \hat{C} \delta_{\hat A > \hat A_0} \left(1 - \int_0^1 \hat{K}(\hat x) \, d\hat{x} \right)-\KhatoffK \hat{K} \\
-&\Dthat \hat{P} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{P} \right)  =\DhatP \Dxhat^2 \hat{P} +\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \left(1+\hat{R}_\text{KP}\hat{K}\right)\hat{P}\\
-&\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) =\hat{D}_M \Dxhat^2 \hat{M} +\KhatonM \left(1+\hat{R}_\text{CM} \hat C\right) \left(1-\int_0^1  \hat{M}(x) \, dx\right)- \KhatoffM \hat{M}\\
-&\hat{v} = \hat{\ell}^2 \Dxhat^2 v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M})\\
-\label{eq:NewNDs}
-&R_\text{CM}=\frac{r_\text{CM}\Tot{C}}{\kon_M},\, \hat{K}^\text{on}_M= \frac{\My{\kon}}{h \kdp_A}, \, \hat{K}^\text{off}_M= \frac{\My{\koff}}{\kdp_A},\, \hat{\sigma}_0 = \frac{\sigma_0/ \sqrt{\eta \gamma} }{L \kdp_A},   \, \hat{D}_M =\frac{D_M}{\kdp_A L^2}, \, \hat{\ell} = \frac{\sqrt{\eta/\gamma}}{L}.
+\label{eq:P31}
+\Dt \MA + \Dx \left( v \MA \right)& = D_A \Dx^2 \MA + \left(\kon_A+k^+_A f^+_A(A) \right)A_\text{cyto}- \koff_A \MA  \\  \nonumber
+ &+ 2 \kdp_A(P) \hat{A}_2-2\kp_A \hat{\MA}^2+\sum_{n=3}^N \left(A_n-\kdp_A(P) A_1 A_{n-1}\right)  \\ 
+\Dt \PA + \Dx \left(v \PA \right)& =\kp_{A}\MA (A_{n-1}-A_n) -\kdp_A(P)(A_n-A_{n+1})  \qquad N > n \geq 2 \\ 
+\label{eq:P33}
+\Dt A_N + \Dx \left(v A_N\right)& =\kp_A \MA  A_{N-1}-\kdp_A(P) A_N \\
+\label{eq:Ceqn}
+\Dt C + \Dx \left(v C\right)& =D_C \Dx^2 {C} +\kon_C C_\text{cyto}  - \koff_C \left(1+r_\text{PC}P\right)C\\
+\label{eq:Keqn}
+\Dt {K} + \Dx \left(v K\right) &= D_K \Dx^2 {K} + {r}_\text{ACK} {C} \delta_{A > A_0}K_\text{cyto}-\koff_K K \\
+\Dt {P} + \Dx \left(v P \right)& =D_P \Dx^2 {P} +\kon_P P_\text{cyto}  - \koff_P \left(1+\hat{r}_\text{KP}{K}\right){P}\\
+\Dt M + \Dx \left(v M\right) &= D_M \Dx^2 M +\left(\My{\kon}+r_\text{CM} C\right) M_\text{cyto} - \My{\koff} M \\
+\label{eq:veleqndim}
+\gamma v &= \eta \Dx^2 v + \Dx \sigma_a(M).
 \end{align}
 \end{subequations}
-The last equation\ \eqref{eq:NewNDs} defines the key \emph{new} dimensionless parameters relating to myosin. These differ from\ \eqref{eq:NDparams} because we can only non-dimensionalize time by one quantity, and we choose here to stick with the depolymerization time $1/\kdp_A$. Table\ \ref{tab:paramsMy} gives the dimensional quantities ${\sigma}_0$, $D_M$, and $\koff_M$, from which we obtain $\hat \sigma_0$, $\hat D_M$, and $\hat K^\text{off}_M$. This leaves two parameters which control the myosin profile: the basal rate $\kon_M$, and the amount that CDC-42 promotes myosin, $\hat R_\text{CM}$. In wild-type and \emph{arx-2} (RNAi) embryos, the minimum amount of bound myosin is 0.2. This sets $\kon_M$ via $\kon_M/(\kon_M+\koff_M h) \approx 0.2$, giving $\kon_M=0.3$ $\mu$m/s. Our task now is to see if there is a value of $\hat R_\text{CM}$ which will reproduce maintenance phase rescue.
-
-\subsection{First attempt to simulate maintenance-phase rescue}
-We begin by simulating the model\ \eqref{eq:Everything} (with parameters in Tables\ \ref{tab:paramsMy}--\ref{tab:paramsBC}) with different choices of $\hat R_\text{CM}$. Two time sequences are shown in Fig.\ \ref{fig:TimeSeqNoBA} ($\hat R_\text{CM}=0.2$) and Fig.\ \ref{fig:TimeSeqNoBARH} ($\hat R_\text{CM}=1$). In both cases, the initial dynamics are the same: an initially peaked profile of PAR-2 invades the anterior domain, concentrating anterior PARs in the middle and thereby increasing the concentration of pPARs in the posterior. As a result of this, CDC-42 gets inhibited in the posterior, which gives a gradient of myosin from posterior to anterior. The gradient of myosin generates a flow which further compacts the anterior domain.
-
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{JourneyToSS_NoBA.eps}
-\caption{\label{fig:TimeSeqNoBA} Time progression of an initially peaked profile of posterior PARs in the model\ \eqref{eq:Everything} with $\hat R_\text{CM}=0.2$. As shown at $\hat t=0$ at top left, we begin with 10\% depletion of PAR-3, then simulate the model\ \eqref{eq:Everything} with the parameters in Tables\ \ref{tab:paramsMy}--\ref{tab:paramsBC}.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{JourneyToSS_NoBARH.eps}
-\caption{\label{fig:TimeSeqNoBARH} Time progression of an initially peaked profile of posterior PARs in the model\ \eqref{eq:Everything} with $\hat R_\text{CM}=1$. }
-\end{figure}
-
-The fundamental difference between Figs.\ \ref{fig:TimeSeqNoBA} and\ \ref{fig:TimeSeqNoBARH} is the strength of the myosin gradient and the resulting flows. In Fig.\ \ref{fig:TimeSeqNoBA}, the rate at which CDC-42 promotes myosin is only 20\% of the basal rate, and as a result the myosin gradient and resulting flow speeds are small. As a result, the boundary slowly contracts and is halted by cytoplasmic depletion of PAR-2 \cite{goehring2011polarization}, similar to what we see without any flows at all. Figure\ \ref{fig:TimeSeqNoBARH} shows what happens when CDC-42 promotes myosin at 100\% of the basal rate. There we see a strong myosin gradient and flow, which eventually focuses the PAR-3 domain into the center of the embryo. In the model, this peak will grow until it is balanced by diffusion (this is not shown in Fig.\ \ref{fig:TimeSeqNoBARH}, because PAR-3 levels can reach $\hat A=300$ when the peak keeps contracting). 
+In the SI, we non-dimensionalize this system of equations and use existing data to obtain some the unknown parameters, finding that one parameter is completely unknown: $\hat R_\text{CM}=r_\text{CM} \Tot{C}/\kon_M$. This parameter defines the strength at which CDC-42 promotes binding of myosin, relative to the basal rate. In Fig.\ \ref{fig:RescueNoBA}, we simulate the maintenance phase rescue process, choosing the parameter $\hat R_\text{CM}=1$ to match the initial speed of rescue. The left panel shows the dynamics of the simulation from $t=0$ (lightest colors) to $t=7.5$ mins (darkest colors), while the right panel shows the myosin boundary position (0 is the anterior pole, 0.5 is the posterior pole) and the flow speeds over time. Here we plot the region of time where there is a noticeable myosin asymmetry (some part of the domain has a concentration that is half of the maximum).
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{RsscueSimsNoBA.eps}
-\caption{\label{fig:RescueNoBA}Simulations of rescue without branched actin. We repeat the simulation in Fig.\ \ref{fig:TimeSeqNoBA} with a variety of values of $\hat R_\text{CM}$ and plot the size of the PAR-3 domain over time (left) and the maximum cortical velocity over time (right). }
+\caption{\label{fig:RescueNoBA}Attempting to reproduce maintenance-phase rescue using the model\ \eqref{eq:Everything}. Left panel: time course of rescue, with lines shown at equal time points from $t=0$ to $t=7.5$ mins (intervals of 45 seconds). The blue lines, purple, and green lines show PAR-3 ($A$), pPARs ($P$), and myosin ($M$), respectively. Right panel: the position of the myosin boundary (defined as the point where myosin exceeds half-max, where 0 is the anterior pole and 0.5 is the anterior pole) over time (black curve, left axis) and the corresponding flow speed (red curve, right axis). }
 \end{figure}
 
 
-Thus the model has identified two regimes of behavior, depending on the sensitivity of myosin to the CDC-42 concentration. Roughly speaking, if CDC-42 promotes myosin at a rate much smaller than the basal rate, the cytoplasmic dynamics are sufficient to stop the pPARs from invading too far into the anterior domain. But if CDC-42 promotes myosin at a rate comparable to the basal rate, the dynamics show a rapid concentration of the anterior domain into a peaked profile at the anterior pole. 
-To further probe this behavior, in Fig.\ \ref{fig:RescueNoBA} we plot the size of the PAR-3 domain over time for four different values of $\hat R_\text{CM}$, including the case of $\hat R_\text{CM}=0$, when there are no flows at all. We see again our two regimes of behavior: rescue can occur by slow diffusion of the boundary aided by flows, with an eventual steady state boundary position, or rapid flows can contract the anterior domain off the edge of the embryo. 
+Our statistics show the beginning of the rescue process, where an initially peaked profile of PAR-2 invades the anterior domain, concentrating anterior PARs in the middle and thereby increasing the concentration of pPARs in the posterior. As a result of this, CDC-42 gets inhibited in the posterior, which gives a gradient of myosin from posterior to anterior. The gradient of myosin generates a flow which further compacts the anterior domain. The timescale of this compaction is much faster than without flows (Fig.\ \ref{fig:BCDSD}), and indeed occurs on a timescale of minutes and not hours.
 
-The two regimes are most obvious when we look at the flow profiles in the right panel of Fig.\ \ref{fig:RescueNoBA}: in the case when the boundary stops by cytoplasmic depletion (red lines), there is a slow increase in the velocity to a steady value. Alternatively, the velocity grows without bound when the domain contracts off the end of the embryo. Our problem is that neither of these two regimes is consistent with the data, where rescue of polarity occurs with an initially fast flow on the order 5--10 $\mu$m/min, followed by a slowing down of the flow and a settling to the steady state boundary position. Indeed, in embryos which lack ect-2 and nop-1 \cite{tse2012rhoa}, maintenance-phase ``rescue'' of polarity occurs on timescales of a few minutes, and the aPAR domain goes from roughly 90\% embryo length to 70\% embryo length in a span of 160 seconds ($\hat t = 25.6$) \cite[Fig.~7D]{tse2012rhoa}. We can replicate this behavior only if we set $\hat R_\text{CM}=3$, in which case the PAR-3 domain contracts off the end of the embryo in ten minutes' time. Thus, our model cannot predict a transition to a stable boundary with the flow speeds characteristic of maintenance-phase rescue. 
+While our model reproduces the initial stages of the rescue process, there is no mechanism in it to halt the advancing myosin front. With the correct model parameters, the concentration of anterior PARs by flow overwhelms the effect of cytoplasmic depletion (which tends to slow the boundary motion). As a result, the boundary contracts with nothing to slow it down. Indeed, in the limit as time goes to infinity, we expect one peak of aPARs and myosin at the anterior pole (in the model, this peak will grow until it is balanced by diffusion) which is in sharp contrast to our experimental result which showed a sharp drop in the anterior-directed flow speed in the late stages of maintenance phase (see inset of Fig.\ \ref{fig:Ect2VsWT}).
+
+Thus the model has identified two regimes of behavior, depending on the sensitivity of myosin to the CDC-42 concentration. Roughly speaking, if CDC-42 promotes myosin at a rate much smaller than the basal rate (0 in Fig.\ \ref{fig:BoundaryDiff}), the cytoplasmic dynamics are sufficient to stop the pPARs from invading too far into the anterior domain. But this model has to be discarded because the dynamics occur over unrealistically long timescales. To match the speed of rescue, CDC-42 has to promote myosin at a rate comparable to the basal rate, which leads to fast flows and (in this model) a rapid concentration of the anterior domain into a peaked profile at the anterior pole. Thus, we are missing an important interaction that slows down the advancing myosin peak, and rapidly drops the flow speed. This interaction is the focus of the next section.
 
 
-\subsection{Incorporating branched actin}
+\section{Branched actin as a brake on contractility }
 The main issue with the models so far is that realistic flow speeds cause the anterior domain to contract off the end of the embryo. So, there must be some mechanism that could counteract the fast flow speeds. Based on our experiments in \emph{arx-2} (RNAi) embryos, which exhibit a hypercontractile state, it seems logical that branched actin could contribute to halting the progression of the anterior domain. Our hypothesis in particular is that branched actin is activated above a certain ``threshold'' of CDC-42, and that branched actin inhibits contractility by inhibiting myosin. We encode these properties in the system of equations by modifying the myosin equation in \eqref{eq:Everything} and adding an additional equation for branched actin, which we represent by $R$,  
 \begin{align}
 \nonumber

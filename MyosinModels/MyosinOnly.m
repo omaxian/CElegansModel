@@ -8,7 +8,7 @@ koffM = 0.12;
 konM = 0.5;
 eta = 0.1;
 gamma = 1e-3;
-Sigma0 = 4.2e-3;
+Sigma0 = 7.1e-3;
 
 %% Dimensionless parameters
 DM_Hat = DM/(koffM*L^2);
