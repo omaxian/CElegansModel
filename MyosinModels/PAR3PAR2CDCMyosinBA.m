@@ -4,12 +4,12 @@ L = 134.6;
 h = 9.5;
 % PAR-3
 DA = 0.1;
-konA = 1; 
 koffA = 3;
 kdpA = 0.16; 
+KonA_Hat = 0.6;
 KpA_Hat = 15; 
-KfA_Hat = 3.6;
-Asat = 0.34;
+KfA_Hat = 4.2;
+Asat = 0.3332; % 80% of uniform state
 MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
@@ -17,7 +17,7 @@ konP = 0.13;
 koffP = 7.3e-3;
 % CDC-42
 DC = 0.1;
-konC = 0.1;
+konC = 0.1; % Fitting parameter
 koffC = 0.01;
 % PAR-6
 DK = 0.1;
@@ -27,8 +27,8 @@ DM = 0.05;
 koffM = 0.12;
 konM = 0.3; % Fitting parameter
 eta = 0.1;
-gamma = 1e-3;
-Sigma0 = 4.2e-3;
+gamma = 5e-4;
+Sigma0 = 4.4e-3;
 % Branched actin
 DR = 0.05;
 koffR = 0.12;
@@ -36,7 +36,6 @@ koffR = 0.12;
 % Biochem
 Timescale=1/kdpA;
 DA_Hat = DA/L^2*Timescale;
-KonA_Hat = konA/h*Timescale;
 KoffA_Hat = koffA*Timescale;
 KdpA_Hat = 1;
 DP_Hat = DP/L^2*Timescale;
@@ -61,15 +60,15 @@ RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.1;    
 AcForK = 0.06;
-RhatCM = 3;    % CDC-42 promotes myosin (fitting parameter)
+RhatCM = 10;    % CDC-42 promotes myosin (fitting parameter)
 RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
-Thres = 0.2; % Threshold where CDC-42 -> branched actin Fitting parameter
-RhatRM = 10; % Branched actin killing myosin (fitting parameter)
+Thres = 0.25; % Threshold where CDC-42 -> branched actin Fitting parameter
+RhatRM = 15; % Branched actin killing myosin (fitting parameter)
 
 % Initialization
 dt=2e-2;
-tf = 200;
-saveEvery=1/dt;
+tf = 72;
+saveEvery=0.16/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
 N=1000;
@@ -103,8 +102,9 @@ for iS=1:length(iSizes)
 InitialSize = iSizes(iS);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 %Inside = ~(x > 0.75-((1-InitialSize)/2) & x < 0.75+((1-InitialSize)/2));
-A = 0.5*Inside + 0.05*~Inside;
-A = A./(1-sum(A)*dx);
+A = 0.6*Inside + 0.05*~Inside;
+% End establishment phase
+%A = A./(1-sum(A)*dx);
 A1 = AMon(A,KpA_Hat);
 alpha = A1*KpA_Hat;
 AllAs  = zeros(N,MaxOligSize);
@@ -112,13 +112,11 @@ for iP=1:MaxOligSize
     AllAs(:,iP)=alpha.^(iP-1).*A1;
 end
 A = sum((1:MaxOligSize).*AllAs,2);
-C = konC/(konC+koffC*h)*ones(N,1);
+C = 0.1*ones(N,1);
 K = zeros(N,1);
-P = 1*~Inside;
-M = 0.5*ones(N,1);
+P = ~Inside;
+M = 0.3*ones(N,1);
 R = zeros(N,1);
-plot(x,A,':',x,K,':',x,C,':',x,P,':',x,M,':',x,R,':')
-hold on
 
 AsTime = zeros(nSave,N);
 PsTime = zeros(nSave,N);
@@ -143,6 +141,7 @@ for iT=0:nT-1
         vmaxes(iSave)=max(abs(v));
         hold off
         plot(x,A,x,K,x,C,x,P,x,M,x,R)
+        xlim([0.5 1])
         %legend('$A$ (PAR-3)','$K$ (PAR-6)','$C$ (CDC-42)',...
         %    '$P$ (pPARs)','$M$ (Myosin)','$R$ (Br Act)','Location','North','NumColumns',2)
         %ylim([0 1.5])
@@ -166,7 +165,7 @@ for iT=0:nT-1
     Rc = 1 - sum(R)*dx;
     
     % Flows
-    Sigma_active = ActiveStress(M);
+    Sigma_active = ActiveStress(M)./(1+RhatRM*R);
     v = (speye(N)-LRatio^2*DSq) \ (LRatio*DOneCenter*Sigma_active);
     vHalf = 1/2*(v+circshift(v,-1));
     % Advection (explicit)
@@ -207,7 +206,7 @@ for iT=0:nT-1
     RHS_C = SigmaHat*MinusdxCv + KonC_Hat*Cc - KoffC_Hat*(1+RhatPC*P).*C;
     RHS_P = SigmaHat*MinusdxPv + KonP_Hat*Pc - KoffP_hat*(1+RhatKP*K).*P;
     RHS_K = SigmaHat*MinusdxKv + RhatACK*C.*(A > AcForK)*Kc - KoffK_Hat*K;
-    RHS_M = SigmaHat*MinusdxMv + (KonM_Hat+RhatCM*C)*Mc - KoffM_Hat*(1+RhatRM*R).*M;
+    RHS_M = SigmaHat*MinusdxMv + KonM_Hat*(1+RhatCM*C)*Mc - KoffM_Hat*M;
     RHS_R = SigmaHat*MinusdxRv + RhatCR*max(C-Thres,0)*Rc - KoffR_Hat*R;
     P = PDiff_U\ (PDiff_L\(PDiff_P*(P/dt+RHS_P)));
     C =  CDiff_U\ (CDiff_L\(CDiff_P*(C/dt+RHS_C)));
@@ -218,6 +217,7 @@ for iT=0:nT-1
 end
 set(gca,'ColorOrderIndex',1)
 plot(x,A,x,K,x,C,x,P,x,M,x,R)
+xlim([0.5 1])
 %title(strcat('$A^\textrm{(Tot)}=$',num2str(ATot),', $P^\textrm{(Tot)}=$',num2str(PTot)))
 % Post process to get aPAR and pPAR sizes
 PAR3Size = zeros(nSave,1);
