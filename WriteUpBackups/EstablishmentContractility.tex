@@ -1,0 +1,223 @@
+\documentclass[11pt]{article}
+\linespread{1.5} 
+\usepackage{graphicx,epstopdf,subfigure,mathtools,mathrsfs, arydshln, amsmath, amssymb} 
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{float}
+\usepackage{authblk}
+\usepackage[title]{appendix}
+\PassOptionsToPackage{usenames,dvipsnames}{xcolor}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage[normalem]{ulem}
+
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=false,
+    pdfborder={0 0 0},
+}
+\newcommand{\new}[1]{\color{blue}#1\normalcolor}
+\newcommand{\red}[1]{\color{red}#1\normalcolor}
+\newcommand{\delete}[1]{}
+\newcommand{\change}[1]{\color{black}#1\normalcolor}
+\newcommand{\rev}[1]{\color{black}#1\normalcolor}
+
+% VECTOR AND MATRIX NOTATION
+\newcommand{\V}[1]{\boldsymbol{#1}}                 % vector notation
+\newcommand{\M}[1]{\boldsymbol{#1}}
+\global\long\def\norm#1{\left\Vert #1\right\Vert }
+\newcommand{\Tot}[1]{#1^\text{(Tot)}}
+\global\long\def\Dt{\partial_t}
+\global\long\def\Dx{\partial_x}
+\global\long\def\Koff{K^\text{off}}
+\global\long\def\Kon{K^\text{on}}
+\global\long\def\koff{k^\text{off}}
+\global\long\def\kon{k^\text{on}}
+
+\title{Modeling dynamics of ECT-2/Rho/Myosin polarity circuit  \vspace{-0.5 cm}}
+%\title{Mathematical appendix: \\ Oligomerization and feedback on membrane recruitment stabilize PAR-3 asymmetries in \emph{C.\ elegans} zygotes}
+\author{Ondrej Maxian  \vspace{-0.75 cm}}
+
+\begin{document}
+\maketitle
+
+\section{The centrosome cue}
+The contractility circuit is forced by a cue from the centrosomes which contain Aurora A (AIR-1), an inhibitor of ECT-2. We assume that the AIR-1 signal gets to the membrane by diffusion. Letting $a(\V x)$ be the concentration of AIR-1 in the embryo, we have the equation
+\begin{subequations}
+\label{eq:CD}
+\begin{gather}
+\label{eq:DiffEqn}
+\Delta a =  -f \qquad \V{x} \in \Omega \\
+\label{eq:DiffBC}
+\nabla a \cdot \V{n}=0 \quad \V{x} \in \partial \Omega,
+\end{gather} 
+where\ \eqref{eq:DiffEqn} is the diffusion equation for the concentration and\ \eqref{eq:DiffBC} is a no-flux boundary condition through the boundary (here $\Omega$ represents the embryo area and $\partial \Omega$ represents the boundary). The signal $f(\V x)$ comes from the two centrosomes, which we model by Gaussian densities 
+\begin{equation}
+f(\V{x}) = \frac{C_0}{2 \pi \sigma_c^2}\sum_{i=1}^2\exp{\left(\frac{-\norm{\V{x}-\V{x}_i}^2}{2 \sigma_c^2}\right)}.
+\end{equation}
+Here $\V{x}_i$ is the location of the $i$th centrosome (typically at some location $(x_i,0)$), which changes depending on the embryo conditions. In addition to the centrosome location, the signal has two other parameters: $C_0$, is the strength of the cue (the integral of $f(\V{x})$ over the entire embryo cross-section; this is arbitrary and set to 1), and $\sigma_c$ is the centrosome ``size'' (the standard deviation of the Gaussian, which is roughly half the size of the centrosome). For cytokinesis, the centrosomes have size about 2 $\mu$m, so we set $\sigma_c=1$ $\mu$m.
+\end{subequations}
+The solution of\ \eqref{eq:DiffEqn} is unique up to a constant; we normalize all solutions so that embryos treated with PAR-3 (RNAi), where the each centrosome sits about 15 $\mu$m from its respective cortex, have an AIR-1 concentration $a(\V x)=1$ at the posterior and anterior poles 
+
+We use a standard first-order finite element method to solve\ \eqref{eq:DiffEqn}. In brief, the elliptical domain of the embryo is meshed into nodes and triangles, which define a set of linear Lagrangian basis functions $\psi_k$ that are 1 at node $\V{x}_k$ and 0 everywhere else. Multiplying\ \eqref{eq:DiffEqn} by a basis function $\psi_k$, then integrating by parts using the boundary condition\ \eqref{eq:DiffBC} gives 
+\begin{equation}
+\sum_j \int_{\Omega} \left(\nabla \psi_k \cdot \nabla \psi_j\right) a_j \, d\V{x}= \sum_j \int_{\Omega} \psi_k \psi_j f_j \, d\V{x},
+\end{equation}
+which can be written as the matrix equation $\M{K}\V{a}=\M{M}\V{f}$, where $\M{M}$ is the so-called mass matrix and $\M{K}$ the stiffness matrix for finite elements. Solving $\V{a}=\M{K}^\dagger \M{M}\V{f}$ gives the solution for the concentration.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{CentrosomeDiffusion.eps}
+\caption{\label{fig:CentDiff} Solution for the diffusion equation\ \eqref{eq:CD} for wild-type embryos. The left panel shows the centrosome signal $f(\V x)$, with the anterior centrosome 17 $\mu$m away from the anterior cortex and the posterior centrosome 10 $\mu$m away from the posterior cortex. The Gaussian width $\sigma_c=1$ (so that the centrosome diameter is roughly 2 $\mu$m). The right panel shows the solution for the concentration profile $a(\V x)$. }
+\end{figure}
+
+Figure\ \ref{fig:CentDiff} shows the solution of the diffusion equation over the embryo cross-section in wild-type embryos. In this case, the anterior centrosome sits 17 $\mu$m from the anterior pole, while the posterior centrosome sits 10 $\mu$m from the posterior pole. The left panel shows the AIR-1 signal, which essentially shows the location of the two centrosomes. The right panel then shows the solution to the diffusion equation\ \eqref{eq:CD} in this case. As might be expected, there is substantially more AIR-1 on the anterior cortex, since the centrosome sits closer to the boundary there.
+
+We now consider how moving the centrosomes changes the profile of AIR-1 on the boundary. We use six representative treatments from \cite{longhini2022aurora}, which modify the positions of the centrosomes. For example, in dhc-1 (RNAi) embryos, the posterior centrosome sits 3 $\mu$m from the posterior pole, while the anterior centrosome sits 45 $\mu$m from the anterior pole (9 $\mu$m from the posterior pole). As a result, the AIR-1 profile is strongly peaked at the posterior, with about 5 times the concentration there relative to the anterior. The treatments we consider can also flatten the AIR-1 profile relative to wild-type, as in PAR-3 (RNAi) embryos, which have centrosomes sitting roughly at 15 $\mu$m from each pole. The profile of AIR-1 there is consequently roughly constant.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{AIR1Accum.eps}
+\caption{\label{fig:AIR1Acc}AIR-1 accumulation on the embryo perimeter (cortex) as predicted by the diffusion model\ \eqref{eq:CD}. We show the AIR-1 profile as a function of distance from the posterior pole (0 is the posterior pole, 67 is the anterior pole), for embryos with six different treatments. The treatment sets the location of the centrosomes (see Fig.\ \ref{fig:DiffCSep}).}
+\end{figure}
+
+\subsection{The ECT-2 response}
+Let us now examine how the strength of the AIR-1 signal affects the strength of the ECT-2 concentration on the proximal cortex. To do so, let us suppose that ECT-2 locally binds and unbinds from the cortex, so that the steady state dynamics obey the equation
+\begin{equation}
+\label{eq:EctA}
+ \kon_E = \koff_E \left(1+K_\text{AE}A\right)E \rightarrow E = \frac{\kon_E/ \koff_E}{ \left(1+K_\text{AE}A\right)}
+\end{equation}
+where $K_\text{AE}$ is the strength of AIR-1/ECT-2 inhibition. In order to match the experimental data, we always normalize concentration so that $E=1.5$ (on both the posterior and anterior cortex) in PAR-3 (RNAi) embryos. This leaves a single parameter: $K_\text{AE}$, which we tune to match the extreme dhc-1 (RNAi) embryos ($K_\text{AE}=2$ gives the best fit). Figure\ \ref{fig:DiffCSep} compares the resulting output (right panel) to the experimental data (left panel). While we can generally reproduce the trends observed experimental, the shape of our curve appears to be more of a line, while the experimental data show an S-shaped trend. Indeed, while we correctly predict the ECT-2 accumulation for the ``extreme'' embryos (dhc-1 (RNAi) and zyg-9 (b224)/tpxl-1(RNAi)), the intermediate embryos have A/P ECT-2 disparities which are smaller than the experimental data. For example, in wild-type embryos, the experiments show an accumulation of 1.8 on the posterior, and 1 on the anterior, while our results show an accumulation of 1.6 on the posterior and 1.3 on the anterior. 
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{CytoECT2DataSim.eps}
+\caption{\label{fig:DiffCSep} Comparing model results to experimental data for embryos with varying treatments (see legend at left). The left plot is a reproduction of \cite[Fig.~7A]{longhini2022aurora}, with some of the redundant embryo treatments deleted for clarity (we reduce multiple replicates to a single symbol by taking a rough average). The right plot shows the results when we consider diffusion of AIR-1 to the cortex, plus linear inhibition of the form\ \eqref{eq:EctA}, with $K_\text{AE}=2$. }
+\end{figure}
+
+Because we chose $K_\text{AE}=2$ to match the extreme embryos, their values are correct by design. If, by contrast, we had chosen a larger $K_\text{AE}$ to match wild-type embryos, then the model results would be reversed: the wild-type embryos would be correct by design, while the extreme embryos would have A/P ratios which are much \emph{larger} than the experiments. 
+It seems clear that our model is missing a mechanism whereby either:
+\begin{enumerate}
+\item Small changes in ECT-2 concentration induced by diffusion (in an intermediate range) are amplified to become larger.
+\item Large changes in ECT-2 concentration induced by diffusion are damped to become smaller.
+\end{enumerate}
+Since we have not accounted for the resulting actomyosin flows which tend to concentrate ECT-2, we speculate that the first of these options is what is missing from the model. We proceed to study it next.
+
+\subsection{Polarization model}
+Prior to looking at amplification of the ECT-2 signal, it is useful to also consider the dynamics during cell polarization. In cell polarization, \emph{both} centrosomes sit on the posterior cortex (we assume 1 $\mu$m away). The centrosomes have a smaller size (about 0.2 $\mu$m, so we set $\sigma_c=0.1$ $\mu$m). They also contain substantially less total AIR-1; here we assume that the amount scales with the area, so that $C_0=0.01$ for polarization. Figure\ \ref{fig:AIRPol} shows the resulting AIR-1 concentration profile across the embryo (normalized to be 0 at the posterior pole), and along the boundary. We observe a change in AIR-1 of only 0.03 from one side of the embryo to the other, which is substantially \emph{smaller} than what we observed in cytokinesis. Considering that ECT-2 becomes asymmetrically enriched during polarization, this underscores the need to have a mechanism to amplify the asymmetries. That said, the mechanism has to work much more strongly in polarization than in cytokinesis, because the asymmetries induced by diffusion are an order of magnitude smaller here.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{PolarizationModelECT2.eps}
+\caption{\label{fig:AIRPol}AIR-1 signal during polarization. In polarization, both centrosomes sit on the posterior cortex (we assume 1 $\mu$m away), have smaller size (about 0.2 $\mu$m, so we set $\sigma_c=0.1$ $\mu$m), and contain less ($C_0=0.01$) AIR-1 than in cytokinesis (see plot at top left). The resulting concentration profile is shown across the entire embryo (bottom left) and along the embryo boundary (right).}
+\end{figure}
+
+\section{The biochemical response circuit}
+We now consider how the underlying biochemical system might respond to changes in the ECT-2 signal at the cortex.We consider four species: ECT-2 ($E$), inactive Rho ($P$), active Rho ($\rho$), and actomyosin ($M$), with interactions shown in Fig.\ \ref{fig:RhoCirc}. The main question we need to answer is the functional form by which inactive Rho and active Rho are exchanged/converted amongst each other. Based on the analysis of \cite{michaux2018excitable}, we assume the reaction to be auto-catalytic (the forward rate is proportional to active $\rho$). Based on the data that ECT-2 has a roughly 2:1 A/P ratio, while $\rho$ has a roughly 10:1 ratio, we assume nonlinearity in $E$ as well. Finally, we assume that actomyosin $M$ converts active Rho to inactive Rho via RhoGAP (which colocalizes with actin) \cite{michaux2018excitable}. Our total reaction term is therefore, 
+\begin{subequations}
+\begin{equation}
+\label{eq:RhoRxn}
+R(P,\rho,E,M)=K_\text{EP}E^2 \left(\frac{\rho}{G_\text{PP}+\rho}\right)P - K_\text{MP}M\rho,
+\end{equation}
+which leaves three unknown constants: $K_\text{EP}$, $K_\text{MP}$, and $G_\text{PP}$.
+
+Once we formulate the reaction term converting inactive Rho to active Rho, it is straightforward to formulate the rest of the dynamics. As in \cite{michaud2022versatile}, we assume that inactive Rho binds from the cytoplasm onto the membrane, where it is converted to active Rho using \eqref{eq:RhoRxn}. Once active, $\rho$ produces myosin. In a system of units where length is in units of the embryo perimeter $L$, and time is in units of the bound myosin lifetime $1/k^\text{off}_M$, the general equations governing the circuit can consequently be written as 
+\label{eq:GenEqns}
+\begin{gather}
+\Dt E + \sigma_0 \Dx \left( v E\right) = D_E \Dx^2 E +\Kon_E E_c - \Koff_E \left(1+K_\text{AE}A\right)E \\
+\Dt P + \sigma_0 \Dx \left( v P\right) = D_P \Dx^2 P +\Kon_P P_c - \Koff_E P - R(P,\rho, E, M) \\
+\Dt \rho + \sigma_0 \Dx \left( v \rho \right) = D_\rho \Dx^2 \rho + R(P,\rho, E, M)\\
+\Dt M + \sigma_0 \Dx \left( v M \right) = D_M \Dx^2 M + \Kon_M \left(1+K_\text{PM} \frac{\rho}{G_\text{PM}+\rho} \right) M_c - M \\
+\label{eq:veleqn}
+v = \ell^2 \Dx^2 v +\ell \Dx M \\
+E_c = 1-\int_0^1 E(x) \, dx \qquad P_c = 1-\int_0^1 \left(P(x)+\rho(x)\right) \, dx \qquad M_c = 1-\int_0^1 M(x) \, dx
+\end{gather} 
+\end{subequations}
+In the velocity equation\ \eqref{eq:veleqn}, the lengthscale $\ell$ is a hydrodynamic lengthscale (roughly 10 $\mu$m), normalized in this unit system by the embryo perimeter \cite{saha2016determining}. The constant $\sigma_0  \approx 0.026$ is the scale of the active stres induced by myosin, and has been determined elsewhere, along with the form of the stress itself $\sigma_a = M$. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{RhoCircuit.png}
+\caption{\label{fig:RhoCirc}The circuit we consider in this report.}
+\end{figure}
+
+Discounting the off and on rates, which can be determined directly and from the percentage of protein that is bound at steady state, respectively, there are a total of six unknown constants: $K_\text{EP}$, $K_\text{MP}$, $G_\text{PP}$ (in the Rho reaction), and $K_\text{AE}$, $K_\text{PM}$, and $G_\text{PM}$ (in the other reactions). Figure\ \ref{fig:ECT2Conc} tells us that $K_\text{AE} \approx 1$. To set the parameters $K_\text{EP}$, $K_\text{MP}$, and $K_\text{PM}$, we look for a regime where roughly 10\% of bound Rho is active, and the asymmetry in active Rho is about 10:1. We do this by first specifying $G_\text{PM}$ and $G_\text{PP}$. Far below these constants, the $\rho$ signal is linear, while above them it saturates. We want to operate in the linear regime, and since we expect about 10\% of the Rho to be bound to the membrane, we take $G_\text{PM}=G_\text{PP}=0.2$. The other parameters are set so that we have a roughly 10:1 asymmetry in myosin and active Rho. The steady state results are shown in Fig.\ \ref{fig:RhoEv}.  
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{EvolutionProfile.eps}
+\caption{\label{fig:RhoEv}How the AIR-1 signal and ECT-2 profile set the downstream concentrations. Left plot: initially, ECT-2 assumes its asymmetric profile. Middle plot: this sets up a steady state with asymmetric myosin and active Rho. Right plot: velocity at steady state in $\mu$m/min.}
+\end{figure}
+
+
+\iffalse
+\section{Pulsatile dynamics of Rho and Actomyosin \label{sec:pulse}}
+\red{This stuff is all old.} Let us first consider the dynamics of Rho and actomyosin previously studied in \cite{michaux2018excitable}. In this case, we consider a modified form of the overall circuit that contains only the black arrows in Fig.\ \ref{fig:RhoCirc}, which gives the equations \cite{michaux2018excitable}
+\begin{subequations}
+\label{eq:EqnsRhoActo}
+\begin{gather}
+\Dt E + \sigma_0 \Dx \left( v E\right) = D_E \Dx^2 E +\Kon_E E_c - \Koff_E E \\
+\Dt \rho + \sigma_0 \Dx \left( v \rho \right) = D_\rho \Dx^2 \rho + \Kon_\rho \left(1+ K_{E \rho}E \frac{ \rho}{K_\text{FB}+\rho}\right)\rho_c - \Koff_\rho \left(1+K_{MP}M \frac{\rho}{K_\text{GAP}+\rho}\right)\\
+\Dt M + \sigma_0 \Dx \left( v M \right) = D_M \Dx^2 M + \Kon_M \left(1+K_{\rho M} \rho^3 \right) M_c - M. 
+\end{gather} 
+\end{subequations}
+The reaction parameters in these equations are all chosen to match the parameters in \cite{michaux2018excitable}, scaled so that time is in units of the myosin residence time. 
+
+Our goal in this section is to understand how the equations of\ \eqref{eq:EqnsRhoActo} carry over to the case when there is a limited pool of protein that is shared between the cytoplasmic (inactive) and membrane-bound (active) states. To do this, we consider a scenario where $\rho$ is only active in a certain percentage of the domain, which we accomplish by inhibiting ECT-2 in regions outside of the domain of interest, and where there is no diffusion or advection of any of the proteins. In the limit where the active $\rho$ domain size is vanishingly small, we repeat the observations in \cite{michaux2018excitable}, which do not account for conservation of protein. But how small does the domain have to be?
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{RhoOscillationsDomSize.eps}
+\caption{\label{fig:RhoDomainSize} Dynamics of the equations\ \eqref{eq:EqnsRhoActo} in the case when ECT-2 is inhibited in some part of the domain. In the top plots, we inhibit ECT-2 in 95\% of the domain, so that $\rho$ can only be activated in the central 5\%. Oscillatory dynamics result. In the bottom plots, we inhibit ECT-2 in 80\% of the domain. In this case $\rho$ is active in the middle 20\%, but there are no oscillations. }
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{RhoOverTime.eps}
+\caption{\label{fig:RhoTime} Dynamics of ECT-2 (blue lines), $\rho$ (red lines), and actomyosin/RhoGAP (yellow lines) over time in the plots from Fig.\ \ref{fig:RhoDomainSize}. We plot the concentration of each protein at $x=0.5$, with solid lines denoting the case where $\rho$ is active in 5\% of the domain (top plots in Fig.\ \ref{fig:RhoDomainSize}) and dashed/dotted lines the case where $\rho$ is active in 20\% of the domain (bottom plots in Fig.\ \ref{fig:RhoDomainSize}).}
+\end{figure}
+
+Figures\ \ref{fig:RhoDomainSize} and\ \ref{fig:RhoTime} indicate that an active Rho domain of size 5\% or smaller is sufficiently small to generate oscillatory pulses in contractility. When we try to increase the size of the active ECT-2/Rho domain, the oscillations in Rho are damped, and eventually give way to a unifom steady state. Because all other conditions are constant, the reason for the damping and lack of oscillations is the lack of available cytoplasmic protein when the domain size is larger. As the Rho concentration increases, the rate of increase drops because there is less protein in the cytoplasm. This means that the ``delay'' in RhoGAP dynamics can catch up to the intrinsic dynamics of Rho, and the oscillations no longer occur. 
+
+\section{Global dynamics: unstable or stable}
+The previous section demonstrated that pulses of Rho are only sustainable over very local zones. Our problem is very much global in nature, however, as we have a moving boundary that starts near 100\% of the embryo length and moves towards 50\%. We have already seen that starting with an ECT-2 domain larger than 5\% of the domain length leads to a steady state which is maintained in time at the same boundary position. Our goal is to move the boundary.
+
+Our first attempt to move the boundary is by adding in the blue arrows to the dynamics as shown in Fig.\ \ref{fig:RhoCirc}. Specifically, we will modify the ECT-2 equation to become 
+\begin{equation}
+\Dt E + \sigma_0 \Dx \left( v E\right) = D_E \Dx^2 E +\Kon_E \left(1+K_{\rho E}\, \rho+K_{ME} M\right) E_c - \Koff_E E,
+\end{equation}
+so that myosin and $\rho$ both promote ECT-2. The idea is then that ECT-2 would concentrate $\rho$ and myosin, which promotes more ECT-2, etc. Combining this with a myosin-induced flow might give a shift in the boundary.
+
+In Fig.\ \ref{fig:ECTFlowSpeed}, we show what happens when we simulate the dynamics for 2 minutes with all modes of feedback in Fig.\ \ref{fig:RhoCirc}. The key parameter that controls what happens is the strength of the flow in response to myosin, measured in the model by $\sigma_0$. When $\sigma_0=0.026$, we obtain the dynamics in the left panel of Fig.\ \ref{fig:ECTFlowSpeed}, where the boundary shifts slightly because of the flow, but cannot ingress further. Rather than pushing the boundary towards the middle, increasing the flow speed induces local instabilities where actomyosin concentrates in foci near the anterior domain boundaries. This is not the dynamics we observe. 
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{ECTRhoFlowSpeed.eps}
+\caption{\label{fig:ECTFlowSpeed} Steady states (after 2 mins) in ECT-2, $\rho$, and actomyosin when we simulate the dynamics with all modes of feedback in Fig.\ \ref{fig:RhoCirc}. We vary the flow speed by changing $\sigma_0$, obtaining either a broad domain which cannot contract, or local instabilities at the edge of the enriched domain.}
+\end{figure}
+
+
+\section{Ideas for moving the boundary}
+In order to move the boundary, we need to encode the idea in the model that a shift in the actomyosin concentration will concentrate ECT-2, which will promote more $\rho$ and myosin. The problem right now is that this dependence is encoded using linear functions, specifically the attachment term
+$$K_{E \rho}E \frac{ \rho}{K_\text{FB}+\rho}$$ 
+in the $\rho$ equation in\ \eqref{eq:EqnsRhoActo}. As an alternative model, let's suppose the Rho activity depends more sharply on ECT-2 than linearly. For instance, let's replace the term above with
+$$K_{E \rho}\text{max}(E-E_0,0) \frac{ \rho}{K_\text{FB}+\rho}.$$
+In this instance, $\rho$ is only ``activated'' when the ECT-2 concentration goes above $E_0$ (we set $E_0=0.5$).
+ 
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{UltraSensitiveECT2.eps}
+\caption{\label{fig:SensitiveECT2}Dynamics when $\rho$ activity depends more sensitively on ECT-2 concentration. The domain of myosin and $\rho$ is concentrated to the anterior.}
+\end{figure}
+
+In Fig.\ \ref{fig:SensitiveECT2}, we plot the results when we simulate with $\sigma_0=0.026$ (the smaller, stable flows in Fig.\ \ref{fig:ECTFlowSpeed}) and the ultra-sensitive Rho kinetics. The idea is as follows: an initial cue locally depletes ECT-2 in the outer 10\% of the embryo. Following this, actomyosin flows concentrate ECT-2 more towards the anterior. The flows then drop the posterior ECT-2 below the threshold needed to produce Rho. As a result, the domain of Rho shifts towards the anterior, which shifts the myosin domain towards the anterior as well. The process then repeats itself until the domain gets quite small, and we see pulsatile oscillations matching what we saw earlier in Section\ \ref{sec:pulse}. 
+
+The point of Fig.\ \ref{fig:SensitiveECT2} is just to demonstrate that the going hypothesis about how this might work is possible, but only if there is a sensitive dependence of Rho activity on ECT-2. We should talk about the specific biochemistry we are trying to model here. Also, because Rho and actomyosin co-localize, only one of the blue arrows in Fig.\ \ref{fig:RhoCirc} is really necessary. This will reduce the number of unknown parameters.
+\fi
+
+\bibliographystyle{plain}
+
+\bibliography{../../PolarizationBib}
+
+
+\end{document}
