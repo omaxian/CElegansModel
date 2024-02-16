@@ -1,10 +1,14 @@
 %clear
-load('LateMaintenanceFlowBright_WT.mat')
-try
-    OneBrt1=OneBrt2;
-    n1=n2;
-catch
-end
+%for iMin=3:8
+%load('LateMaintenanceFlowBright_WT.mat')
+%load(strcat('n1_',num2str(iMin),'.mat'))
+%load(strcat('OneBrt1_',num2str(iMin),'.mat'))
+% try
+%     OneBrt1=OneBrt2;
+%     n1=n2;
+% catch
+% end
+nEm = 6;
 MicronsPerPixel = 1/10;
 xFlows = n1*MicronsPerPixel; % in microns/second
 % Replace first and last 10% embryo length to avoid artifacts
@@ -52,7 +56,8 @@ nexttile
 h(1)=plot([x 1],60*[MeanVel MeanVel(1)]);
 hold on
 h(2)=plot([x 1],60*[VelFilt VelFilt(1)]);
-h(3)=errorbar(xog,mean(xFlows*60),std(xFlows*60)/sqrt(10),'-k','LineWidth',1.0);
+hold on
+h(3)=errorbar(xog,mean(xFlows*60),std(xFlows*60)/sqrt(nEm),'-k','LineWidth',1.0);
 title('Velocity')
 xlabel('$\hat x$')
 ylabel('$v$ ($\mu$m/min)')
@@ -78,6 +83,7 @@ figure
 tiledlayout(1,2, 'Padding', 'none', 'TileSpacing', 'compact');
 nexttile
 plot([x 1],[SmoothStr SmoothStr(1)])
+hold on
 xlabel('$\hat x$')
 title('Recovered stress')
 ylabel('$\sigma_a$ (Pa)')
@@ -90,8 +96,7 @@ xlabel('$\hat x$')
 legend('$\sigma_a/(0.0044)$+Shift','$\hat M$','Location','Southwest')
 ylabel('$\hat \sigma_a$')
 title('Normalized stress')
-%plot(MyFilt,SmoothStr./MyFilt)
-nEm=10;
+%end
 return
 close all;
 N=1000;
