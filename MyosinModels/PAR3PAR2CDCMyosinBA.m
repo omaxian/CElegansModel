@@ -65,7 +65,7 @@ RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
 
 % Initialization
 dt=2e-2;
-tf = 96;
+tf = 96*2;
 saveEvery=0.16/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -165,6 +165,8 @@ for iT=0:nT-1
     Rc = 1 - sum(R)*dx;
     
     % Flows
+    %dR=max((R-0.3)/0.02,0);
+    %Sigma_active = ActiveStress(M).*exp(-dR);
     Sigma_active = ActiveStress(M);
     % Hyper-sensitivity of the drag coefficient on branched actin
     gammaHat = GammaHat(R);

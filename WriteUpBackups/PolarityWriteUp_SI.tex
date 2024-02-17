@@ -92,7 +92,25 @@
 \maketitle 
 
 \section{Maintenance-phase as a steady state}
-In Figs.\ \ref{fig:Ect2MyMin} and \ref{fig:Ect2FlowMin}, we plot the myosin intensity profile and flow speed as a function of time by looking at the average over each minute of maintenance phase.
+
+\subsection{CDK-1 (RNAi)}
+By treating embryos with \emph{CDK-1} (RNAi), we can extend maintenance phase and determine whether the myosin and flow profiles we see in wild-type embryos are true steady states. Figs.\ \ref{fig:CDKMyMin} and\ \ref{fig:CDKFlowMin} show the myosin intensity and pattern of flow over the last eight minutes of the extended maintenance phase. \red{What is strange about this data is that the myosin intensities \emph{never} look like the wild-type. There appears to be more than the expected amount of myosin on the posterior domain. An interesting observation also is that extending maintenance causes the boundary to move to the \emph{right}.}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{CDK1MyosinByMin.eps}
+\caption{\label{fig:CDKMyMin} Average myosin intensity profile over eight (extended) minutes of maintenance phase in \emph{CDK-1} (RNAi) mutants.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{CDK1FlowByMin.eps}
+\caption{\label{fig:CDKFlowMin} Average flow speeds over eight (extended) minutes of maintenance phase in \emph{CDK-1} (RNAi) mutants. }
+\end{figure}
+
+
+\subsection{ts ect-2}
+Another way to establish that maintenance phase is a steady state is by removing the function of ect-2 in establishment phase. Ect-2 is a protein that activates Rho and promotes contractility in establishment phase. Figs.\ \ref{fig:Ect2MyMin} and \ref{fig:Ect2FlowMin} show the myosin intensity and flow profiles in maintenance phase in these embryos. There is a rescue of polarity.
 
 \begin{figure}
 \centering
@@ -104,6 +122,18 @@ In Figs.\ \ref{fig:Ect2MyMin} and \ref{fig:Ect2FlowMin}, we plot the myosin inte
 \centering
 \includegraphics[width=\textwidth]{Ect2FlowsByMinute.eps}
 \caption{\label{fig:Ect2FlowMin} Average flow speeds over four minutes of maintenance phase in \emph{ts ect-2} mutants. }
+\end{figure}
+
+\subsection{arx-2 (RNAi)}
+Finally, we establish a hypercontractile phenotype in the absence of arx-2 (a protein which activates the arp 2/3 complex). In Fig.\ \ref{fig:Arp23}, we show the myosin intensity and flow velocity in the last minute of maintenance phase in (a) wild-type and (b) arx-2 embryos. \red{There is a reproducible hypercontractile phenotrype, where the myosin cap moves all the way over to the end of the cell. The flow profile seems unreliable (too much noise).}
+
+\begin{figure}
+\centering
+\subfigure[Wild-type]{
+\includegraphics[width=\textwidth]{IntensityFlowWT.eps}}
+\subfigure[\emph{arx-2} (RNAi)]{
+\includegraphics[width=\textwidth]{IntensityFlowArp23.eps}}
+\caption{\label{fig:Arp23} Raw data for late (last 60 seconds of) maintenance phase in (a) wild-type and (b) \emph{arx-2} (RNAi) embryos. The left panel shows the myosin intensity (arbitrary units), the right panel shows the flow velocity. \red{Subtract the background?}}
 \end{figure}
 
 \section{Stability of myosin in maintenance phase \label{sec:myosin}}
@@ -119,10 +149,10 @@ the resulting equations are
 \label{eq:MND}
 \Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) =\hat{D}_M \Dxhat^2 \hat{M} +\hat{K}^\text{on}_M \left(1-\int_0^1  \hat{M}(x) \, dx\right) - \hat{M}\\
 \label{eq:MVND}
-\hat{v} = \hat{\ell}^2 \Dxhat^2 v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M})
+\red{\hat \gamma} \hat{v} = \hat{\ell}^2 \Dxhat^2 \hat v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M})
  \end{gather}
 \end{subequations}
-and are controlled by the dimensionless parameters
+and are controlled by the dimensionless parameters \red{Check the $\hat \gamma$ part!}
 \begin{equation}
 \label{eq:NDparams}
 \hat{\sigma}_0 = \left(\frac{\sigma_0/ \sqrt{\eta \gamma} }{L \My{\koff}}\right)   \qquad \hat{D}_M =\frac{D_M}{\My{\koff}  L^2} \qquad \hat{K}^\text{on}_M= \frac{\My{\kon}}{h \My{\koff}} \qquad \hat{\ell} = \frac{\sqrt{\eta/\gamma}}{L}.
@@ -151,7 +181,7 @@ $\My{\koff} $ & Myosin detachment rate & 0.12 & 1/s & \cite{gross2019guiding}& \
 %$\Tot{M}$ & Maximum bound myosin density & 2600 & $\#/\mu$m &\cite{gross2019guiding} & $3.5 \times 10^5$ molecules/(134.6 $\mu$m) \\ \hline
 $\Tot{M}$ & Maximum bound myosin density & -- & $\#/\mu$m & & Scales out of equations \\ \hline
 $\eta$ & Cytoskeletal fluid viscosity & 0.1 & Pa$\cdot$s & &100 $\times$ water \\
-$\gamma$ & Myosin drag coefficient & $10^{-3}$ & Pa$\cdot$s/$\mu$m$^2$ &  & $\ell=\sqrt{\eta/\gamma}=10 \, \mu$m \cite{saha2016determining}\\ 
+$\gamma$ & Myosin drag coefficient & $5 \times 10^{-4}$ & Pa$\cdot$s/$\mu$m$^2$ &  & $\ell=\sqrt{\eta/\gamma}=14 \, \mu$m \cite{mayer2010anisotropies}\\ 
 $\sigma_0$ & Stress coefficient and form& 0.0071 & Pa & & Fit in Sec.\ \ref{sec:MyVelFit}\\
 $\hat \sigma_a(\hat M)$ & Stress function of myosin& $\hat M$ & & & Fit in Sec.\ \ref{sec:MyVelFit}\\ \hline
 \end{tabular}
@@ -163,14 +193,16 @@ Table\ \ref{tab:paramsMy} lists the parameters for the myosin model. According t
 
 The next category of parameters relates to the myosin kinetics. The in-membrane diffusivity of myosin, as well as the detachment rate, have both been measured in \cite{gross2019guiding}. For the attachment rate, it was estimated in \cite[Fig.~S3m]{gross2019guiding} that roughly 30\% of myosin is bound to the cortex in wild-type embryos. Recalling that the uniform steady state is $\hat M_0=\hat{K}^\text{on}_M/\left(1+\hat{K}^\text{on}_M\right)$, this gives $\hat{K}^\text{on}_M=0.43$, or $\kon_M = 0.43h\koff_M=0.5$ $\mu$m/s. The last parameter, the total amount of myosin, scales out of the equations. This is fortunate for us because it is difficult to think about a total amount over a cross-section. 
 
-For the fluid parameters, we assume that the viscosity of the cytoskeletal fluid on the cortex is 100 times water, which gives 0.1 Pa$\cdot$s. The ``hydrodynamic length scale'' of $\ell=\sqrt{\eta/\gamma}=10$ $\mu$m, measured in \cite{mayer2010anisotropies, saha2016determining}, then gives the myosin drag coefficient $\gamma$. But more important than either of these is the stress as a function of myosin concentration. We fit this from the wild-type data of \cite{sailer2015dynamic} in the next section.
+For the fluid parameters, we assume that the viscosity of the cytoskeletal fluid on the cortex is 100 times water, which gives 0.1 Pa$\cdot$s. The ``hydrodynamic length scale'' of $\ell=\sqrt{\eta/\gamma}=14$ $\mu$m, measured in \cite{mayer2010anisotropies, saha2016determining}, then gives the myosin drag coefficient $\gamma$. But more important than either of these is the stress as a function of myosin concentration. We fit this from the wild-type data of \cite{sailer2015dynamic} in the next section.
 
 \subsubsection{Inferring flow profile from experiments \label{sec:MyVelFit}}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{VelocityProfile.eps}
-\includegraphics[width=\textwidth]{StressFromVelocityProfile.eps}
-\caption{\label{fig:VelProf} Extracting the velocity profile and active stress from wild-type embryos. Top: the experimental data for myosin intensity (left, with the outer 20\% of the embryo on each side adjusted to be constant) and velocity in $\mu$m/min (right). We show the raw data in black (which goes from anterior to posterior), the periodized version in blue, and a three-term (four terms if we include the constant) Fourier series representation in red. Bottom left: the recovered stress profile $\sigma_a(\hat x)$ in dimensional units. Bottom right: comparing the recovered stress to the myosin intensity, after normalizing by $\sigma_0=0.0071$ Pa. It is clear that $\hat \sigma_a = \hat M$ is a reasonable approximation.}
+\subfigure[Wild-type]{
+\includegraphics[width=\textwidth]{VelocityProfile.eps}}
+\subfigure[\emph{arx-2} (RNAi)]{
+\includegraphics[width=\textwidth]{VelocityProfile_Arp23.eps}}
+\caption{\label{fig:VelProf} Extracting the active stress velocity profile. Left: the experimental data for myosin intensity (with the outer 10\% of the embryo on each side adjusted to be constant). Right: velocity in $\mu$m/min (right). We show the raw data in black (which goes from anterior to posterior), the periodized version in blue, and a three-term (four terms if we include the constant) Fourier series representation in red. In the velocity plot, the purple line shows the velocity when $\sigma_a = \sigma_0 M$. We separate results into (a) wild-type embryos ($\sigma_0 = 4.4 \times 10^{-3}$ Pa) and (b) \emph{arx-2} (RNAi) embryos ($\sigma_0=1.6 \times 10^{-3}$ Pa). }
 \end{figure}
 
 
@@ -187,9 +219,9 @@ Let the Fourier series representation for $v(\hat x)= \sum_k \tilde v(k) \exp{\l
 \end{equation}
 The $k=0$ mode is undefined because $\sigma_a$ only appears differentiated; we therefore set it such that the real space stress has a minimum value of zero. 
 
-We plug the parameters from Table\ \ref{tab:paramsMy} into\ \eqref{eq:SigmaAF} and show the resulting real space stress in the bottom left panel of Fig.\ \ref{fig:VelProf}. This is the dimensional stress $\sigma_a$. In the right panel of Fig.\ \ref{fig:VelProf}, we normalize and shift the stress so that it has the same mean and range as the myosin profile $\hat M$. Obtaining the same range allows us to read off the constant $\sigma_0=7.1 \times 10^{-3}$ Pa that controls the magnitude of the advective flows. In particular, the dimensionless parameter $\hat{\sigma}_0$ defined in\ \eqref{eq:NDparams} is seen to be equal to
+We plug the parameters from Table\ \ref{tab:paramsMy} into\ \eqref{eq:SigmaAF} and show the resulting real space stress in the bottom left panel of Fig.\ \ref{fig:VelProf}. This is the dimensional stress $\sigma_a$. In the right panel of Fig.\ \ref{fig:VelProf}, we normalize and shift the stress so that it has the same mean and range as the myosin profile $\hat M$. Obtaining the same range allows us to read off the constant $\sigma_0=4.4 \times 10^{-3}$ Pa that controls the magnitude of the advective flows. In particular, the dimensionless parameter $\hat{\sigma}_0$ defined in\ \eqref{eq:NDparams} is seen to be equal to
 \begin{equation}
-\hat{\sigma}_0 = \left(\frac{\sigma_0/ \sqrt{\eta \gamma} }{L \My{\koff}}\right)  = 0.044.
+\hat{\sigma}_0 = \left(\frac{\sigma_0/ \sqrt{\eta \gamma} }{L \My{\koff}}\right)  = 0.027.
 \end{equation}
 In additiom, the bottom right panel of Fig.\ \ref{fig:VelProf}, also shows that we can roughly set
 \begin{equation}
@@ -397,37 +429,6 @@ There are four new parameters in this model that are unknown:
 \end{itemize}
 The parameters are summarized in Table\ \ref{tab:paramsBR}. 
 
-\subsubsection{Dynamics}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{DynamicsWithBA.eps}
-\caption{\label{fig:TimeSeqBA} Simulation of maintenance phase rescue with branched actin. As shown at $\hat t=0$ at the top left, we begin with 10\% depletion of PAR-3, then simulate the model\ \eqref{eq:Everything} \emph{with branched actin} as in\ \eqref{eq:BAll}. The size of the aPAR domain initially shrinks rapidly, and then stalls as branched actin (cyan) starts to inhibit contractility.}
-\end{figure}
-
-Figure\ \ref{fig:TimeSeqBA} shows the dynamics of the approach to steady state for\ \eqref{eq:Everything} augmented with the branched actin model\ \eqref{eq:BAll}. We see initially the same dynamics as in Fig.\ \ref{fig:TimeSeqNoBARH}, with pPARs inhibiting CDC-42 and myosin, which produces an inward flow. However, once the CDC-42 concentration (yellow) gets high enough, branched actin (cyan) starts to be produced and inhibit contractility. This makes the myosin profile decrease, and stalls flow and movement of the boundary. The steady state is reached at about $\hat t = 100$, which corresponds to 10 minutes of real time (there is slow contraction of the boundary to its final resting place after this). 
-
-The advantage of incorporating branched actin is that we can essentially have arbitrarily fast initial flow speeds, which are later blocked by branched actin. As shown in Fig.\ \ref{fig:VelRescue}, in our simulation there is initially a rapid build-up of flow and shrinking of the PAR-3 boundary. The flow then becomes smaller once branched actin kicks in, and both the flow speed and domain size plateau to a steady state. \red{These data for velocity over time qualitatively match what we see in experiments.}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.6\textwidth]{DomainSizeAndVel.eps}
-\caption{\label{fig:VelRescue}PAR-3 domain size and maximum flow speed in simulations maintenance-phase rescue. The initial conditions are as in the top left Fig.\ \ref{fig:TimeSeqBA}, with 90\% of the domain enriched in PAR-3. The blue line (left axis) shows the boundary position over time, while the red line (right axis) shows the maximum flow velocity. }
-\end{figure}
-
-There is still a role for cytoplasmic depletion in pinning the boundary. Without cytoplasmic depletion, a boundary that is moving will always keep moving, since the fundamental balance in which pPARs outcompete the aPARs does not change unless we account for changes in the cytoplasmic depletion. What branched actin allows for is a change in how the flow speed depends on the myosin concentration in time. Initially, when there is no branched actin, flows are fast. But, when branched actin is created, the flows slow down and the boundary can no longer rapidly contract, allowing it to be stalled by cytoplasmic depletion. Thus, branched actin \emph{and} cytoplasmic depletion work together to stall the boundary at a point where the posterior PAR domain can no longer advance through the anterior PARs.
-
-
-\subsubsection{Steady state vs.\ experiments}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{ModelVsExperimentBA.eps}
-\caption{\label{fig:StStBA}Steady state of the model\ \eqref{eq:Everything} with branched actin model\ \eqref{eq:BAll} (this corresponds to $\hat t = 200$ in the simulation of maintenance phase rescue depicted in Fig.\ \ref{fig:TimeSeqBA}), compared to experimental results for wild-type embryos. The left panel shows the myosin intensity profile, while the right panel shows the speed of flow. Individual embryos are shown using gray lines, the mean $\pm$ standard error are shoiwn in black. Results of the model (shifting the anterior pole to $\hat x = 0.25$) are ovelaid in red.}
-\end{figure}
-
-Figure\ \ref{fig:StStBA} shows how our modeled steady state (after $\hat t = 200$ of maintenance phase rescue) compares to wild-type embryos (the ``steady state'' measured in late maintenance phase). Qualitatively, the results match: the myosin intensity displays a peak at the anterior cap, then drops off to a level midway between the peak anterior and posterior levels at the anterior pole. The flow also exhibits a maximum off of the anterior cap, then rapidly transitions to a stall point at the edge of the anterior domain.
-
-\red{Quantitatively, our results almost match up with the experiments, but leave a little to be desired. The issue is the lengthscale on which the drop in myosin occurs. Because branched actin is only active on the anterior cap, the lengthscale on which it goes from zero to its peak value is quite small (controlled by the diffusivity, which here is set equal to the diffusivity of myosin). As such, the myosin is inhibited quickly in the model, and the profile rapidly drops to a flat level in the anterior. This is \emph{not} what is observed in experiments, where we see a more gradual decrease (although the individual embryos do show rapid decreases).}
 
 \bibliographystyle{plain}
 
