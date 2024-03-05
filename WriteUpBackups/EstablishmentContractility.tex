@@ -32,7 +32,9 @@
 \global\long\def\Koff{K^\text{off}}
 \global\long\def\Kon{K^\text{on}}
 \global\long\def\koff{k^\text{off}}
+\global\long\def\koffb{\bar{k}^\text{off}}
 \global\long\def\kon{k^\text{on}}
+\global\long\def\Kae{K_\text{AE}}
 
 \title{Modeling dynamics of ECT-2/Rho/Myosin polarity circuit  \vspace{-0.5 cm}}
 %\title{Mathematical appendix: \\ Oligomerization and feedback on membrane recruitment stabilize PAR-3 asymmetries in \emph{C.\ elegans} zygotes}
@@ -53,11 +55,11 @@ The contractility circuit is forced by a cue from the centrosomes which contain 
 \end{gather} 
 where\ \eqref{eq:DiffEqn} is the diffusion equation for the concentration and\ \eqref{eq:DiffBC} is a no-flux boundary condition through the boundary (here $\Omega$ represents the embryo area and $\partial \Omega$ represents the boundary). The signal $f(\V x)$ comes from the two centrosomes, which we model by Gaussian densities 
 \begin{equation}
-f(\V{x}) = \frac{C_0}{2 \pi \sigma_c^2}\sum_{i=1}^2\exp{\left(\frac{-\norm{\V{x}-\V{x}_i}^2}{2 \sigma_c^2}\right)}.
+f(\V{x}) = \frac{C_0/D}{2 \pi \sigma_c^2}\sum_{i=1}^2\exp{\left(\frac{-\norm{\V{x}-\V{x}_i}^2}{2 \sigma_c^2}\right)}.
 \end{equation}
-Here $\V{x}_i$ is the location of the $i$th centrosome (typically at some location $(x_i,0)$), which changes depending on the embryo conditions. In addition to the centrosome location, the signal has two other parameters: $C_0$, is the strength of the cue (the integral of $f(\V{x})$ over the entire embryo cross-section; this is arbitrary and set to 1), and $\sigma_c$ is the centrosome ``size'' (the standard deviation of the Gaussian, which is roughly half the size of the centrosome). For cytokinesis, the centrosomes have size about 2 $\mu$m, so we set $\sigma_c=1$ $\mu$m.
+Here $\V{x}_i$ is the location of the $i$th centrosome (typically at some location $(x_i,0)$), which changes depending on the embryo conditions. In addition to the centrosome location, the signal has two other parameters: $C_0/D$, is the strength of the cue (the integral of $f(\V{x})$ over the entire embryo cross-section, normalized by the cytoplasmic diffusion coefficient $D$), and $\sigma_c$ is the centrosome ``size'' (the standard deviation of the Gaussian, which is roughly half the size of the centrosome). For cytokinesis, the centrosomes have size about 2 $\mu$m, so we set $\sigma_c=1$ $\mu$m.
 \end{subequations}
-The solution of\ \eqref{eq:DiffEqn} is unique up to a constant; we normalize all solutions so that embryos treated with PAR-3 (RNAi), where the each centrosome sits about 15 $\mu$m from its respective cortex, have an AIR-1 concentration $a(\V x)=1$ at the posterior and anterior poles 
+The solution of\ \eqref{eq:DiffEqn} is unique up to a constant; thus, when we compare profiles to each other we can only speak of concentration \emph{differences} rather than absolute concentration.
 
 We use a standard first-order finite element method to solve\ \eqref{eq:DiffEqn}. In brief, the elliptical domain of the embryo is meshed into nodes and triangles, which define a set of linear Lagrangian basis functions $\psi_k$ that are 1 at node $\V{x}_k$ and 0 everywhere else. Multiplying\ \eqref{eq:DiffEqn} by a basis function $\psi_k$, then integrating by parts using the boundary condition\ \eqref{eq:DiffBC} gives 
 \begin{equation}
@@ -73,7 +75,7 @@ which can be written as the matrix equation $\M{K}\V{a}=\M{M}\V{f}$, where $\M{M
 
 Figure\ \ref{fig:CentDiff} shows the solution of the diffusion equation over the embryo cross-section in wild-type embryos. In this case, the anterior centrosome sits 17 $\mu$m from the anterior pole, while the posterior centrosome sits 10 $\mu$m from the posterior pole. The left panel shows the AIR-1 signal, which essentially shows the location of the two centrosomes. The right panel then shows the solution to the diffusion equation\ \eqref{eq:CD} in this case. As might be expected, there is substantially more AIR-1 on the anterior cortex, since the centrosome sits closer to the boundary there.
 
-We now consider how moving the centrosomes changes the profile of AIR-1 on the boundary. We use six representative treatments from \cite{longhini2022aurora}, which modify the positions of the centrosomes. For example, in dhc-1 (RNAi) embryos, the posterior centrosome sits 3 $\mu$m from the posterior pole, while the anterior centrosome sits 45 $\mu$m from the anterior pole (9 $\mu$m from the posterior pole). As a result, the AIR-1 profile is strongly peaked at the posterior, with about 5 times the concentration there relative to the anterior. The treatments we consider can also flatten the AIR-1 profile relative to wild-type, as in PAR-3 (RNAi) embryos, which have centrosomes sitting roughly at 15 $\mu$m from each pole. The profile of AIR-1 there is consequently roughly constant.
+We now consider how moving the centrosomes changes the profile of AIR-1 on the boundary. We use six representative treatments from \cite{longhini2022aurora}, which modify the positions of the centrosomes, and plot the results in Fig.\ \ref{fig:AIR1Acc}. As an example, in dhc-1 (RNAi) embryos, the posterior centrosome sits 3 $\mu$m from the posterior pole, while the anterior centrosome sits 45 $\mu$m from the anterior pole (9 $\mu$m from the posterior pole). As a result, the AIR-1 profile is strongly peaked at the posterior, with an AIR-1 gradient about 6 times larger than the wild-type. The treatments we consider can also flatten the AIR-1 profile relative to wild-type, as in PAR-3 (RNAi) embryos, which have centrosomes sitting roughly at 15 $\mu$m from each pole. The profile of AIR-1 there is consequently roughly constant.
 
 \begin{figure}
 \centering
@@ -81,21 +83,59 @@ We now consider how moving the centrosomes changes the profile of AIR-1 on the b
 \caption{\label{fig:AIR1Acc}AIR-1 accumulation on the embryo perimeter (cortex) as predicted by the diffusion model\ \eqref{eq:CD}. We show the AIR-1 profile as a function of distance from the posterior pole (0 is the posterior pole, 67 is the anterior pole), for embryos with six different treatments. The treatment sets the location of the centrosomes (see Fig.\ \ref{fig:DiffCSep}).}
 \end{figure}
 
+\subsection{Adding AIR-1 inactivation \label{sec:inact}}
+We also consider the case when there is a basal level of inactivation of AIR-1 in the cytoplasm. To model this, we modify \eqref{eq:DiffEqn} to add an additional inactivation term
+\begin{gather}
+\label{eq:DiffEqnIn}
+\Delta a -\koffb a=  -f \qquad \V{x} \in \Omega.
+\end{gather} 
+This introduces another parameter which is the inactivation rate relative to the diffusion coefficient in the cytoplasm (units $\mu$m$^{-2}$). Solving\ \eqref{eq:DiffEqnIn} with the finite element is very simple: the matrix equation becomes $\left(\M K + \koffb \M M \right) \V a = \M M \V f$. An advantage of this approach is that the solution for concentration is unique (no longer an unknown constant).
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{AIR1Profkoff.eps}
+\includegraphics[width=0.6\textwidth]{AIR1ProfkoffAL.eps}
+\caption{\label{fig:AIR1ProfKoff} Profile of AIR-1 in wild-type embryo, obtained by solving \eqref{eq:DiffEqnIn} with different values of $\koffb=\koff/D$. The top plots show the profile along the whole embryo when changing $\koffb$; the bottom (summary) plot shows the change in the AIR-1 concentration (relative to the anterior pole) along the embryo perimeter.}
+\end{figure}
+
+Figure\ \ref{fig:AIR1ProfKoff} shows the effect of the new inactivation term in the model, both in the cross-sectional profile of AIR-1, and also along the embryo perimeter from posterior to anterior. We find that $\koffb \leq 10^{-3}$ $\mu$m$^{-2}$ preserves the general trend we observed previously in wild-type embryos, where the concentration is about 0.3 units higher at the posterior than the anterior. Increasing the inactivation rate leads to more of the AIR-1 being inactivated prior to reaching the posterior pole, which causes the gradient to drop (for $\koffb=10^{-2}$ $\mu$m$^{-2}$), and then vanish (for $\koffb=10^{-1}$ $\mu$m$^{-2}$).
+
+\iffalse
+\subsection{Polarization model}
+Prior to looking at amplification of the ECT-2 signal, it is useful to also consider the dynamics during cell polarization. In cell polarization, \emph{both} centrosomes sit very close to the posterior cortex (about 1 $\mu$m away \cite{cowan2004centrosomes}). The centrosomes have a smaller size (about 0.2 $\mu$m, so we set $\sigma_c=0.1$ $\mu$m). They also contain substantially less total AIR-1; here we assume that the amount scales with the area, so that $C_0=0.01$ for polarization. Figure\ \ref{fig:AIRPol} shows the resulting AIR-1 concentration profile across the embryo (normalized to be 0 at the posterior pole), and along the boundary. We observe a change in AIR-1 of only 0.03 from one side of the embryo to the other, which is substantially \emph{smaller} than what we observed in cytokinesis. Considering that ECT-2 becomes asymmetrically enriched during polarization, this underscores the need to have a mechanism to amplify the asymmetries. That said, the mechanism has to work much more strongly in polarization than in cytokinesis, because the asymmetries induced by diffusion are an order of magnitude smaller here.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{PolarizationModelECT2.eps}
+\caption{\label{fig:AIRPol}AIR-1 signal during polarization. In polarization, both centrosomes sit on the posterior cortex (we assume 1 $\mu$m away), have smaller size (about 0.2 $\mu$m, so we set $\sigma_c=0.1$ $\mu$m), and contain less ($C_0=0.01$) AIR-1 than in cytokinesis (see plot at top left). The resulting concentration profile is shown across the entire embryo (bottom left) and along the embryo boundary (right).}
+\end{figure}
+\fi
+
 \subsection{The ECT-2 response}
-Let us now examine how the strength of the AIR-1 signal affects the strength of the ECT-2 concentration on the proximal cortex. To do so, let us suppose that ECT-2 locally binds and unbinds from the cortex, so that the steady state dynamics obey the equation
+Let us now examine how the strength of the AIR-1 signal affects the strength of the ECT-2 concentration on the proximal cortex. To do so, let us suppose that ECT-2 locally binds and unbinds from the cortex, with AIR-1 increasing the unbinding rate. At steady state, this gives the equation
 \begin{equation}
 \label{eq:EctA}
- \kon_E = \koff_E \left(1+K_\text{AE}A\right)E \rightarrow E = \frac{\kon_E/ \koff_E}{ \left(1+K_\text{AE}A\right)}
+ \kon_E = \koff_E \left(1+\Kae \left(A-A_\text{min}\right)\right)E \rightarrow E = \frac{\kon_E/ \koff_E}{ 1+\Kae \left(A-A_\text{min}\right)}
 \end{equation}
-where $K_\text{AE}$ is the strength of AIR-1/ECT-2 inhibition. In order to match the experimental data, we always normalize concentration so that $E=1.5$ (on both the posterior and anterior cortex) in PAR-3 (RNAi) embryos. This leaves a single parameter: $K_\text{AE}$, which we tune to match the extreme dhc-1 (RNAi) embryos ($K_\text{AE}=2$ gives the best fit). Figure\ \ref{fig:DiffCSep} compares the resulting output (right panel) to the experimental data (left panel). While we can generally reproduce the trends observed experimental, the shape of our curve appears to be more of a line, while the experimental data show an S-shaped trend. Indeed, while we correctly predict the ECT-2 accumulation for the ``extreme'' embryos (dhc-1 (RNAi) and zyg-9 (b224)/tpxl-1(RNAi)), the intermediate embryos have A/P ECT-2 disparities which are smaller than the experimental data. For example, in wild-type embryos, the experiments show an accumulation of 1.8 on the posterior, and 1 on the anterior, while our results show an accumulation of 1.6 on the posterior and 1.3 on the anterior. 
+where $\Kae$ is the strength of AIR-1/ECT-2 inhibition, and $A_\text{min}$ is the minimum level of AIR-1 across all embryo conditions. To fit the parameters in this model, we use the AIR-1 concentration data \emph{with inactivation} (Section \ref{sec:inact}), so that the absolute concentrations are well defined. We set $\koffb=10^{-3}$ $\mu$m$^{-2}$, since this corresponds to a slight weakening of the diffusion \red{(check parameters)}, which results in the AIR-1 profiles shown in the left panel of Fig.\ \ref{fig:AIRECT}. The parameter $A_\text{min}=1.1$ is set to the minimum AIR-1 concentration across all embryos, and then $\kon_E/ \koff_E=2.5$ is obtained by fitting the maximum ECT-2 accumulation from experimental data (dhc-1 (RNAi) embryos). The last parameter $\Kae=1.3$ is set to match the minimum ECT-2 accumulation of 0.8 when AIR-1 is at its maximum (about 2.8 in dhc-1 (RNAi) embryos). The right panel of Fig.\ \ref{fig:AIRECT} shows the resulting ECT-2 profiles we obtain across different conditions. 
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{AIR1Ect2.eps}
+\caption{\label{fig:AIRECT}AIR-1 and ECT-2 profiles assuming linear inhibition model\ \eqref{eq:EctA}. The AIR-1 profiles are obtained by solving \eqref{eq:DiffEqnIn} with the different centrosome distances obtained from \cite{longhini2022aurora} and $\koffb=10^{-3}$ $\mu$m$^{-2}$. The ECT-2 profiles are then obtained from\ \eqref{eq:EctA}, where we set $A_\text{min}=1.1$, $\kon_E/\koff_E=2.5$, and $K_\text{AE}=1.3$. }
+\end{figure}
+
+Figure\ \ref{fig:DiffCSep} compares the resulting output (right panel) to the experimental data (left panel). While we can generally reproduce the trends observed experimentally, the shape of our curve appears to be more of a line, while the experimental data show an S-shaped trend. Indeed, while we correctly predict the ECT-2 accumulation for the ``extreme'' embryos (dhc-1 (RNAi) and zyg-9 (b224)/tpxl-1(RNAi)), the intermediate embryos have A/P ECT-2 disparities which are smaller than the experimental data. For example, in wild-type embryos, the experiments show an accumulation of 1.8 on the posterior, and 1 on the anterior, while our results show an accumulation of 1.7 on the posterior and 1.4 on the anterior. 
+
+
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{CytoECT2DataSim.eps}
-\caption{\label{fig:DiffCSep} Comparing model results to experimental data for embryos with varying treatments (see legend at left). The left plot is a reproduction of \cite[Fig.~7A]{longhini2022aurora}, with some of the redundant embryo treatments deleted for clarity (we reduce multiple replicates to a single symbol by taking a rough average). The right plot shows the results when we consider diffusion of AIR-1 to the cortex, plus linear inhibition of the form\ \eqref{eq:EctA}, with $K_\text{AE}=2$. }
+\caption{\label{fig:DiffCSep} Comparing model results to experimental data for embryos with varying treatments (see legend at left). The left plot is a reproduction of \cite[Fig.~7A]{longhini2022aurora}, with some of the redundant embryo treatments deleted for clarity (we reduce multiple replicates to a single symbol by taking a rough average). The right plot shows the results when we consider diffusion of AIR-1 to the cortex, plus linear inhibition of the form\ \eqref{eq:EctA} (see Fig.\ \ref{fig:AIRECT} for details).}
 \end{figure}
 
-Because we chose $K_\text{AE}=2$ to match the extreme embryos, their values are correct by design. If, by contrast, we had chosen a larger $K_\text{AE}$ to match wild-type embryos, then the model results would be reversed: the wild-type embryos would be correct by design, while the extreme embryos would have A/P ratios which are much \emph{larger} than the experiments. 
+Because we parameters to match dhc-1 (RNAi) embryos, their values are correct by design. If, by contrast, we had chosen a larger $K_\text{AE}$ to match wild-type embryos, then the model results would be reversed: the wild-type embryos would be correct by design, while the extreme embryos would have A/P ratios which are much \emph{larger} than the experiments. 
 It seems clear that our model is missing a mechanism whereby either:
 \begin{enumerate}
 \item Small changes in ECT-2 concentration induced by diffusion (in an intermediate range) are amplified to become larger.
@@ -103,14 +143,37 @@ It seems clear that our model is missing a mechanism whereby either:
 \end{enumerate}
 Since we have not accounted for the resulting actomyosin flows which tend to concentrate ECT-2, we speculate that the first of these options is what is missing from the model. We proceed to study it next.
 
-\subsection{Polarization model}
-Prior to looking at amplification of the ECT-2 signal, it is useful to also consider the dynamics during cell polarization. In cell polarization, \emph{both} centrosomes sit on the posterior cortex (we assume 1 $\mu$m away). The centrosomes have a smaller size (about 0.2 $\mu$m, so we set $\sigma_c=0.1$ $\mu$m). They also contain substantially less total AIR-1; here we assume that the amount scales with the area, so that $C_0=0.01$ for polarization. Figure\ \ref{fig:AIRPol} shows the resulting AIR-1 concentration profile across the embryo (normalized to be 0 at the posterior pole), and along the boundary. We observe a change in AIR-1 of only 0.03 from one side of the embryo to the other, which is substantially \emph{smaller} than what we observed in cytokinesis. Considering that ECT-2 becomes asymmetrically enriched during polarization, this underscores the need to have a mechanism to amplify the asymmetries. That said, the mechanism has to work much more strongly in polarization than in cytokinesis, because the asymmetries induced by diffusion are an order of magnitude smaller here.
+\subsection{Flows by myosin}
+We now explore the possibility that flows due to myosin could propagate smaller ECT-2 asymmetries into larger ones. To do this, we consider the basic model that ECT-2 (through activating $\rho$) activates myosin at the cortex. To minimze the number of parameters, we consider a simplified version of the diagram in Fig.\ \ref{fig:RhoCirc} where there are only two species: ECT-2 ($E$) and myosin ($M$). 
+In a system of units where length is in units of the embryo perimeter $L$, and time is in units of the bound myosin lifetime $1/k^\text{off}_M$, the general equations governing this system can be written as
+\begin{subequations}
+\label{eq:MySimple}
+\begin{gather}
+\Dt E + \sigma_0 \Dx \left( v E\right) = D_E \Dx^2 E +\Kon_E E_c - \Koff_E  \left(1+\Kae \left(A-A_\text{min}\right)\right)E \\
+\Dt M + \sigma_0 \Dx \left( v M \right) = D_M \Dx^2 M + \Kon_M \left(1+K_\text{EM} E \right) M_c - M \\
+\label{eq:veleqn}
+v = \ell^2 \Dx^2 v +\ell \Dx \left(\frac{M}{M_c+M}\right) \\
+E_c = 1-\int_0^1 E(x) \, dx \qquad M_c = 1-\int_0^1 M(x) \, dx
+\end{gather} 
+\end{subequations}
+where $\Koff_E=\koff_E/\koff_M$ expresses the lifetime of ECT-2 relative to that of myosin. The first two equations are relatively straightforward; we have binding of ECT-2 to the membrane, with AIR-1 inhibiting ECT-2 (by promoting unbinding) according to the relationship \eqref{eq:EctA} and ECT-2 linearly promoting myosin. To choose unknown parameters, we first fix $\Koff_E$ according to experimental data, then choose $\Kon_E$ so that 10\% of the total ECT-2 is bound to the cortex. We then set $K_\text{EM}=10$, so that (accounting for $E \approx 0.1$), the term $K_\text{EM}E \approx 1$, meaning that the basal rate of myosin binding is equal to that promoted by ECT-2. 
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{PolarizationModelECT2.eps}
-\caption{\label{fig:AIRPol}AIR-1 signal during polarization. In polarization, both centrosomes sit on the posterior cortex (we assume 1 $\mu$m away), have smaller size (about 0.2 $\mu$m, so we set $\sigma_c=0.1$ $\mu$m), and contain less ($C_0=0.01$) AIR-1 than in cytokinesis (see plot at top left). The resulting concentration profile is shown across the entire embryo (bottom left) and along the embryo boundary (right).}
+\subfigure[$\koff_E=0.2$ s$^{-1}$ (5 s residence time)]{\includegraphics[width=\textwidth]{TryingFlows.eps}}
+\subfigure[$\koff_E=0.02$ s$^{-1}$ (50 s residence time)]{\includegraphics[width=\textwidth]{TryingFlowsLo.eps}}
+\caption{\label{fig:TryFlows} Exploring the feedback of ECT-2 on myosin and flow, modeled using\ \eqref{eq:MySimple}. In all cases, we show the ECT-2 concentration at left, myosin concentration at the middle, and flow speed in $\mu$m/min at right, all at a time of 4 minutes after simulation initialization (this represents an approximate steady state).}
 \end{figure}
+
+In the velocity equation\ \eqref{eq:veleqn}, the variable $\ell$ is the hydrodynamic lengthscale (approximately 10 $\mu$m \cite{mayer2010anisotropies}, and the expression $M/(M+M_c)$ gives the tension myosin exerts. We use this form so that myosin can build up until $M \approx 2 M_c$, after which tension becomes roughly constant. In doing this, we artificially prevent the focusing of myosin into infinitely thin peaks. We set $\Kon_M=0.2$ so that there is typically about 30\% bound myosin, then set $M_c = 0.25$ so that exceeding $M \approx 0.5$ leads to a plateau in stress. Finally, the coefficient $\sigma_0$ (which we will vary) expresses the speed of the flow; increasing $\sigma_0$ increases the flow speed for a given tension profile.
+
+In \cite{longhini2022aurora}, FRAP measurements showed the lifetime of a typical ECT-2 molecule to be on the order of a few seconds. Considering this, we first take $\koff_E=0.2$ s$^{-1}$, so that the lifetime is 5 seconds. We then vary the coefficient $\sigma_0$ to change the speed of flow. As show in Fig.\ \ref{fig:TryFlows}(a), there is not substantial transport of ECT-2 molecules (and a change in the ECT-2 profile) until the flow speed reaches some 12 $\mu$m/min, which is much faster than the typically observed flow speeds. We fare better when we increase the residence time of ECT-2; in Fig.\ \ref{fig:TryFlows}(b) we show that a 50 second residence time ($\koff_E=0.02$/s) leads to a strong change in the ECT-2 profile is obtained for more realistic (at most 4 $\mu$m/min) flow speeds. Still, there are no experiments which establish that ECT-2 could be bound to the cortex this long. 
+
+In addition, there is a second major problem relating to this circuit. We saw previously that, when our diffusion data is fit to the embryos with the maximum ECT-2 asymmetries, the wild-type embryos have a weak asymmetry. We then considered that flow could amplify this asymmetry. But flow depends on ECT-2 asymmetries, so embryos with larger asymmetries will have \emph{larger} amplification by flow. In other words, this flow model will affect embryos with larger ECT-2 asymmetries more than the embryos in the middle, which is the exact opposite of our intention.
+
+\red{Can probably make it work by assuming that the ECT-2 asymmetry is smaller initially (for all embryos), then gets amplified by flows. Try that out.}
+
+\subsection{A sharper dependence of ECT-2 on AIR-1}
 
 \section{The biochemical response circuit}
 We now consider how the underlying biochemical system might respond to changes in the ECT-2 signal at the cortex.We consider four species: ECT-2 ($E$), inactive Rho ($P$), active Rho ($\rho$), and actomyosin ($M$), with interactions shown in Fig.\ \ref{fig:RhoCirc}. The main question we need to answer is the functional form by which inactive Rho and active Rho are exchanged/converted amongst each other. Based on the analysis of \cite{michaux2018excitable}, we assume the reaction to be auto-catalytic (the forward rate is proportional to active $\rho$). Based on the data that ECT-2 has a roughly 2:1 A/P ratio, while $\rho$ has a roughly 10:1 ratio, we assume nonlinearity in $E$ as well. Finally, we assume that actomyosin $M$ converts active Rho to inactive Rho via RhoGAP (which colocalizes with actin) \cite{michaux2018excitable}. Our total reaction term is therefore, 
