@@ -7,7 +7,8 @@ L = 134.6;
 koffM = 0.12; % set timescale
 D = 0.1/(L^2*koffM);    % In membrane diffusion
 load('AIR1Diffusion.mat')
-Air = AlluBd(:,1);
+for iP=1
+Air = AlluBd(:,5);
 xa = arcLengths/L+1/2;
 % ECT-2 parameters
 KonE = 0.024;        % Fixed for 10% bound
@@ -25,8 +26,8 @@ K_fb = 0.52;    % Delayed negative feedback  (Set from Ed's paper)
 Tau = 10*koffM; % in Seconds                 (from Ed's paper)
 
 %% Numerical parameters
-dt = 1e-2;
-tf = 360;
+dt = 1e-3;
+tf = 1200*koffM;
 saveEvery = floor(1/dt);
 Lag = floor(Tau/dt+1e-4);
 nT = floor(tf/dt);
@@ -54,6 +55,7 @@ DiffMat = (speye(N)/dt-D*DSq);
 nSave = floor(nT/saveEvery);
 AllMs = zeros(nSave,N);
 AllEs = zeros(nSave,N);
+Allvs = zeros(nSave,N);
 
 % Initial guess
 M = KonM/(1+KonM)*ones(N,1);
@@ -77,6 +79,7 @@ for iT=0:nT
         movieframes(iFrame)=getframe(f);
         AllMs(iFrame,:)=M;
         AllEs(iFrame,:)=E;
+        Allvs(iFrame,:)=v;
         vmaxes(iFrame)=max(abs(v));
         %pause(0.5)
     end
@@ -96,32 +99,48 @@ for iT=0:nT
     M = Diff_U\ (Diff_L\(Diff_P*(M/dt+RHS_M)));
     E = Diff_U\ (Diff_L\(Diff_P*(E/dt+RHS_E)));
 end
+aEct(iP)=max(E(1:13,:));
+pEct(iP)=E(51,:);
+end
 %ts=(0:nSave)*dt*saveEvery;
 %plot(ts,AllEs(:,N/2),ts,AllPInActs(:,N/2),ts,AllPActs(:,N/2),ts,AllMs(:,N/2))
 %hold on
 %set(gca,'ColorOrderIndex',1)
 %plot(ts,AllEs(:,1),':',ts,AllPs(:,1),':',ts,AllRs(:,1),':',ts,AllMs(:,N/2),':')
 vr=v*Sigma0*L*koffM*60;
+EndInd=145;
 subplot(1,3,1)
-plot(x,E)
+for iT=5:20:EndInd
+plot([x;1],[AllEs(iT,:) AllEs(iT,1)],'Color',...
+[0.84 0.91 0.95]+(iT-1)/EndInd*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+hold on
+end
 xlabel('\% egg length from posterior')
-xlim([0 1])
 xticks([0 1/4 1/2 3/4 1])
+xlim([0.5 1])
 xticklabels({'-100','-50','0','50','100'})
 title('ECT-2 concentration')
 hold on
 subplot(1,3,2)
-plot(x,M)
+for iT=5:20:EndInd
+plot([x;1],[AllMs(iT,:) AllMs(iT,1)],'Color',...
+[0.84 0.91 0.95]+(iT-1)/EndInd*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+hold on
+end
 xlabel('\% egg length from posterior')
-xlim([0 1])
 xticks([0 1/4 1/2 3/4 1])
+xlim([0.5 1])
 xticklabels({'-100','-50','0','50','100'})
 title('Myosin concentration')
 hold on
 subplot(1,3,3)
-plot(x,vr)
+for iT=5:20:EndInd
+plot([x;1],[Allvs(iT,:) Allvs(iT,1)]*Sigma0*L*koffM*60,'Color',...
+[0.84 0.91 0.95]+(iT-1)/EndInd*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+hold on
+end
 xlabel('\% egg length from posterior')
-xlim([0 1])
+xlim([0.5 1])
 xticks([0 1/4 1/2 3/4 1])
 xticklabels({'-100','-50','0','50','100'})
 title('Flow speed $\mu$m/min')

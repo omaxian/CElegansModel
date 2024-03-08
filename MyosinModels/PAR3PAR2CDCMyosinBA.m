@@ -16,6 +16,7 @@ DP = 0.15;
 konP = 0.13;
 koffP = 7.3e-3;
 % CDC-42
+Advect_aPARs = 1;
 DC = 0.1;
 konC = 0.1; % Fitting parameter
 koffC = 0.01;
@@ -30,7 +31,7 @@ eta = 0.1;
 gamma = 5e-4;
 Sigma0 = 4.4e-3;
 % Branched actin
-DR = 0;
+DR = 0.1;
 koffR = 0.12;
 % Dimensionless
 % Biochem
@@ -62,10 +63,15 @@ RhatACK = 0.1;
 AcForK = 0.06;
 RhatCM = 8;    % CDC-42 promotes myosin (fitting parameter)
 RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
+CThresR = 0.25;
+RhatRR = 5;
+RhatRStress = 10;
+RhatRGamma = 400;
+RhatRM = 2; %Branched actin inhibiting myosin
 
 % Initialization
 dt=2e-2;
-tf = 96*2;
+tf = 96*3;
 saveEvery=0.16/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -124,7 +130,9 @@ RsTime = zeros(nSave,N);
 KsTime = zeros(nSave,N);
 vsTime = zeros(nSave,N);
 vmaxes = zeros(nSave,1);
+SigmasTime = zeros(nSave,N);
 v =0;
+Sigma_active=0;
 %f=figure;
 er = 1;
 for iT=0:nT-1
@@ -138,6 +146,7 @@ for iT=0:nT-1
         KsTime(iSave,:)=K;
         RsTime(iSave,:)=R;
         vsTime(iSave,:)=v;
+        SigmasTime(iSave,:)=Sigma_active;
         vmaxes(iSave)=max(abs(v));
         hold off
         plot(x,A,x,K,x,C,x,P,x,M,x,R)
@@ -165,11 +174,9 @@ for iT=0:nT-1
     Rc = 1 - sum(R)*dx;
     
     % Flows
-    %dR=max((R-0.3)/0.02,0);
-    %Sigma_active = ActiveStress(M).*exp(-dR);
-    Sigma_active = ActiveStress(M);
+    Sigma_active = ActiveStress(M)./(1+RhatRStress*R);
     % Hyper-sensitivity of the drag coefficient on branched actin
-    gammaHat = GammaHat(R);
+    gammaHat = 1 + RhatRGamma*R;
     v = (gammaHat.*speye(N)-LRatio^2*DSq) \ (LRatio*DOneCenter*Sigma_active);
     vHalf = 1/2*(v+circshift(v,-1));
     % Advection (explicit)
@@ -178,10 +185,15 @@ for iT=0:nT-1
         AllMinusdxAv(:,iN)=AdvectionRHS(t,AllAs(:,iN),dx,vHalf,advorder);
     end
     MinusdxMv = AdvectionRHS(t,M,dx,vHalf,advorder);
-    MinusdxPv = AdvectionRHS(t,P,dx,vHalf,advorder);
-    MinusdxCv = AdvectionRHS(t,C,dx,vHalf,advorder);
-    MinusdxKv = AdvectionRHS(t,K,dx,vHalf,advorder);
     MinusdxRv = AdvectionRHS(t,R,dx,vHalf,advorder);
+    MinusdxPv = AdvectionRHS(t,P,dx,vHalf,advorder);
+    if (Advect_aPARs)
+        MinusdxCv = AdvectionRHS(t,C,dx,vHalf,advorder);
+        MinusdxKv = AdvectionRHS(t,K,dx,vHalf,advorder);
+    else
+        MinusdxCv = zeros(N,1); 
+        MinusdxKv = zeros(N,1);
+    end
 
     % Reactions
     % PAR-3 update
@@ -207,15 +219,15 @@ for iT=0:nT-1
     %chk = (NewAllAs(:,1)-A1)/dt- (DA_Hat*DSq*NewAllAs(:,1) + RHS_1);
     AllAs = NewAllAs;
    
-    RHS_C = SigmaHat*MinusdxCv + KonC_Hat*Cc - KoffC_Hat*(1+RhatPC*P).*C;
     RHS_P = SigmaHat*MinusdxPv + KonP_Hat*Pc - KoffP_hat*(1+RhatKP*K).*P;
+    RHS_C = SigmaHat*MinusdxCv + KonC_Hat*Cc - KoffC_Hat*(1+RhatPC*P).*C;
     RHS_K = SigmaHat*MinusdxKv + RhatACK*C.*(A > AcForK)*Kc - KoffK_Hat*K;
-    RHS_M = SigmaHat*MinusdxMv + KonM_Hat*(1+RhatCM*C)*Mc - KoffM_Hat*M;
-    RHS_R = SigmaHat*MinusdxRv + RhatCR*C*Rc - KoffR_Hat*R;
+    RHS_M = SigmaHat*MinusdxMv + KonM_Hat*(1+RhatCM*C)*Mc - KoffM_Hat*(1+RhatRM*R).*M;
+    RHS_R = SigmaHat*MinusdxRv + RhatCR*max(C-CThresR,0).*(1+RhatRR*R)*Rc - KoffR_Hat*R;
     P = PDiff_U\ (PDiff_L\(PDiff_P*(P/dt+RHS_P)));
-    C =  CDiff_U\ (CDiff_L\(CDiff_P*(C/dt+RHS_C)));
-    K =  KDiff_U\ (KDiff_L\(KDiff_P*(K/dt+RHS_K)));
-    M =  MDiff_U\ (MDiff_L\(MDiff_P*(M/dt+RHS_M)));
+    C = CDiff_U\ (CDiff_L\(CDiff_P*(C/dt+RHS_C)));
+    K = KDiff_U\ (KDiff_L\(KDiff_P*(K/dt+RHS_K)));
+    M = MDiff_U\ (MDiff_L\(MDiff_P*(M/dt+RHS_M)));
     R = RDiff_U\ (RDiff_L\(RDiff_P*(R/dt+RHS_R)));
     %chk = (R-Rprev)/dt- (DR_Hat*DSq*R + RHS_R);
 end
@@ -242,3 +254,49 @@ AllP3Ratios(:,iS)=PAR3Ratio;
 AllP2Ratios(:,iS)=PAR2Ratio;
 Allvmaxes(:,iS)=vmaxes(1:nSave);
 end
+
+subplot(1,3,1)
+for iT=61:60:601
+plot(x,MsTime(iT,:),'Color',[0.84 0.91 0.95]+(iT-1)/600*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+hold on
+end
+for iT=61:60:601
+plot(x,CsTime(iT,:),'Color',[0.93 0.84 0.84]+(iT-1)/600*([0.6 0 0.2]-[0.93 0.84 0.84]))
+hold on
+end
+for iT=61:60:601
+plot(x,RsTime(iT,:),'Color',[0.8 0.91 0.98]+(iT-1)/600*([0 0.42 0.69]-[0.8 0.91 0.98]))
+hold on
+end
+xlim([0.5 1])
+legend('','','','','','','','$M$','','','','',...
+    '','','','','','','','$C$','','','','','','','','$R$','Location','Northwest')
+xticklabels(2*xticks-1)
+xticks(0.5:0.1:1)
+xticklabels(2*xticks-1)
+xlabel('Embryo length')
+title('Concentration profiles')
+subplot(1,3,2)
+for iT=61:60:601
+plot(x,SigmasTime(iT,:),'Color',...
+    [0.84 0.91 0.95]+(iT-1)/600*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+hold on
+end
+xlim([0.5 1])
+xticklabels(2*xticks-1)
+xticks(0.5:0.1:1)
+xticklabels(2*xticks-1)
+xlabel('Embryo length')
+title('Active stress (tension)')
+subplot(1,3,3)
+for iT=61:60:601
+plot(x,vsTime(iT,:)*Sigma0/sqrt(eta*gamma)*60,'Color',...
+    [0.84 0.91 0.95]+(iT-1)/600*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+hold on
+end
+xlim([0.5 1])
+xticklabels(2*xticks-1)
+xticks(0.5:0.1:1)
+xticklabels(2*xticks-1)
+xlabel('Embryo length')
+title('Velocity $\mu$m/min')

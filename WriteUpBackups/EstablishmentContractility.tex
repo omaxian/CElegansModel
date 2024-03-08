@@ -36,7 +36,7 @@
 \global\long\def\kon{k^\text{on}}
 \global\long\def\Kae{K_\text{AE}}
 
-\title{Modeling dynamics of ECT-2/Rho/Myosin polarity circuit  \vspace{-0.5 cm}}
+\title{Modeling dynamics of ECT-2/AIR-1 on the cortex \vspace{-0.5 cm}}
 %\title{Mathematical appendix: \\ Oligomerization and feedback on membrane recruitment stabilize PAR-3 asymmetries in \emph{C.\ elegans} zygotes}
 \author{Ondrej Maxian  \vspace{-0.75 cm}}
 
@@ -57,7 +57,7 @@ where\ \eqref{eq:DiffEqn} is the diffusion equation for the concentration and\ \
 \begin{equation}
 f(\V{x}) = \frac{C_0/D}{2 \pi \sigma_c^2}\sum_{i=1}^2\exp{\left(\frac{-\norm{\V{x}-\V{x}_i}^2}{2 \sigma_c^2}\right)}.
 \end{equation}
-Here $\V{x}_i$ is the location of the $i$th centrosome (typically at some location $(x_i,0)$), which changes depending on the embryo conditions. In addition to the centrosome location, the signal has two other parameters: $C_0/D$, is the strength of the cue (the integral of $f(\V{x})$ over the entire embryo cross-section, normalized by the cytoplasmic diffusion coefficient $D$), and $\sigma_c$ is the centrosome ``size'' (the standard deviation of the Gaussian, which is roughly half the size of the centrosome). For cytokinesis, the centrosomes have size about 2 $\mu$m, so we set $\sigma_c=1$ $\mu$m.
+Here $\V{x}_i$ is the location of the $i$th centrosome (typically at some location $(x_i,0)$), which changes depending on the embryo conditions. In addition to the centrosome location, the signal has two other parameters: $C_0/D$ is the strength of the cue (the integral of $f(\V{x})$ over the entire embryo cross-section, normalized by the cytoplasmic diffusion coefficient $D$), and $\sigma_c$ is the centrosome ``size'' (the standard deviation of the Gaussian, which is roughly half the size of the centrosome). For cytokinesis, the centrosomes have size about 2 $\mu$m, so we set $\sigma_c=1$ $\mu$m.
 \end{subequations}
 The solution of\ \eqref{eq:DiffEqn} is unique up to a constant; thus, when we compare profiles to each other we can only speak of concentration \emph{differences} rather than absolute concentration.
 
@@ -135,7 +135,7 @@ Figure\ \ref{fig:DiffCSep} compares the resulting output (right panel) to the ex
 \caption{\label{fig:DiffCSep} Comparing model results to experimental data for embryos with varying treatments (see legend at left). The left plot is a reproduction of \cite[Fig.~7A]{longhini2022aurora}, with some of the redundant embryo treatments deleted for clarity (we reduce multiple replicates to a single symbol by taking a rough average). The right plot shows the results when we consider diffusion of AIR-1 to the cortex, plus linear inhibition of the form\ \eqref{eq:EctA} (see Fig.\ \ref{fig:AIRECT} for details).}
 \end{figure}
 
-Because we parameters to match dhc-1 (RNAi) embryos, their values are correct by design. If, by contrast, we had chosen a larger $K_\text{AE}$ to match wild-type embryos, then the model results would be reversed: the wild-type embryos would be correct by design, while the extreme embryos would have A/P ratios which are much \emph{larger} than the experiments. 
+Because we chose parameters to match dhc-1 (RNAi) embryos, their values are correct by design. If, by contrast, we had chosen a larger $K_\text{AE}$ to match wild-type embryos, then the model results would be reversed: the wild-type embryos would be correct by design, while the extreme embryos would have A/P ratios which are much \emph{larger} than the experiments. 
 It seems clear that our model is missing a mechanism whereby either:
 \begin{enumerate}
 \item Small changes in ECT-2 concentration induced by diffusion (in an intermediate range) are amplified to become larger.
@@ -160,23 +160,28 @@ where $\Koff_E=\koff_E/\koff_M$ expresses the lifetime of ECT-2 relative to that
 
 \begin{figure}
 \centering
-\subfigure[$\koff_E=0.2$ s$^{-1}$ (5 s residence time)]{\includegraphics[width=\textwidth]{TryingFlows.eps}}
-\subfigure[$\koff_E=0.02$ s$^{-1}$ (50 s residence time)]{\includegraphics[width=\textwidth]{TryingFlowsLo.eps}}
-\caption{\label{fig:TryFlows} Exploring the feedback of ECT-2 on myosin and flow, modeled using\ \eqref{eq:MySimple}. In all cases, we show the ECT-2 concentration at left, myosin concentration at the middle, and flow speed in $\mu$m/min at right, all at a time of 4 minutes after simulation initialization (this represents an approximate steady state).}
+\subfigure[dhc-1 (RNAi)]{\includegraphics[width=\textwidth]{ResultsECT2Extreme.eps}}
+\subfigure[Wild type]{\includegraphics[width=\textwidth]{ResultsECT2WT.eps}}
+\caption{\label{fig:TryFlows} Trajectory with flows.}
 \end{figure}
 
 In the velocity equation\ \eqref{eq:veleqn}, the variable $\ell$ is the hydrodynamic lengthscale (approximately 10 $\mu$m \cite{mayer2010anisotropies}, and the expression $M/(M+M_c)$ gives the tension myosin exerts. We use this form so that myosin can build up until $M \approx 2 M_c$, after which tension becomes roughly constant. In doing this, we artificially prevent the focusing of myosin into infinitely thin peaks. We set $\Kon_M=0.2$ so that there is typically about 30\% bound myosin, then set $M_c = 0.25$ so that exceeding $M \approx 0.5$ leads to a plateau in stress. Finally, the coefficient $\sigma_0$ (which we will vary) expresses the speed of the flow; increasing $\sigma_0$ increases the flow speed for a given tension profile.
 
-In \cite{longhini2022aurora}, FRAP measurements showed the lifetime of a typical ECT-2 molecule to be on the order of a few seconds. Considering this, we first take $\koff_E=0.2$ s$^{-1}$, so that the lifetime is 5 seconds. We then vary the coefficient $\sigma_0$ to change the speed of flow. As show in Fig.\ \ref{fig:TryFlows}(a), there is not substantial transport of ECT-2 molecules (and a change in the ECT-2 profile) until the flow speed reaches some 12 $\mu$m/min, which is much faster than the typically observed flow speeds. We fare better when we increase the residence time of ECT-2; in Fig.\ \ref{fig:TryFlows}(b) we show that a 50 second residence time ($\koff_E=0.02$/s) leads to a strong change in the ECT-2 profile is obtained for more realistic (at most 4 $\mu$m/min) flow speeds. Still, there are no experiments which establish that ECT-2 could be bound to the cortex this long. 
+In \cite{longhini2022aurora}, FRAP measurements showed the lifetime of a typical ECT-2 molecule to be on the order of a few seconds. Considering this, we first take $\koff_E=0.2$ s$^{-1}$, so that the lifetime is 5 seconds. We then vary the coefficient $\sigma_0$ to change the speed of flow. As show in Fig.\ \ref{fig:TryFlows}(a), there is not substantial transport of ECT-2 molecules (and a change in the ECT-2 profile) until the flow speed reaches some 12 $\mu$m/min, which is much faster than the typically observed flow speeds. We fare better when we increase the residence time of ECT-2; in Fig.\ \ref{fig:TryFlows}(b) we show that a 50 second residence time ($\koff_E=0.02$/s) leads to a strong change in the ECT-2 profile at more realistic (at most 4 $\mu$m/min) flow speeds. Still, there are no experiments which establish that ECT-2 could be bound to the cortex this long. 
 
 In addition, there is a second major problem relating to this circuit. We saw previously that, when our diffusion data is fit to the embryos with the maximum ECT-2 asymmetries, the wild-type embryos have a weak asymmetry. We then considered that flow could amplify this asymmetry. But flow depends on ECT-2 asymmetries, so embryos with larger asymmetries will have \emph{larger} amplification by flow. In other words, this flow model will affect embryos with larger ECT-2 asymmetries more than the embryos in the middle, which is the exact opposite of our intention.
 
-\red{Can probably make it work by assuming that the ECT-2 asymmetry is smaller initially (for all embryos), then gets amplified by flows. Try that out.}
+There is another major problem with this model: it relies on an instability in the myosin dynamics to obtain flows. In other words, a small perturbation in myosin leads to growth of an instability which concentrates myosin into peaks. In this model, the peaks tend to be highly dynamic and shift around, growing and shrinking in time. This is not what is observed in live embryos. Indeed, studies have shown that the system is \emph{not} spontaneously unstable, but relies on cues which reorganize the PAR protein network to stably maintain asymmetries \cite{gross2019guiding}.
 
-\subsection{A sharper dependence of ECT-2 on AIR-1}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{CytoEct2DataFlow.eps}
+\caption{\label{fig:a} }
+\end{figure}
+
 
 \section{The biochemical response circuit}
-We now consider how the underlying biochemical system might respond to changes in the ECT-2 signal at the cortex.We consider four species: ECT-2 ($E$), inactive Rho ($P$), active Rho ($\rho$), and actomyosin ($M$), with interactions shown in Fig.\ \ref{fig:RhoCirc}. The main question we need to answer is the functional form by which inactive Rho and active Rho are exchanged/converted amongst each other. Based on the analysis of \cite{michaux2018excitable}, we assume the reaction to be auto-catalytic (the forward rate is proportional to active $\rho$). Based on the data that ECT-2 has a roughly 2:1 A/P ratio, while $\rho$ has a roughly 10:1 ratio, we assume nonlinearity in $E$ as well. Finally, we assume that actomyosin $M$ converts active Rho to inactive Rho via RhoGAP (which colocalizes with actin) \cite{michaux2018excitable}. Our total reaction term is therefore, 
+\red{The following is old} We now consider how the underlying biochemical system might respond to changes in the ECT-2 signal at the cortex.We consider four species: ECT-2 ($E$), inactive Rho ($P$), active Rho ($\rho$), and actomyosin ($M$), with interactions shown in Fig.\ \ref{fig:RhoCirc}. The main question we need to answer is the functional form by which inactive Rho and active Rho are exchanged/converted amongst each other. Based on the analysis of \cite{michaux2018excitable}, we assume the reaction to be auto-catalytic (the forward rate is proportional to active $\rho$). Based on the data that ECT-2 has a roughly 2:1 A/P ratio, while $\rho$ has a roughly 10:1 ratio, we assume nonlinearity in $E$ as well. Finally, we assume that actomyosin $M$ converts active Rho to inactive Rho via RhoGAP (which colocalizes with actin) \cite{michaux2018excitable}. Our total reaction term is therefore, 
 \begin{subequations}
 \begin{equation}
 \label{eq:RhoRxn}

@@ -1,5 +1,5 @@
 %close all;
-Factors =1;
+Factors = 0.5:0.01:1;
 Kons=0.6;
 Kfs=4.2;
 AllAVals=[];
@@ -43,7 +43,7 @@ for iP=1:MaxOligSize
 end
 A = sum((1:MaxOligSize).*AllAs,2);
 er = 1;
-tf = 57.6;
+tf = 38.4;
 saveEvery=0.1/dt;
 nT = floor(tf/dt+1+1e-6);
 
@@ -66,9 +66,9 @@ for iT=0:nT-1
         end
         AValues(iSave)=max(A);
         PValues(iSave)=min(A);
-        hold off
-        plot(x,A)
-        drawnow
+        %hold off
+        %plot(x,A)
+        %drawnow
     end
     Aprev = A; 
     Ac = 1 - sum(A)*dx;
