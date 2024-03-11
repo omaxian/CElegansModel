@@ -6,32 +6,34 @@
 L = 134.6;
 koffM = 0.12; % set timescale
 D = 0.1/(L^2*koffM);    % In membrane diffusion
-load('AIR1Diffusion.mat')
+%load('AIR1Diffusion.mat')
+load('ConvergedPolarization.mat')
 for iP=1
-Air = AlluBd(:,5);
+Air = uBd;
 xa = arcLengths/L+1/2;
 % ECT-2 parameters
-KonE = 0.024;        % Fixed for 10% bound
+KonE = 0.018;        % Fixed for 10% bound
 KoffE = 0.033/koffM;% 3 s lifetime
 % Myosin params
-KonM = 0.13;        % Fixed for 10% bound
+KonM = 0.175;        % Fixed for 30% bound
 ell = 0.1;          % Fixed from Grill paper
-Sigma0 = 0.095;       % Velocity strength (VARIABLE)
+Sigma0 = 0.15;       % Velocity strength (VARIABLE)
 % Reactions
-K_AE = 0.25;       % ECT-2 inactivation by AIR-1 (VARIABLE)
+K_AE = 0.3;       % ECT-2 inactivation by AIR-1 (VARIABLE)
 Amin = 1.1;     % Fixed parameter (the lowest AIR-1 out of all conditions)
+Amin = 0.01;
 K_EM = 20;      % Myosin activation by ECT-2 (Assume 2 x basal rate)
 K_ME = 10/3;    % Myosin recuiting ECT-2     (Assume = basal rate)
-K_fb = 0.52;    % Delayed negative feedback  (Set from Ed's paper)
+K_fb = 0.52/koffM;    % Delayed negative feedback  (Set from Ed's paper)
 Tau = 10*koffM; % in Seconds                 (from Ed's paper)
 
 %% Numerical parameters
 dt = 1e-3;
-tf = 1200*koffM;
-saveEvery = floor(1/dt);
+tf = 3600*koffM;
+saveEvery = floor(60*koffM/dt+1e-3);
 Lag = floor(Tau/dt+1e-4);
 nT = floor(tf/dt);
-N = 100;
+N = 1000;
 dx = 1/N;
 x = (0:N-1)'*dx;
 A = zeros(N,1);
@@ -58,8 +60,8 @@ AllEs = zeros(nSave,N);
 Allvs = zeros(nSave,N);
 
 % Initial guess
-M = KonM/(1+KonM)*ones(N,1);
-E = KonE/(KonE+KoffE)*ones(N,1);
+M = 0.3*ones(N,1);
+E = 0.12*ones(N,1);
 iFrame=0;
 v=0;
 f=figure;
@@ -95,12 +97,12 @@ for iT=0:nT
     MinusdxEv = Sigma0*AdvectionRHS(t,E,dx,vHalf,advorder);
     % 3) Reaction (check these!)
     RHS_E = MinusdxEv + KonE*(1 + K_ME*M)*Ec - KoffE*(1+K_AE*(A-Amin)).*E;
-    RHS_M = MinusdxMv + KonM*(1 + K_EM*E)*Mc - M - K_fb*MLags(:,iT+1).^3;
+    RHS_M = MinusdxMv + KonM*(1 + K_EM*E)*Mc - M - K_fb*MLags(:,iT+1).^4;
     M = Diff_U\ (Diff_L\(Diff_P*(M/dt+RHS_M)));
     E = Diff_U\ (Diff_L\(Diff_P*(E/dt+RHS_E)));
 end
-aEct(iP)=max(E(1:13,:));
-pEct(iP)=E(51,:);
+aEct(iP)=max(E(1:63));
+pEct(iP)=max(E(189:251));
 end
 %ts=(0:nSave)*dt*saveEvery;
 %plot(ts,AllEs(:,N/2),ts,AllPInActs(:,N/2),ts,AllPActs(:,N/2),ts,AllMs(:,N/2))
@@ -108,40 +110,40 @@ end
 %set(gca,'ColorOrderIndex',1)
 %plot(ts,AllEs(:,1),':',ts,AllPs(:,1),':',ts,AllRs(:,1),':',ts,AllMs(:,N/2),':')
 vr=v*Sigma0*L*koffM*60;
-EndInd=145;
+EndInd=21;
 subplot(1,3,1)
-for iT=5:20:EndInd
+for iT=1:2:EndInd
 plot([x;1],[AllEs(iT,:) AllEs(iT,1)],'Color',...
-[0.84 0.91 0.95]+(iT-1)/EndInd*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+[0.84 0.91 0.95]+(iT-1)/(EndInd-1)*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
 hold on
 end
 xlabel('\% egg length from posterior')
-xticks([0 1/4 1/2 3/4 1])
+xticks(0:1/8:1)
+xticklabels({'-100','-75','-50','-25','0','25','50','75','100'})
 xlim([0.5 1])
-xticklabels({'-100','-50','0','50','100'})
 title('ECT-2 concentration')
 hold on
 subplot(1,3,2)
-for iT=5:20:EndInd
+for iT=1:2:EndInd
 plot([x;1],[AllMs(iT,:) AllMs(iT,1)],'Color',...
-[0.84 0.91 0.95]+(iT-1)/EndInd*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+[0.84 0.91 0.95]+(iT-1)/(EndInd-1)*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
 hold on
 end
 xlabel('\% egg length from posterior')
-xticks([0 1/4 1/2 3/4 1])
+xticks(0:1/8:1)
+xticklabels({'-100','-75','-50','-25','0','25','50','75','100'})
 xlim([0.5 1])
-xticklabels({'-100','-50','0','50','100'})
 title('Myosin concentration')
 hold on
 subplot(1,3,3)
-for iT=5:20:EndInd
+for iT=1:2:EndInd
 plot([x;1],[Allvs(iT,:) Allvs(iT,1)]*Sigma0*L*koffM*60,'Color',...
-[0.84 0.91 0.95]+(iT-1)/EndInd*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+[0.84 0.91 0.95]+(iT-1)/(EndInd-1)*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
 hold on
 end
 xlabel('\% egg length from posterior')
 xlim([0.5 1])
-xticks([0 1/4 1/2 3/4 1])
-xticklabels({'-100','-50','0','50','100'})
+xticks(0:1/8:1)
+xticklabels({'-100','-75','-50','-25','0','25','50','75','100'})
 title('Flow speed $\mu$m/min')
 hold on

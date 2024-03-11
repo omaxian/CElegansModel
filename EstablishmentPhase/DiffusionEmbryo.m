@@ -1,14 +1,14 @@
-for iP=1:length(Data)
+for iP=1
 rx=27;
 ry=15;
-adist = Data(iP,3);
-pdist = Data(iP,1);
-CSize = 1;
-CScale = 1;
-if (iP==-1)
+adist = 2*rx-1;%Data(iP,3);
+pdist = 1;%Data(iP,1);
+CSize = 0.1;
+CScale = 0.01;
+if (iP==1)
 % Finite element mesh on ellipsoidal embryo
 fd=@(p) p(:,1).^2/rx^2+p(:,2).^2/ry^2-1;
-[p,t]=distmesh2d(fd,@huniform,CSize,[-rx,-ry;rx,ry],[]);
+[p,t]=distmesh2d(fd,@huniform,0.25,[-rx,-ry;rx,ry],[]);
 N=length(p);
 Nt = length(t);
 % Finite element mass and stiffness matrix
@@ -51,12 +51,12 @@ BdPts = BdPts(inds,:);
 uBd = uBd(inds);
 fell = @(t) sqrt(rx^2*sin(t).^2 + ry^2*cos(t).^2); 
 arcLengths = arrayfun(@(t2) integral(fell,0,t2), Theta);
-if (iP==5)
-% tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
-% nexttile
-% trisurf(t, p(:,1), p(:,2), f);
-% shading interp
-% view(2)
+if (iP==1)
+tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
+nexttile
+trisurf(t, p(:,1), p(:,2), f);
+shading interp
+view(2)
 nexttile
 trisurf(t, p(:,1), p(:,2), u);
 shading interp
