@@ -25,8 +25,8 @@ DK = 0.1;
 koffK = 0.01;
 % Myosin
 DM = 0;
-koffM = 0.12;
-konM = 0.3; % Fitting parameter
+koffM = 1/25;%0.12;
+konM = 0.09;%0.3; % Fitting parameter
 eta = 0.1;
 gamma = 5e-4;
 Sigma0 = 4.4e-3;
@@ -63,15 +63,16 @@ RhatACK = 0.1;
 AcForK = 0.06;
 RhatCM = 8;    % CDC-42 promotes myosin (fitting parameter)
 RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
-CThresR = 0.25;
+CThresR = inf;
 RhatRR = 5;
 RhatRStress = 10;
-RhatRGamma = 400;
-RhatRM = 2; %Branched actin inhibiting myosin
+RhatRGamma = 0;
+RhatRMu = 20;
+RhatRM = 0; %Branched actin inhibiting myosin
 
 % Initialization
 dt=2e-2;
-tf = 96*3;
+tf = 96;
 saveEvery=0.16/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -177,7 +178,8 @@ for iT=0:nT-1
     Sigma_active = ActiveStress(M)./(1+RhatRStress*R);
     % Hyper-sensitivity of the drag coefficient on branched actin
     gammaHat = 1 + RhatRGamma*R;
-    v = (gammaHat.*speye(N)-LRatio^2*DSq) \ (LRatio*DOneCenter*Sigma_active);
+    muHat = 1 + RhatRMu*R;
+    v = (gammaHat.*speye(N)-LRatio^2*muHat.*DSq) \ (LRatio*DOneCenter*Sigma_active);
     vHalf = 1/2*(v+circshift(v,-1));
     % Advection (explicit)
     AllMinusdxAv = zeros(N,MaxOligSize);

@@ -1,15 +1,7 @@
-%clear
-%for iMin=3:8
-%load('LateMaintenanceFlowBright_WT.mat')
-%load(strcat('n1_',num2str(iMin),'.mat'))
-%load(strcat('OneBrt1_',num2str(iMin),'.mat'))
-% try
-%     OneBrt1=OneBrt2;
-%     n1=n2;
-% catch
-% end
-nEm = 6;
+load('LateMaintenanceFlowBright_WT.mat')
+nEm = 10;
 MicronsPerPixel = 1/10;
+n1 = n2; OneBrt1=OneBrt2;
 xFlows = n1*MicronsPerPixel; % in microns/second
 % Replace first and last 10% embryo length to avoid artifacts
 nBins = size(n1,2)-1;
@@ -40,19 +32,22 @@ nnz = 3;
 MyHat(nnz+2:end-nnz)=0;
 kvals = [0:nModes/2 -nModes/2+1:-1]*2*pi;
 MyFilt=ifft(MyHat);
-tiledlayout(1,2, 'Padding', 'none', 'TileSpacing', 'compact');
-nexttile
+%tiledlayout(1,2, 'Padding', 'none', 'TileSpacing', 'compact');
+subplot(1,2,1)
 h(1)=plot([x 1],[MeanMy MeanMy(1)]);
 hold on
 h(2)=plot([x 1],[MyFilt MyFilt(1)]);
 h(3)=errorbar(xog,mean(OneBrt1),std(OneBrt1)/sqrt(10),'-k','LineWidth',1.0);
+h(4) = plot([x 1],[SmoothStr SmoothStr(1)]);
+legend(h([3 1 2 4]), {'Raw data', 'Periodized','Fourier (3) fit','$\sigma_a/(0.0044)$+Shift'},...
+    'Location','Northwest')
 title('Myosin intensity')
 xlabel('$\hat x$')
 ylabel('$\hat M$')
 VelHat = fft(MeanVel);
 VelHat(nnz+2:end-nnz)=0;
 VelFilt = ifft(VelHat);
-nexttile
+subplot(1,2,2)
 h(1)=plot([x 1],60*[MeanVel MeanVel(1)]);
 hold on
 h(2)=plot([x 1],60*[VelFilt VelFilt(1)]);

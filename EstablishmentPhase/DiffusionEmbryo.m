@@ -4,11 +4,11 @@ ry=15;
 adist = 2*rx-1;%Data(iP,3);
 pdist = 1;%Data(iP,1);
 CSize = 0.1;
-CScale = 0.01;
+CScale = 1;
 if (iP==1)
 % Finite element mesh on ellipsoidal embryo
 fd=@(p) p(:,1).^2/rx^2+p(:,2).^2/ry^2-1;
-[p,t]=distmesh2d(fd,@huniform,0.25,[-rx,-ry;rx,ry],[]);
+[p,t]=distmesh2d(fd,@huniform,0.125,[-rx,-ry;rx,ry],[]);
 N=length(p);
 Nt = length(t);
 % Finite element mass and stiffness matrix

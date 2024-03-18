@@ -1,39 +1,48 @@
-%close all;
+close all;
+clear;
 %% Parameters
 % Reduce dynamics to 2 parameters: flow response sigma0 and ECT-2
 % inactivation by AIR-1. Try to obtain some parameters that match all
 % embryos in cytokinesis
 L = 134.6;
-koffM = 0.12; % set timescale
+koffM = 1/15; % set timescale
 D = 0.1/(L^2*koffM);    % In membrane diffusion
-%load('AIR1Diffusion.mat')
+pol=0;
+load('AIR1Diffusion.mat')
+if (pol)
 load('ConvergedPolarization.mat')
-for iP=1
+end
+for iP=5
+if (pol)
 Air = uBd;
+else
+Air = AlluBd(:,iP);
+end
 xa = arcLengths/L+1/2;
 % ECT-2 parameters
-KonE = 0.018;        % Fixed for 10% bound
-KoffE = 0.033/koffM;% 3 s lifetime
+KonE = 0.035;           % Fixed for 10% bound
+KoffE = 0.033/koffM;    % 3 s lifetime
 % Myosin params
-KonM = 0.175;        % Fixed for 30% bound
-ell = 0.1;          % Fixed from Grill paper
-Sigma0 = 0.15;       % Velocity strength (VARIABLE)
+ell = 0.1;              % Fixed from Grill paper
+Sigma0 = 0.2;             % Velocity strength (VARIABLE)
 % Reactions
-K_AE = 0.3;       % ECT-2 inactivation by AIR-1 (VARIABLE)
-Amin = 1.1;     % Fixed parameter (the lowest AIR-1 out of all conditions)
+K_AE = 0.6;             % ECT-2 inactivation by AIR-1 (VARIABLE)
+Amin = 1.1;             % Fixed parameter (the lowest AIR-1 out of all conditions)
+if (pol)
 Amin = 0.01;
-K_EM = 20;      % Myosin activation by ECT-2 (Assume 2 x basal rate)
-K_ME = 10/3;    % Myosin recuiting ECT-2     (Assume = basal rate)
-K_fb = 0.52/koffM;    % Delayed negative feedback  (Set from Ed's paper)
-Tau = 10*koffM; % in Seconds                 (from Ed's paper)
+end
+K_EM = 5;               % Myosin activation by ECT-2 
+K_ME = 10/3;            % Myosin recuiting ECT-2     (Assume = basal rate)
+K_fb = 0.52/koffM;      % Delayed negative feedback  (Set from Ed's paper)
+Tau = 10*koffM;         % in Seconds                 (from Ed's paper)
 
 %% Numerical parameters
-dt = 1e-3;
-tf = 3600*koffM;
+dt = 1e-2;
+tf = 1800*koffM;
 saveEvery = floor(60*koffM/dt+1e-3);
 Lag = floor(Tau/dt+1e-4);
 nT = floor(tf/dt);
-N = 1000;
+N = 500;
 dx = 1/N;
 x = (0:N-1)'*dx;
 A = zeros(N,1);
@@ -97,12 +106,17 @@ for iT=0:nT
     MinusdxEv = Sigma0*AdvectionRHS(t,E,dx,vHalf,advorder);
     % 3) Reaction (check these!)
     RHS_E = MinusdxEv + KonE*(1 + K_ME*M)*Ec - KoffE*(1+K_AE*(A-Amin)).*E;
-    RHS_M = MinusdxMv + KonM*(1 + K_EM*E)*Mc - M - K_fb*MLags(:,iT+1).^4;
+    RHS_M = MinusdxMv + K_EM*E*Mc - M - K_fb*MLags(:,iT+1).^4;
     M = Diff_U\ (Diff_L\(Diff_P*(M/dt+RHS_M)));
     E = Diff_U\ (Diff_L\(Diff_P*(E/dt+RHS_E)));
+    aEctsTime(iT+1)=max(E(1:63));
+    pEctsTime(iT+1)=max(E(189:251));
 end
-aEct(iP)=max(E(1:63));
-pEct(iP)=max(E(189:251));
+% Time of max asymmetry
+[val,ind]=max(aEctsTime./pEctsTime);
+aEct(iP)=aEctsTime(ind);
+pEct(iP)=pEctsTime(ind);
+val
 end
 %ts=(0:nSave)*dt*saveEvery;
 %plot(ts,AllEs(:,N/2),ts,AllPInActs(:,N/2),ts,AllPActs(:,N/2),ts,AllMs(:,N/2))
@@ -110,7 +124,7 @@ end
 %set(gca,'ColorOrderIndex',1)
 %plot(ts,AllEs(:,1),':',ts,AllPs(:,1),':',ts,AllRs(:,1),':',ts,AllMs(:,N/2),':')
 vr=v*Sigma0*L*koffM*60;
-EndInd=21;
+EndInd=11;
 subplot(1,3,1)
 for iT=1:2:EndInd
 plot([x;1],[AllEs(iT,:) AllEs(iT,1)],'Color',...
