@@ -365,50 +365,93 @@ We obtain the dimensionless equations which couple biochemistry and contractilit
 &\Dthat \hat{C}+\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{C} \right)  =\DhatC \Dxhat^2 \hat{C} +\KhatonC \left(1 - \int_0^1 \hat{C}(\hat x) \, d\hat{x} \right)  - \KhatoffC \left(1+\hat{R}_\text{PC}\hat P\right)\hat{C}\\
 &\Dthat \hat{K} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{K} \right) = \DhatK \Dxhat^2 \hat{K} + \hat{R}_\text{ACK} \hat{C} \delta_{\hat A > \hat A_0} \left(1 - \int_0^1 \hat{K}(\hat x) \, d\hat{x} \right)-\KhatoffK \hat{K} \\
 &\Dthat \hat{P} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{P} \right)  =\DhatP \Dxhat^2 \hat{P} +\KhatonP \left(1 - \int_0^1 \hat{P}(\hat x) \, d\hat{x} \right)  - \KhatoffP \left(1+\hat{R}_\text{KP}\hat{K}\right)\hat{P}\\
+\label{eq:MyInAll}
 &\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) =\KhatonM \left(1+\hat{R}_\text{CM} \hat C\right) \left(1-\int_0^1  \hat{M}(x) \, dx\right)- \KhatoffM \hat{M}\\
 &\hat{v} = \hat{\ell}^2 \Dxhat^2 v +\hat{\ell} \Dxhat \hat{\sigma}_a(\hat{M})\\
 \label{eq:NewNDs}
 &\hat R_\text{CM}=\frac{r_\text{CM}\Tot{C}}{\kon_M},\, \hat{K}^\text{on}_M= \frac{\My{\kon}}{h \kdp_A}, \, \hat{K}^\text{off}_M= \frac{\My{\koff}}{\kdp_A},\, \hat{\sigma}_0 = \frac{\sigma_0/ \sqrt{\eta \gamma} }{L \kdp_A},   \, \hat{\ell} = \frac{\sqrt{\eta/\gamma}}{L}.
 \end{align}
 \end{subequations}
-The last equation\ \eqref{eq:NewNDs} defines the key \emph{new} dimensionless parameters relating to myosin. These differ from\ \eqref{eq:NDparams} because we can only non-dimensionalize time by one quantity, and we choose here to stick with the depolymerization time $1/\kdp_A$. Table\ \ref{tab:paramsMy} gives the dimensional quantities ${\sigma}_0$ and $\koff_M$, from which we obtain $\hat \sigma_0$ and $\hat K^\text{off}_M$. This leaves two parameters which control the myosin profile: the basal rate $\kon_M$, and the amount that CDC-42 promotes myosin, $\hat R_\text{CM}$. In wild-type embryos, we estimate the minimum amount of bound myosin (in the absence of CDC-42) as 0.2. This sets $\kon_M$ via $\kon_M/(\kon_M+\koff_M h) \approx 0.2$, giving $\kon_M=0.3$ $\mu$m/s. The parameter $\hat R_\text{CM}$ is then chosen to match the initial speed of maintenance phase rescue (flow speed 2 $\mu$m/min)
+The last equation\ \eqref{eq:NewNDs} defines the key \emph{new} dimensionless parameters relating to myosin. These differ from\ \eqref{eq:NDparams} because we can only non-dimensionalize time by one quantity, and we choose here to stick with the depolymerization time $1/\kdp_A$. Table\ \ref{tab:paramsMy} gives the dimensional quantities ${\sigma}_0$ and $\koff_M$, from which we obtain $\hat \sigma_0$ and $\hat K^\text{off}_M$. This leaves two parameters which control the myosin profile: the basal rate $\kon_M$, and the amount that CDC-42 promotes myosin, $\hat R_\text{CM}$. In wild-type embryos, we estimate the minimum amount of bound myosin (in the absence of CDC-42) as 0.2. This sets $\kon_M$ via $\kon_M/(\kon_M+\koff_M h) \approx 0.2$, giving $\kon_M=0.3$ $\mu$m/s. The parameter $\hat R_\text{CM}=8$ is then chosen to match the initial speed of maintenance phase rescue (flow speed 2 $\mu$m/min)
 
 \subsection{Incorporating branched actin}
-We encode these properties in the system of equations by modifying the myosin equation in \eqref{eq:Everything} and adding an additional equation for branched actin, which we represent by $R$,  
+In the dimensionless form of \eqref{eq:Everything}, the branched actin equation (3) in the main text is written as 
+\begin{subequations}
+\label{eq:BAAdd}
 \begin{align}
-\nonumber
-&\Dthat \hat{M} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{M} \right) =\hat{D}_M \Dxhat^2 \hat{M} +\KhatonM \left(1+\hat{R}_\text{CM} \hat C\right) \left(1-\int_0^1  \hat{M}(x) \, dx\right)- \KhatoffM \left(1+\hat R_\text{RM} \hat R\right) \hat{M}\\
-\label{eq:BAll}
-&\Dthat \hat{R} +\hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{R} \right) =\hat{D}_R \Dxhat^2 \hat{R} +\hat R_\text{CR} \left(\hat C-\hat C_R\right) {\delta}_{\hat C > \hat C_R} \left(1-\int_0^1  \hat{R}(x) \, dx\right)- \hat{K}^\text{off}_R \hat{R}
+\Dthat \hat{R} +& \hat{\sigma}_0  \Dxhat \left(\hat{v} \hat{R} \right) = \\ \nonumber & \hat{D}_R \Dxhat^2 \hat{R} +\hat R_\text{CR} \text{max}\left(\hat C-\hat C_R,0\right)\left(1+\hat R_\text{RR} \hat R\right) \left(1-\int_0^1  \hat{R}(x) \, dx\right)- \hat{K}^\text{off}_R \hat{R},\\
+D_R &= \frac{D_R}{L^2 \kdp_A}, \quad R_\text{CR} = \frac{r_\text{CR} \Tot{C}}{\kdp_A}, \quad R_\text{RR} = \frac{r_\text{RR} \Tot{R}}{r_\text{CR}}, \quad \hat{K}^\text{off}_R =\frac{\koff_R}{\kdp_A}.\\
+\hat \sigma_a &= \frac{\hat M}{1+\hat R_\text{R$\sigma$} \hat R}.
 \end{align}
-Here branched actin is produced above a threshold level $\hat C_R$ of CDC-42, as indicated by the $\delta$-function. Once produced, branched actin inhibits myosin. \red{We assume for the moment that branched actin has the same diffusivity (0.05 $\mu$m$^2$/s) and unbinding rate (0.12/s) as myosin.}
+To assign values to the unknown parameters, we assume that branched actin diffuses at the same level as CDC-42, and that the bound lifetime is about 8 s. This gives $D_R=0.1$ $\mu$m/s$^2$ and $\koff_R = 0.12$. We set the CDC-42 threshold for branched actin nucleation to be between anterior and posterior levels (see Fig.\ 8 main text), giving $\hat C_R=0.25$. The base level of branched actin production is arbitrary; so we simply set $\hat R_\text{CR}=1$, which gives a branched actin level around 0.2 on the anterior. We then assume that branched actin autocatalytic activity makes an equal contribution (relative to CDC-42 nucleation) to the overall branched actin, meaning $\hat R_\text{RR}\hat R=1$. Since $\hat R \approx 0.2$, we get $\hat R_\text{RR}=5$. Finally, we set $\hat R_\text{R$\sigma$}=10$, so that the myosin boundary sits roughly at half the domain length. The simulation that results with these parameter values is shown in Fig.\ 8 of the main text.
+\end{subequations}
 
 \begin{table}
 \begin{small}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}\hline
 Parameter & Description & Value & Units & Ref & Notes \\ \hline
-$D_R$ & Branched actin diffusivity & 0.05 & $\mu$m$^2$/s & & Same as myosin \\
+$D_R$ & Branched actin diffusivity & 0.1 & $\mu$m$^2$/s & & Same as CDC-42 \\
 $\koff_R$ & Branched actin unbinding rate & 0.12 & 1/s & & Same as myosin \\ \hline
-$\hat R_\text{CM}$ & $C$ promoting $M$ & 3 & &  \cite[Fig.~7D]{tse2012rhoa} & Fit initial rescue speed\\ 
-$\hat C_R$ & Threshold CDC-42 level for branched actin & 0.2 & & & Between $A$ and $P$ levels\\
+$\hat R_\text{CM}$ & $C$ promoting $M$ & 8 & &  & Fit initial rescue speed\\ 
+$\hat C_R$ & Threshold CDC-42 level for branched actin & 0.25 & & & Between $A$ and $P$ levels\\
 $\hat R_\text{CR}$ & CDC-42 producing branched actin rate  & 1 & & & Arbitrary\\ 
-$\hat R_\text{RM}$ & Branched actin inhibiting myosin rate & 15 & & & Fit boundary position\\  \hline
+$\hat R_\text{RR}$ & Autocatalytic branched actin strength  & 5 & & & Equal strength to nucleation\\ 
+$\hat R_\text{R$\sigma$}$ & Branched actin inhibiting myosin rate & 10 & & & Fit boundary position\\  \hline
 \end{tabular}
-\caption{\label{tab:paramsBR} Additional parameters for coupled model\ \eqref{eq:Everything} with branched actin additions in\ \eqref{eq:BAll}.}
+\caption{\label{tab:paramsBR} Additional parameters for coupled model\ \eqref{eq:Everything} with branched actin additions in\ \eqref{eq:BAAdd}.}
 \end{small}
 \end{table}
 
 
-\subsubsection{Additional parameters}
-There are four new parameters in this model that are unknown: 
-\begin{itemize}
-\item $\hat{R}_\text{CM}$, which is the rate at which CDC-42 produces myosin. As mentioned in the last section, the value $\hat R_\text{CM}=3$ gives a good match to the initial speeds of maintenance phase rescue reported in \cite[Fig.~7D]{tse2012rhoa}, which presumably do not yet have interference from branched actin.
-\item The threshold $\hat C_R$ is set by examining the steady state in Fig.\ \ref{fig:TimeSeqNoBA} without branched actin. There we see that, at late times, CDC-42 goes from about 0.05 in the posterior to 0.45 in the anterior. To block contractility, we set $\hat C_R=0.2$. 
-\item The rate at which CDC-42 produces branched actin sets the amount of bound branched actin. This amount is arbitrary, since what matters is not the amount of branched actin but the total amount of myosin inhibition. We therefore set $\hat R_\text{CR}=1$.
-\item We set the rate at which branched actin blocks myosin $\hat R_\text{RM}=10$, which is the parameter we use to control the dynamics, to reproduce the boundary position in wild type embryos. 
-\end{itemize}
-The parameters are summarized in Table\ \ref{tab:paramsBR}. 
+\subsubsection{Models for peak in myosin}
+To implement inhibition of myosin by branched actin in simulations, we modify the myosin equation \eqref{eq:MyInAll} so that the unbinding term reads $\KhatoffM \left( 1+\hat R_\text{RM} \hat R\right) \hat M$. Figure\ \ref{fig:BAIn}(a) shows the resulting dynamics of rescue when we add this new assumption to our simulation. As before, the myosin and CDC-42 boundary shifts towards the anterior, until CDC-42 exceeds the critical concentration for branched actin. This time, however, branched actin inhibits myosin, which maintains the peak in myosin that initially occurs from flow. The inhibition of myosin, combined with the reduction of tension, actually lead to an imbalance where the boundary post-rescue shifts back towards the posterior, something that we have observed in embryos with extended maintenance phase. The peak in myosin in this case occurs because branched actin is enriched on a smaller domain than myosin, which leaves a medial zone of contractility where myosin is enriched but branched actin is not.
+
+\begin{figure}
+\centering
+\subfigure[Direct inhibition of myosin by branched actin ($\hat R_\text{RM}=2$)]{
+\includegraphics[width=\textwidth]{BAModelInhibit.eps}}
+\subfigure[Longer myosin lifetime (25 s)]{
+\includegraphics[width=\textwidth]{BAModelInhibit_Try2.eps}}
+\caption{\label{fig:BAIn} Two models for how an interior peak of myosin could be maintained. (a) Branched actin directly inhibits myosin in addition to inhibiting stress. (b) The myosin lifetime increases (globally) from 8 s to 25 s. The left panel shows the concentration profile of myosin ($M$, green), CDC-42 ($C$, red), and branched actin ($R$, blue) over time. The middle panel shows the active stress (tension), normalized by $\sigma_0$, and the right panel shows the velocity in units of $\mu$m/min. Each panel has a series of ten lines which show the profile at $t=1, 2, \dots 10$ min, with darker lines showing later times.}
+\end{figure}
+
+To check the alternative hypothesis of longer myosin lifetime, in Fig.\ \ref{fig:BAIn}(b) we show results of simulations where myosin has a residence time of 25 s instead of 8 s, and there is no longer direct inhibition of myosin by branched actin. Unlike CDC-42, which diffuses in the membrane, in our model there is no diffusivity of myosin, so the longer residence time combines with the existing flows to transport myosin into a peak near 60\% embryo length. The peak in this case occurs because of advection of myosin into the zone of contractility. 
+
+\subsubsection{Models of friction and viscosity}
+We consider in this section the dimensionless forms of the friction and viscosity relationships in the main text,  
+\begin{gather*}
+\gamma(R)=\gamma_0 \left(1+\hat R_\text{R$\gamma$}\hat R\right) \qquad \eta(R)=\eta_0\left(1+\hat R_\text{R$\eta$} \hat R\right).
+\end{gather*}
+Starting from the simulations in Fig.\ \ref{fig:BAIn}(b) (which have increased myosin lifetime to generate a myosin peak), we consider moderate changes in friction/viscosity with branched actin, choosing parameters to roughly double the friction/viscosity on the anterior relative to the posterior ( ($\hat R_\text{R$\gamma$}=10$ and $\hat R_\text{R$\eta$}=5$). In Fig.\ \ref{fig:BAFric}, we plot the resulting dynamics of rescue. Both simulations show a maximum in the flow intensity, followed by a gradual decrease in the flow speeds to a steady profile. The simulations with larger viscosity have a flow profile which is smoother (by design), and hence agrees more with experiments, but they tend to smooth the myosin cap so that it becomes almost non-existent. Simulations with increased friction do not show this, but they still retain a small compressive flow in the anterior. 
+
+\begin{figure}
+\centering
+\subfigure[Increased friction ($\hat R_\text{R$\gamma$}=10$)]{
+\includegraphics[width=\textwidth]{BAModelFriction.eps}}
+\subfigure[Increased viscosity ($\hat R_\text{R$\eta$}=5$)]{
+\includegraphics[width=\textwidth]{BAModelViscosity.eps}}
+\caption{\label{fig:BAFric} Dynamics of rescue when branched actin has \emph{mild} effects on the response to stress. In (a) viscosity is constant and friction increases according to $\gamma(R)=1+r_\text{R$\gamma$}R$, while in (b) friction is constant and viscosity increases according to $ \eta(R)=1+r_\text{R$\eta$} R$. The left panel shows the concentration profile of myosin ($M$, green), CDC-42 ($C$, red), and branched actin ($R$, blue) over time. The middle panel shows the active stress (tension), normalized by $\sigma_0$, and the right panel shows the velocity in units of $\mu$m/min. Each panel has a series of ten lines which show the profile at $t=1, 2, \dots 10$ min, with darker lines showing later times.}
+\end{figure}
+
+The main distinction between the two models happens when we further increase the dependence of friction/viscosity on branched actin. Suppose, for example that friction is ten times higher (on the anterior (with branched actin) than in the posterior ($\hat R_\text{R$\gamma$}=100$). Fig.\ \ref{fig:BAFricLg}(a) shows that this helps the model with increased friction draw closer to the data. We reproduce the sharp drop in velocity when the boundary stalls, and the reduced flows in the anterior preserve the myosin peak for longer (although eventually the peak will disappear because of the weaker velocity). The changes due to friction almost entirely kill the flow in the anterior. 
+
+\begin{figure}
+\centering
+\subfigure[Increased friction ($\hat R_\text{R$\gamma$}=100$)]{
+\includegraphics[width=\textwidth]{BAModelFrictionLg.eps}}
+\subfigure[Increased viscosity ($\hat R_\text{R$\eta$}=20$)]{
+\includegraphics[width=\textwidth]{BAModelViscosityLg.eps}}
+\caption{\label{fig:BAFricLg} Dynamics of rescue when branched actin has \emph{severe} effects on the response to stress. In (a) viscosity is constant and friction increases according to $\gamma(R)=1+r_\text{R$\gamma$}R$, while in (b) friction is constant and viscosity increases according to $ \eta(R)=1+r_\text{R$\eta$} R$ (note the linear velocity gradient where branched actin is enriched). The left panel shows the concentration profile of myosin ($M$, green), CDC-42 ($C$, red), and branched actin ($R$, blue) over time. The middle panel shows the active stress (tension), normalized by $\sigma_0$, and the right panel shows the velocity in units of $\mu$m/min. Each panel has a series of ten lines which show the profile at $t=1, 2, \dots 10$ min, with darker lines showing later times.}
+\end{figure}
+
+
+We contrast this with the case where the \emph{viscosity} is five times larger on the anterior (with brached actin) than in the posterior ($\hat R_\text{R$\eta$}=20$), which is shown in Fig.\ \ref{fig:BAFricLg}(b). Because of the large viscous resistance at the anterior, the rate of strain ($\Dx v$) has to be constant there. At the anterior cap, the flow is in the negative direction (towards the anterior), and so in high viscosity all that can result is a linear profile moving towards zero at the anterior pole. Put another way, the viscous resistance prevents the velocity profile from rapidly (in space) responding to changes in contractility, and instead of a sharp transition to zero velocity we get a slow transition. The result of this, as shown in Fig.\ \ref{fig:BAFricLg} is a boundary which never stops contracting.
+
+\subsubsection{Best case parameters}
+In the last simulation in the main text, we use inhibition of myosin with $\hat R_\text{RM}=2$ and a viscosity enhancement factor $\hat R_\text{R$\eta$}=12$.
+
+
 
 
 \bibliographystyle{plain}
