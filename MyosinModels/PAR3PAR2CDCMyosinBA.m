@@ -24,9 +24,9 @@ koffC = 0.01;
 DK = 0.1;
 koffK = 0.01;
 % Myosin
-DM = 0;
-koffM = 1/25;%0.12;
-konM = 0.09;%0.3; % Fitting parameter
+DM = 0.05;
+koffM = 0.12;%1/25;
+konM = 0.3;%0.09; % Fitting parameter
 eta = 0.1;
 gamma = 5e-4;
 Sigma0 = 4.4e-3;
@@ -63,16 +63,16 @@ RhatACK = 0.1;
 AcForK = 0.06;
 RhatCM = 8;    % CDC-42 promotes myosin (fitting parameter)
 RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
-CThresR = inf;
+CThresR = 0.25;
 RhatRR = 5;
 RhatRStress = 10;
 RhatRGamma = 0;
-RhatRMu = 20;
-RhatRM = 0; %Branched actin inhibiting myosin
+RhatRMu = 12; % 12
+RhatRM = 2; % 2 Branched actin inhibiting myosin
 
 % Initialization
-dt=2e-2;
-tf = 96;
+dt=1e-2;
+tf = 192;
 saveEvery=0.16/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
@@ -236,6 +236,7 @@ end
 set(gca,'ColorOrderIndex',1)
 plot(x,A,x,K,x,C,x,P,x,M,x,R)
 xlim([0.5 1])
+end
 %title(strcat('$A^\textrm{(Tot)}=$',num2str(ATot),', $P^\textrm{(Tot)}=$',num2str(PTot)))
 % Post process to get aPAR and pPAR sizes
 PAR3Size = zeros(nSave,1);
@@ -255,33 +256,42 @@ AllP2Sizes(:,iS)=PAR2Size;
 AllP3Ratios(:,iS)=PAR3Ratio;
 AllP2Ratios(:,iS)=PAR2Ratio;
 Allvmaxes(:,iS)=vmaxes(1:nSave);
-end
 
 subplot(1,3,1)
-for iT=61:60:601
-plot(x,MsTime(iT,:),'Color',[0.84 0.91 0.95]+(iT-1)/600*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+EndT=600;
+% for iT=61:60:EndT+1
+% plot(x,PsTime(iT,:),'Color',[0.93 0.84 0.84]+(iT-1)/EndT*([0.6 0 0.2]-[0.93 0.84 0.84]))
+% hold on
+% end
+for iT=61:60:EndT+1
+plot(x,CsTime(iT,:),'Color',[0.84 0.91 0.95]+(iT-1)/EndT*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
 hold on
 end
-for iT=61:60:601
-plot(x,CsTime(iT,:),'Color',[0.93 0.84 0.84]+(iT-1)/600*([0.6 0 0.2]-[0.93 0.84 0.84]))
+for iT=61:60:EndT+1
+plot(x,MsTime(iT,:),'Color',[0.8 0.91 0.98]+(iT-1)/EndT*([0 0.42 0.69]-[0.8 0.91 0.98]))
 hold on
 end
-for iT=61:60:601
-plot(x,RsTime(iT,:),'Color',[0.8 0.91 0.98]+(iT-1)/600*([0 0.42 0.69]-[0.8 0.91 0.98]))
+for iT=61:60:EndT+1
+plot(x,RsTime(iT,:),'Color',[0.98 0.89 0.82]+(iT-1)/EndT*([0.87 0.49 0]-[0.98 0.89 0.82]))
 hold on
 end
 xlim([0.5 1])
-legend('','','','','','','','$M$','','','','',...
-    '','','','','','','','$C$','','','','','','','','$R$','Location','Northwest')
 xticklabels(2*xticks-1)
 xticks(0.5:0.1:1)
 xticklabels(2*xticks-1)
 xlabel('Embryo length')
+%legend('','','','','','$M$','','','','','','','','$C$','','','','','$R$','NumColumns',3)
+% for iT=61:60:EndT+1
+% plot(x,RsTime(iT,:),'Color',[0.93 0.84 0.84]+(iT-1)/EndT*([0.6 0 0.2]-[0.93 0.84 0.84]))
+% hold on
+% end
+legend('','','','','','','','$C$','','','','',...
+    '','','','','','','','$M$','','','','','','','','$R$','Location','Northwest')
 title('Concentration profiles')
 subplot(1,3,2)
 for iT=61:60:601
 plot(x,SigmasTime(iT,:),'Color',...
-    [0.84 0.91 0.95]+(iT-1)/600*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+    [0.95 0.95 0.95]+(iT-1)/600*([0 0 0]-[0.95 0.95 0.95]))
 hold on
 end
 xlim([0.5 1])
@@ -293,7 +303,7 @@ title('Active stress (tension)')
 subplot(1,3,3)
 for iT=61:60:601
 plot(x,vsTime(iT,:)*Sigma0/sqrt(eta*gamma)*60,'Color',...
-    [0.84 0.91 0.95]+(iT-1)/600*([0.16 0.38 0.27]-[0.84 0.91 0.95]))
+    [0.95 0.95 0.95]+(iT-1)/600*([0 0 0]-[0.95 0.95 0.95]))
 hold on
 end
 xlim([0.5 1])

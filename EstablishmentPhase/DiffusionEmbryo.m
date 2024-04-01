@@ -1,10 +1,12 @@
+load('LonghiniData.mat')
 for iP=1
+close all;
 rx=27;
 ry=15;
-adist = 2*rx-1;%Data(iP,3);
-pdist = 1;%Data(iP,1);
+%CLocs = [-rx+Data(iP,1) 0; rx-Data(iP,3) 0];
+CLocs = [0 ry-10; 0 ry-10];
 CSize = 0.1;
-CScale = 1;
+CScale = 0.01;
 if (iP==1)
 % Finite element mesh on ellipsoidal embryo
 fd=@(p) p(:,1).^2/rx^2+p(:,2).^2/ry^2-1;
@@ -29,13 +31,12 @@ for iT=1:Nt
     M(Indices,Indices)=M(Indices,Indices)+Mloc;
 end
 end
-CLocs = [-rx+adist rx-pdist];
 f = zeros(length(p),1);
 for iC=1:length(CLocs)
-    RSqFromC = (p(:,1)-CLocs(iC)).^2 + p(:,2).^2;
+    RSqFromC = (p(:,1)-CLocs(iC,1)).^2 + (p(:,2)-CLocs(iC,2)).^2;
     f = f + CScale/(2*pi*CSize.^2)*exp(-RSqFromC/(2*CSize.^2)); % Signal from centrosome 
 end
-koffOverD=1e-3;
+koffOverD=0.01;
 u = lsqminnorm(K+koffOverD*M,M*f);
 if (koffOverD==0)
 %u = u + 1.0353;
@@ -51,18 +52,18 @@ BdPts = BdPts(inds,:);
 uBd = uBd(inds);
 fell = @(t) sqrt(rx^2*sin(t).^2 + ry^2*cos(t).^2); 
 arcLengths = arrayfun(@(t2) integral(fell,0,t2), Theta);
-if (iP==1)
-tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
-nexttile
-trisurf(t, p(:,1), p(:,2), f);
-shading interp
-view(2)
-nexttile
-trisurf(t, p(:,1), p(:,2), u);
-shading interp
-view(2)
-colorbar
-end
+% if (iP==1)
+% tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
+% nexttile
+% trisurf(t, p(:,1), p(:,2), f);
+% shading interp
+% view(2)
+% nexttile
+% trisurf(t, p(:,1), p(:,2), u);
+% shading interp
+% view(2)
+% colorbar
+% end
 AlluBd(:,iP)=uBd;
 end
 %plot(arcLengths,AlluBd(:,5))
