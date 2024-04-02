@@ -80,90 +80,56 @@ In order to model the ECT-2 accumulation, we first need to use the centrosome lo
 \end{enumerate}
 Setting the level of global phosphatase activity is a non-trivial undertaking. As shown in Appendix \ref{sec:AIR1D}, low levels of phosphatase activity give high global AIR-1 levels, which translate to low ECT-2 levels everywhere. Such levels were shown to block psuedocleavage in centralspindlin-independent cytokinesis, due to low contractility \cite{afshar2010regulation, kotak2016aurora}. Our choice is to set the phosphatase activity so that centrosomes close to the posterior pole (in polarization) have a negligible AIR-1 concentration in the anterior ($< 1\%$ of the anterior concentration).
 
-\subsection{Myosin-independent models for the ECT-2 response}
-Let us now examine how the strength of the AIR-1 signal affects the strength of the ECT-2 concentration on the proximal cortex. To do so, let us suppose that ECT-2 locally binds and unbinds from the cortex, with AIR-1 increasing the unbinding rate. At steady state, this gives the equation
+Figure \ref{fig:CytoSit}(d) shows the AIR-1 signal (in arbitrary units) along the cell perimeter for each of the embryo treatments indicated in (c). We notice the high posterior levels of AIR-1 in dhc-1 (RNAi) and zyg-9;tpxl-1 embryos, which stand out from the rest. These same embryos have very low AIR-1 signals in the anterior. 
+
+\subsection{Myosin-independent models for the ECT-2 response are inadequate}
+In the simplest possible model of ECT-2 dynamics, there is a local equilibrium of the binding rate and unbinding rate, where the latter increases in the presence of AIR-1,
 \begin{equation}
 \label{eq:EctA}
- \kon_E = \koff_E \left(1+\Kae A \right)E \rightarrow E = \frac{\kon_E/ \koff_E}{ 1+\Kae A}
+ \kon_E = \koff_E \left(1+\Kae A \right)E,
 \end{equation}
-where $\Kae$ is the strength of AIR-1/ECT-2 inhibition, and $A_\text{min}$ is the minimum level of AIR-1 across all embryo conditions. To fit the parameters in this model, we use the AIR-1 concentration data \emph{with inactivation} (Section \ref{sec:inact}), so that the absolute concentrations are well defined. We set $\koffb=10^{-3}$ $\mu$m$^{-2}$, since this corresponds to a slight weakening of the diffusion without flattening the profile completely. This value of $\koffb$ results in the AIR-1 profiles shown in the left panel of Fig.\ \ref{fig:AIRECT}. The parameter $A_\text{min}=1.1$ is set to the minimum AIR-1 concentration across all embryos, and then $\kon_E/ \koff_E=2.5$ is obtained by fitting the maximum ECT-2 accumulation from experimental data (dhc-1 (RNAi) embryos). The last parameter $\Kae=1.3$ is set to match the minimum ECT-2 accumulation of 0.8 when AIR-1 is at its maximum (about 2.8 in dhc-1 (RNAi) embryos). The right panel of Fig.\ \ref{fig:AIRECT} shows the resulting ECT-2 profiles we obtain across different conditions. 
-
-
-
-This model takes into account the following:
-\begin{itemize}
-\item ECT-2-mediated activation of myosin (through RHO-1)
-\item Delayed negative feedback of myosin accumulation (through RGA-3/4-dependent inactivation of RHO-1)
-\item Myosin phosphatase-dependent inactivation of myosin
-\item Rapid exchange of ECT-2 at the cortex
-\end{itemize}
-To spatially pattern the RHO-1 dependent accumulation of myosin, we further assume:
-A modest increase (2x) in the off-rate of cortical ECT-2 as a consequence of AIR-1 dependent phosphorylation of ECT-2
-A modest decrease (2X) in the off rate of cortical ECT-2 due to the presence of myosin, in a myosin concentration-dependent manner.
-
+and $\Kae$ expresses the strength of inhibition. This steady state model predicts that the ECT-2 concentration relates to the AIR-1 concentration at the cortex via
+\begin{equation}
+\label{eq:EctLinA}
+E = \frac{\kon_E/ \koff_E}{ 1+\Kae A},
+\end{equation}
+which is a relationship with two unknown constants. Fitting these two unknown constants to the observed ECT-2 levels in dhc-1 (RNAi) embryos (where the AIR-1 signal is 1 at the posterior and 0 at the anterior) gives $\kon_E/ \koff_E=2.55$ and $\Kae=2$. Substituting the AIR-1 levels from the other embryo treatments then gives the observed centrosome/ECT-2 accumulation plot shown in Fig.\ \ref{fig:LinFail}(a). There we see that the relationship \eqref{eq:EctLinA} correctly predicts saturation at low levels of AIR-1 (high centrosome-cortex distances), but fails to predict saturation at high AIR-1 levels (low distances) or ultra-sensitivity in between. 
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{Glotzer/Fig3/Fig3-crop.pdf}
-\caption{\label{fig:LinFail}Simple models based on AIR-1/ECT-2 inhibition fail to capture the experimental data on accumulation vs.\ centrosome position. We consider (a) a linear inhibition model, and (b) a linear model with saturation (Hill function or Michaelis-Menten curve). In (i), we show the ECT-2 signal that results across the whole embryo, while (ii) isolates the signal at the anterior (triangles) and posterior (circles) cortex. Compared to the data in Fig.\ \ref{fig:CytoSit}, neither of these simple models capture the general S-shape of the curve, with plateaus at the low and high ends. }
+\caption{\label{fig:LinFail}Simple models based on AIR-1/ECT-2 inhibition fail to capture the experimental data on accumulation vs.\ centrosome position. We consider (a) a linear inhibition model, and (b) a linear model with saturation (Hill function or Michaelis-Menten curve). Compared to the data in Fig.\ \ref{fig:CytoSit}, neither of these simple models capture the general S-shape of the curve, with plateaus at the low and high ends. }
 \end{figure}
 
-Figure\ \ref{fig:DiffCSep} compares the resulting output (right panel) to the experimental data (left panel). While we can generally reproduce the trends observed experimentally, the shape of our curve appears to be more of a line, while the experimental data show an S-shaped trend. Indeed, while we correctly predict the ECT-2 accumulation for the ``extreme'' embryos (dhc-1 (RNAi) and zyg-9 (b224)/tpxl-1(RNAi)), the intermediate embryos have A/P ECT-2 disparities which are smaller than the experimental data. For example, in wild-type embryos, the experiments show an accumulation of 1.8 on the posterior, and 1 on the anterior, while our results show an accumulation of 1.7 on the posterior and 1.4 on the anterior. 
+The AIR-1 signals we obtained in Fig.\ \ref{fig:CytoSit}(d) show that the AIR-1 signal at the posterior doubles when we switch from zyg-9;tpxl-1 embryos to dhc-1 embryos. Yet, the experimental data in Fig.\ \ref{fig:CytoSit}(a) show that the ECT-2 accumulation is unchanged. This tells us that there must be saturation in the AIR-1 inhibition dynamics; beyond some level, the amount of AIR-1 no longer impacts the inhibition strength. Based on the location of the plateau in the experimental data, it seems that this threshold level occurs around the posterior AIR-1 level in zyg-9 embryos, which our data in Fig.\ \ref{fig:CytoSit}(d) tells us is 0.2. Thus, we propose a new model where the local equilibrium is governed by 
+\begin{equation}
+\label{eq:EctASat}
+ \kon_E = \koff_E \left(1+\Kae \left(\frac{A}{A_c+A}\right) \right)E,
+\end{equation}
+where $A_c=0.2$. Once again fitting $\kon_E/\koff_E=2.8$ and $\Kae=2.8$ to the data for dhc-1 embryos, we obtain the centrsome/ECT-2 plot shown in \ref{fig:LinFail}(b). There we see that we have correctly reduced the posterior ECT-2 levels in embryos with high AIR-1 signals to approach a plateau. However, we also reduce the ECT-2 levels in the other embryos (especially tpxl-1), and we still no longer see the ulta-sensitivity in distances 10--20 $\mu$m. We propose that the failure of these simple models comes from a lack of propagation of the AIR-1/ECT-2 signal via flows. If flows can exaggerate the smaller  asymmetries in a manner proportional to the AIR-1 signal, we might be able to reproduce the experimental data.
 
-
-
-Because we chose parameters to match dhc-1 (RNAi) embryos, their values are correct by design. If, by contrast, we had chosen a larger $K_\text{AE}$ to match wild-type embryos, then the model results would be reversed: the wild-type embryos would be correct by design, while the extreme embryos would have A/P ratios which are much \emph{larger} than the experiments. 
-It seems clear that our model is missing a mechanism whereby either:
-\begin{enumerate}
-\item Small changes in ECT-2 concentration induced by diffusion (in an intermediate range) are amplified to become larger.
-\item Large changes in ECT-2 concentration induced by diffusion are damped to become smaller.
-\end{enumerate}
-Since we have not accounted for the resulting actomyosin flows which tend to concentrate ECT-2, we speculate that the first of these options is what is missing from the model. We proceed to study it next.
-
-\subsection{Flows by myosin}
-We now explore the possibility that flows due to myosin could propagate smaller ECT-2 asymmetries into larger ones. To do this, we consider the basic model that ECT-2 (through activating $\rho$) activates myosin at the cortex. To minimze the number of parameters, we consider a simplified version of the true dynamics (where ECT-2 signals myosin by activating rho) and formulate a model with two variables, $E$ (for ECT-2) and $M$ (for myosin). In a system of units where length is in units of the embryo perimeter $L$, time is in units of the bound myosin lifetime $1/k^\text{off}_M$, and concentrations are scaled to be 1 when all protein is bound, the general equations governing this system can be written as
-\begin{subequations}
-\label{eq:MySimple}
-\begin{gather}
-\Dt E + \sigma_0 \Dx \left( v E\right) = D_E \Dx^2 E +\Kon_E \left(1+\Kme M\right)E_c - \Koff_E  \left(1+\Kae A\right)E \\
-\label{eq:MyEq}
-\Dt M + \sigma_0 \Dx \left( v M \right) = D_M \Dx^2 M +K_\text{EM} E ^2M_c - M -\Kfb M^4 \\
-\label{eq:veleqn}
-v = \ell^2 \Dx^2 v +\ell \Dx M \\
-E_c = 1-\int_0^1 E(x) \, dx \qquad M_c = 1-\int_0^1 M(x) \, dx.
-\end{gather} 
-\end{subequations}
-The first two equations are advection-reaction-diffusion equations which describe the dynamics of ECT-2 and myosin. The term $\sigma_0 \Dx \left(v E\right)$ describes the rate at which the ECT-2 concentration field is advected by the flow on the cortex, and likewise for the term $\sigma_0 \Dx \left(v M\right)$ in the myosin equation. In the reaction terms, we assume that myosin recruits ECT-2 from the cytoplasm, and incorporate the term $\Kme M E_c$ in the ECT-2 equation. AIR-1 inhibits ECT-2 (by promoting unbinding) according to the relationship \eqref{eq:EctA}. Myosin is locally activated at a rate proportional to \red{the square of the ECT-2 concentration (the term $\Kem E^2 M_c$; we use a squared dependence because ECT-2 asymmetries are typically 1.5:1, while myosin asymmetries are larger than 2:1, meaning there must be nonlinearity)}. We also assume delayed negative feedback of myosin via the term $\Kfb M^4$. This is an approximation of a more detailed mechanism whereby actin recruits the RhoGAPs RGA-3/4, which inactivates Rho and myosin \cite{michaux2018excitable, schmutz2007functions, schonegg2007rho}. The velocity equation\ \eqref{eq:veleqn} is a force balance equation where the active ($\Dx M$) and viscous ($\Dx^2 v$) forces are balanced by the drag force (proportional to $v$) required to drag myosin at a velocity $v$ through the cortex \cite{bois2011pattern}. The variable $\ell$ is the hydrodynamic lengthscale (approximately 10 $\mu$m \cite{mayer2010anisotropies}). 
-
-\subsubsection{Parameter estimation}
-A simple set of assumptions, some of which are based on experimental data, allows us to reduce the dynamics in\ \eqref{eq:MySimple} to two unknown parameters. We do this as follows, 
-\begin{enumerate}
-\item The embryo cross section is an ellipse with approximate radii 27 $\mu$m and 15 $\mu$m, which gives a perimeter $L=134.6$ $\mu$m \cite{goehring2011polarization} .
-\item \red{The myosin bound lifetime is about 15 s, so $\koff_M=1/15$ s$^{-1}$. }
-\item We assume that all species have a dimensional diffusion coefficient $D=0.1$ $\mu$m$^2$/s \cite{goehring2011polarization, gross2019guiding, robin2014single}. Rescaling length by $L$ and time by $\koff_M$ gives a dimensionless coefficient $D_E=D_M=0.1/(L^2 \koff_M)=4.6 \times 10^{-5}$. 
-\item The ECT-2 lifetime was measured using FRAP to be on the order of a few seconds \cite{longhini2022aurora}. \red{We set $\koff_E=0.33$/s, for a three second lifetime.} Rescaling gives $\Koff_E=\koff_E/\koff_M=5$. 
-\item The value of $\Kme M$ determines what fraction of ECT-2 binding occurs from recruitment by myosin. We assume that 50\% of ECT-2 is recruited by myosin, so that $\Kme M = 1$. Because $M \approx 0.3$ (see assumption 7), we set $\Kme=1/0.3$. 
-%\item The value of $\Kem E$ determined what fraction of myosin activation occurs via the ECT-2 pathway. We assume that 2/3 of myosin is activated by ECT-2, so that $\Kem E=2$. Because $E \approx 0.1$ (see assumption 7), we set $\Kem=20$. 
-\item We assume that 10\% of ECT-2 is bound to the cortex, and 30\% of myosin is bound to the cortex \cite[Fig.~S3j]{gross2019guiding}. This sets $\Kon_E=0.3$ and $\Kem = 50$. 
-\item For the negative feedback of myosin, we use the parameters determined in \cite{michaux2018excitable}. The model there considered rho ($\rho$) and RhoGAP ($r$) as the unknowns, with the production of RhoGAP proportional to $\rho^3$ and the inhibition of $\rho$ proportional to $r \rho$. Here we coarse-grain this model into a single term, with the inhibition proportional to $M^4$. The feedback strength is obtained by assuming an equilibrium of $r$ in the equations of \cite{michaux2018excitable} (neglecting the basal binding rate), which gives (in their notation) $\Kfb=k_\text{GAP}\left(k_r^\text{ass}/k_r^\text{diss}\right)=0.1(0.245/0.047)=0.52$/s. Rescaling by $\koff_M$ gives $\Kfb=7.8$ in our model. 
-\end{enumerate}
-This systematic fitting procedure reduces the dynamics to two parameters: $\Kae$, which describes the rate at which AIR-1 inhibits ECT-2, and $\sigma_0$, which is the speed of flows induced by myosin gradients. By manipulating these two parameters, we can model situations where ECT-2 gradients are due to AIR-1 alone (this is Fig.\ \ref{fig:DiffCSep}, where $\Kae=1.3$ and $\sigma_0=0$), or where there is substantial amplification by flows. In the extreme case when $\Kae=0$ and $\sigma_0$ is sufficiently large, we will get oscillatory dynamics, with peaks of myosin occuring at random places, in accordance with the model of \cite{michaux2018excitable}. We need a sufficiently large $\Kae$ to ensure that the myosin peaks correspond to locations of AIR-1 depletion.
-
+\subsection{Adding myosin-mediated flows reproduces the experimental trends}
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{Glotzer/Fig4/Fig4-crop.pdf}
 \caption{\label{fig:CytoWFlow}Incorporating flow into the AIR-1/ECT-2 model gives a better match to the experimental data. (a) Basic model of the ECT-2/Rho/Myosin circuit. (b) The corresponding data for ECT-2 accumulation vs.\ centrosome position (c.f.\ Fig.\ \ref{fig:CytoSit}(c)). (c) The dynamics of approach to steady state, starting from constant initial ECT-2 and myosin concentrations. Profiles of (i) ECT-2 concentration, (ii) Myosin concentration, and (iii) flow speed are shown from $t=0$ to $t=10$ mins, with snapshots shown every minute. Darker lines denote later times. Blue lines are dhc-1 (RNAi) embryos, while green lines denote WT. }
 \end{figure}
 
-Our approach is to start with a uniform concentration of ECT-2 and myosin, then apply the AIR-1 signal and watch the dynamics for ten minutes (long enough to reach a rough steady state, as shown in Fig.\ \ref{fig:TryFlows}). To find a combination of $\Kae$ and $\sigma_0$ that best satisfies the data, we start by fixing $\Kae$, then adjust $\sigma_0$ so that dhc-1 embryos have the experimental A/P ratio ($\approx 3.2$) of ECT-2 at the end of the simulation. We accept a pair of parameters $\left(\Kae,\sigma_0\right)$ if these same parameters give an A/P ratio around 1.8 in wild-type embryos as well. Figure\ \ref{fig:TryFlows} shows the dynamics over ten minutes with our chosen parameters $\Kae=0.5$ and $\sigma_0=0.2$. In dhc-1 embryos, there is a single peak in the ECT-2 and myosin concentration which forms at around 75\% embryo length (from the posterior), while in wild-type there are two peaks of ECT-2: one at the midline, and one at the anterior pole. 
+Let us now consider a model, informed by the experimental data, by which asymmetries in AIR-1 could propagate through flows. The general schematic of our model is shown in Fig.\ \ref{fig:CytoWFlow}(a), and the mathematical details are presented in Appendix \ref{sec:MyModel}. The relationship between AIR-1 and ECT-2 is unchanged from \ref{eq:EctASat}, but now the ECT-2 signal also activates myosin (through Rho), and myosin feeds back on ECT-2 through direct recruitment, and through advection by flows. Finally, there is delayed negative feedback of myosin accumulation (through RGA-3/4-dependent inactivation of RHO-1) \cite{michaux2018excitable}. To constrain unknown model parameters, we assume that 
+\begin{enumerate}[noitemsep, nolistsep]
+\item 10\% of ECT-2 is bound to the cortex at steady state in wild-type embryos. 
+\item 30\% of myosin is bound to the cortex at steady state in wild-type embryos \cite[Fig.~S3j]{gross2019guiding}.
+\item There is a modest increase (two-fold) in the recruitment rate of ECT-2 due to cortial myosin, in a myosin concentration-dependent manner.
+\end{enumerate}
+As dicussed in Appendix \ref{sec:MyModel}, these assumptions are sufficient to constain all but two of the model parameters. The two parameters that remain describe the strength of myosin flows and the strength at which AIR-1 inhibits ECT-2. We have already seen the case when the latter is high and the former is zero (Fig.\ \ref{fig:LinFail}(b)). In order to match the experimental data while keeping the A/P ratio in dhc-1 embryos constant, we systematially decrease the AIR-1 inhibition strength and increase the speed of flows until we get dynamics which resemble the experimental data in both wild type and dhc-1 (RNAi) embryos. 
 
-To compare our results with flow to the experimental data, we define an accumulation on the anterior cortex as the maximum ECT-2 concentration on the anterior 25\% of the embryo length, and likewise for the posterior. Figure\ \ref{fig:ExpFlow} shows how our asymmetry results compare to the experimental data. As in the experiments, the values are taken at the time of maximum asymmetry. Compared to the previous data in Fig.\ \ref{fig:DiffCSep}, our flow-based data in Fig.\ \ref{fig:ExpFlow} show more of an ``S'' shape, qualitatively (and quantitatively, for the most part) reproducing the shape obtained in experiments.
+Figure \ref{fig:CytoWFlow}(c) shows the model's approach to steady state (over 10 minutes of simulation time) in both dhc-1 (blue) and wild type (green) embryos. With the chosen parameters for inhibition strength and flow speed, the flows are of a realistic magnitude, and the ECT-2 concentration in ratios between the anterior and posterior poles resemble the experimental measurements. Fig.\ \ref{fig:CytoWFlow}(b) shows the ECT-2 accumulation on the anterior/posterior pole across all embryo treatments, taken at the time of maximum asymmetry. We observe a plateau at the low end, corresponding to saturation of the AIR-1 signal, and a plateau at the high end, where myosin accumulation and flow is inhibited by RGA 3/4. In the middle, we see an ultra-sensitive dependence: moving from 10--20 $\mu$m centrosome distance gives a roughly two-fold change in ECT-2 accumulation, similar to the experimental data in Fig.\ \ref{fig:CytoSit}(a). 
 
-\section{Polarization}
-Here we attempt to apply our model, with the same parameters, to the process of cell polarization. We begin with the diffusion calculation to establish the profile of AIR-1, then see how this propagates in our myosin/ECT-2 model.
+\section{Dynamics of polarization}
+Having used cytokinesis, where we have more quantitative measurements of ECT-2 accumulation, to fit our model, we now proceed to look at polarization, where we are more interested in qualitative phenomena. In the absence of PAR proteins, it is known that the AIR-1/ECT-2 signal from the centrosomes leads to transient clearing of myosin from the posterior pole, and that the myosin profile reverts back to a uniform state after the centrosomes move towards the cell equator \cite[Fig.~2E]{gross2019guiding}. But is the transient clearing driven by the same underlying circuitry as cytokinesis? To answer this, we apply our model from cytokinesis to polarization, without changing any of the underlying parameters except for the AIR-1 signal.
 
-\subsection{Diffusion of AIR-1 \label{sec:airpol}}
-In cell polarization, \emph{both} centrosomes sit very close to the posterior cortex (about 1 $\mu$m away \cite{cowan2004centrosomes}). The centrosomes have a smaller size (about 0.2 $\mu$m, so we set $\sigma_c=0.1$ $\mu$m). They also contain substantially less total AIR-1; here we assume that the amount scales with the area, so that $C_0=0.01$ for polarization. Figure\ \ref{fig:AIRPol} shows the resulting AIR-1 concentration profile (the solution of \eqref{eq:DiffEqnIn} with $\koffb=10^{-3}$ $\mu$m$^{-2}$ once again) across the embryo and along the boundary. We observe a change in AIR-1 of only 0.03 from one side of the embryo to the other, which is substantially \emph{smaller} than what we observed in cytokinesis. Considering that ECT-2 becomes asymmetrically enriched during polarization at the same levels as in cytokinesis, this underscores the need to have a mechanism to amplify the asymmetries. 
+\subsection{The centrosome distance determines the strength of polarization \label{sec:airpol}}
+In cell polarization, \emph{both} centrosomes sit very close to the posterior cortex (about 1 $\mu$m away \cite{cowan2004centrosomes}). The centrosomes have a smaller size (about 0.2 $\mu$m, so we set $\sigma_c=0.1$ $\mu$m). They also contain substantially less total AIR-1; here we assume that the amount scales with the area, so that the amount of AIR-1 on each centrosome during polarization is 1\% of that for cytokinesis. 
 
 \begin{figure}
 \centering
@@ -171,24 +137,35 @@ In cell polarization, \emph{both} centrosomes sit very close to the posterior co
 \caption{\label{fig:PolLoc}Centrosome locations set polarization dynamics. (a) The location of the centrosomes in our polarization simulations; we position both centrosomes 1, 5, and 10 $\mu$m away from the cell boundary on either the posterior pole or the cell midline. (b) The resulting AIR-1 signals along the cell perimeter. (c) The dynamics of polarization, starting from the uniform state, with the computed AIR-1 signal. Blue (purple) lines show the case when centrosomes 1 $\mu$m from the posterior pole (midline), and darker lines denote later times (0 to 10 mins). (d) Statistics on (i) ECT-2 asymmetry, (ii) myosin asymmetry, (iii) maximum flow speed, and (iv) ECT-2 clearance (measured as percentage of domain nearest the AIR-1 signal where the ECT-2 concentration is below 0.095 (see arrow in (c,i)) over time for the six centrosome locations shown in (a).}
 \end{figure}
 
+To explore the effect of centrosome distance and location, we position centrosomes at a distance 1, 5, and 10 $\mu$m from the posterior pole and cell midline, and measure the resulting AIR-1 signal. As shown in Fig.\ \ref{fig:PolLoc}(a,b), the AIR-1 signal is strongest in wild-type embryos (blue), where the curvature of the cell ``traps'' AIR-1 at the posterior pole. Because of effects of curvature, centrosomes positioned 1 $\mu$m from the cell midline have a smaller AIR-1 signal, although the difference is at most 10--20\%. More drastic effects come when we move the centrosomes back from the cell boundary, with centrosomes 5 $\mu$m away giving a decrease of 50\% in AIR-1, and 10 $\mu$m giving an almost nonexistent AIR-1 signal.
+
+Given these AIR-1 signals, we run the model (using the parameters obtained under cytokinesis conditions, with a slightly faster ECT-2 turnover in accordance with our FRAP experiments \cite[Fig.~3D]{longhini2022aurora}) forward in time to reach a steady state for polarization. Figure\ \ref{fig:PolLoc}(c) shows the trajectories of ECT-2, myosin, and the flow speed over time for signals aligned with the posterior pole and midline. Both signals exhibit roughly the same phenomena; there is a local clearing of ECT-2 and myosin near the centrosomes, which leads to a small peak roughly 35\% embryo length away from the signal position. This peak then flattens out as we move farther from the cue. Repeating these simulations for all centrosome positions gives the statistics shown in Fig.\ \ref{fig:PolLoc}(d). Under wild-type conditions, we predict an ECT-2 clearance (defined as the size of the region near the cue where $E < 0.095$; see the black arrow in Fig.\ \ref{fig:PolLoc}(c)) of about 17\% perimeter under wild type conditions, which translates to roughly 10 $\mu$m on either side of the pole, in good agreement with experimental observations in PAR mutants \cite[Fig.~2E]{gross2019guiding}. We also predict an A/P asymmetry of at most 1.5 during polarization, which matches what we observed in previous work \cite[Fig.~1]{longhini2022aurora}, and a flow speed of at most 5--6 $\mu$m/min, which also matches observations in PAR mutants \cite[Fig.~2G]{gross2019guiding}. The time for peak clearance and asymmetries is delayed by about 1 minute when the centrosomes move from 1 to 5 $\mu$m from the cortex \cite[Fig.~3F]{bienkowska2012centrosomes}, and centrosomes 10 $\mu$m away give no clearance at all. Generally, centrosomes positioned at the posterior pole give faster flow speeds and higher clearances than those positioned at the midline, but the effect is slight. Considering that our results for ECT-2 clearance and asymmetry are in line with those determined experimentally, we conclude that the model we developed under cytokinesis conditions can also explain polarization in the absence of PAR proteins.
+
+
+\subsection{Fast ECT-2 turnover and myosin recruitment gives robust polarization \label{sec:EctTurn}}
+
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{Glotzer/ECT2Residence.eps}
-\caption{\label{fig:EctTurn}Fast ECT-2 turnover contributes to robust polarization dynamics. The fast turnover of ECT-2 prevents a peak forming in the middle of the cell.}
+\includegraphics[width=\textwidth]{Glotzer/Fig6/Fig6-crop.pdf}
+\caption{\label{fig:EctTurn}Alternative models show that ECT-2 turnover combined with myosin recruitment contributes to robust polarization dynamics. (a) A model where myosin no longer recruits ECT-2. Tuning parameters to get realistic flow speeds results in only marginal reorganization of ECT-2 (at most a 10\% difference). (b) Increasing the turnover time of ECT-2, so that it is advected by flows, leads to chaotic dynamics. Here we see that the lack of turnover leads to a sharp peak one hydrodynamic lengthscale away from the AIR-1 cue. In both cases, profiles are show every minute from $t=0$ to $t=10$ mins, with darker lines denoting later times.}
+\end{figure}
+
+We have shown that long-range reorganization of ECT-2 is possible despite its short residence time. The driver of this reorganization is recruitment by myosin, which is longer-lived on the cortex than ECT-2. Yet, is there any benefit to having rapid turnover of ECT-2 on the cortex? To explore this question, in Fig.\ \ref{fig:EctTurn} we consider two alternative models for polarization dynamics. In the first model, shown in Fig.\ \ref{fig:EctTurn}(a), we look at polarization when myosin no longer recruits ECT-2, changing parameters so that the flow is the same as that attained in PAR mutant embryos. With these realistic flow speeds, ECT-2 is not advected, and since it is not recruited by myosin, it cannot be transported over to the posterior. The result is an ECT-2 profile which is barely (at most 10\%) asymmetric. 
+
+An obvious remedy to this problem is to increase the lifetime of ECT-2 on the cortex. In Fig.\ \ref{fig:EctTurn}(b), we increase the ECT-2 lifetime by an order of magnitude (from 2.5 s to 25 s), again tuning the flow speeds so that they are on the order 5 $\mu$m/min. We observe dynamics that are more chaotic. Initially (at $t=5$ mins), the ECT-2 and myosin distributions take on an asymmetry that matches that observed experimentally. But the peak of myosin in at 30\% length then generates a strong flow which pulls ECT-2 from the posterior towards the anterior. This generates another minimum and a peak further towards the posterior. 
+
+Consider the situation at $t=5$ mins, where there is a small intermediate peak of ECT-2 and myosin. If ECT-2 is advected, it can be pulled into the peak from both sides, resulting in additional myosin and additional flows whih increase the peak. By contrast, if ECT-2 is not advected, flows alone cannot concentrate ECT-2 into peaks, and the flow coming from the anterior is driven primarily by a local equilibrium where ECT-2 is depleted because of the AIR-1 signal. This does not exist in the posterior, and so flows are negligible there (Fig.\ \ref{fig:PolLoc}(c)). These results demonstrate why a combination of rapid ECT-2 exchange and recruitment by myosin gives robust polarization with the experimentally-observed ECT-2 pattern and no large peaks. 
+
+\subsection{A transient AIR-1 cue vs.\ local depletion}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{Glotzer/Fig7/Fig7-crop.pdf}
+\caption{\label{fig:EctTurn}Fast ECT-2 turnover contributes to robust polarization dynamics. We here explore an alternative and more obvious model: instead of ECT-2 being turned over rapidly and recruited by myosin, it gets slowly turned over (25 s residence time) and is advected with flows. Here we see that the lack of turnover leads to a sharp peak one hydrodynamic lengthscale away from the AIR-1 cue. }
 \end{figure}
 
 
-\subsection{The myosin response}
-
-We now simulate the response to the AIR-1 signal using the equations \eqref{eq:MySimple}. We use all of the same parameters as for cytokinesis, with the exception of $A_\text{min}$, which is the ``base'' concentration of AIR-1, at which there is no effect on ECT-2. We previously set this value to be the smallest value of the AIR-1 concentration across all embryos in cytokinesis; here we use the minimum concentration for polarization, which, according to Fig.\ \ref{fig:AIRPol} is $A_\text{min}=0.01$. 
-
-
-\red{Figure \ref{fig:TryFlowsPol} shows the response of the system to the AIR-1 signal, which in polarization is highly localized to the posterior cortex (see Fig.\ \ref{fig:AIRPol}). In the first ten minutes of simulation time (which is longer than polarity establishment phase), a peak in myosin and ECT-2 forms immediately next to the posterior pole as a result of depletion of ECT-2 there. Following this, the higher ECT-2 concentration pulls in some ECT-2 from the anterior, which leads to a counter-flow, local depletion of ECT-2 next to the peak, and another smaller peak next to the first at steady state. If the domain were longer, this process would keep propagating, with smaller and smaller peaks forming in the anterior. Note also that the low residence time of ECT-2 prevents a larger flow from the anterior into the peak, which leaves the anterior concentration at a higher level than the posterior.}
-
-
-\subsubsection{Trying a larger AIR-1 signal}
-
-\red{In Fig.\ \ref{fig:TryFlowsPolQ}, we demonstrate what happens when the AIR-1 signal is larger on the posterior pole. Specifically, we repeat the entire process, from the diffusion to polarization calculation, with the centrosomes having four times as much AIR-1. The result is that the ECT-2 concentration on the posterior pole drops even lower than previously observed. This drives a larger flow towards the anterior, which pushes the ECT-2 and myosin peak towards the middle of the embryo. The peak in the middle of the embryo then prevents the second peak from forming in the domain interior. The larger flow also leads to the steady state being assumed quite rapidly. }
+\section{Discussion}
 
 \begin{appendix}
 \section{Mathematical appendix} 
@@ -225,7 +202,72 @@ To constrain the level of phosphatase activity (parameter $\koffb$), we compute 
 \caption{\label{fig:AIR1ProfKoff}AIR-1 signal vs.\ distance from posterior under polarization conditions (blue squares in Fig.\ \ref{fig:PolLoc}(a)). We vary the level of phosphatase activity $\koffb$ until the posterior level is less than 1\% of the anterior level, settling on $\koffb=10^{-2}$ $\mu$m$^{-2}$.}
 \end{figure}
 
-\subsection{ECT-2/Myosin circuit}
+\subsection{ECT-2/Myosin circuit \label{sec:MyModel}}
+We consider the basic model shown in Fig.\ \ref{fig:CytoWFlow}(a), where ECT-2 (through activating $\rho$) activates myosin at the cortex. To minimze the number of parameters, we consider a simplified version of the true dynamics (where ECT-2 signals myosin by activating rho) and formulate a model with two variables, $\hat E$ (for ECT-2) and $\hat M$ (for myosin). In dimensional units (denoted by hats), the equations we use are 
+\begin{subequations}
+\label{eq:MyDim}
+\begin{gather}
+\partial_{\hat t} \hat E + \partial_{\hat x} \left( \hat v \hat E\right) = \hat D_E \partial_{\hat x}^2 E +\kon_E \left(1+k_\text{ME} \hat M\right)\hat E_c - \koff_E  \left(1+k_\text{AE}\left( \frac{\hat A}{\hat A_c+\hat A}\right)\right)\hat E \\
+\partial_{\hat t} \hat M +\partial_{\hat x} \left( \hat v \hat M\right)  = \hat D_M \partial_{\hat x}^2 M +k_\text{EM} \hat E ^2 \hat M_c - \koff_M \hat M -k_\text{fb} \hat M^4 \\
+\label{eq:veleqn}
+\gamma \hat v = \eta \partial_{\hat x}^2 \hat v +\hat \sigma_0 \partial_{\hat x} \hat M \\
+\label{eq:CytoDim}
+\hat E_c = \frac{1}{hL}\left(\Tot{E}L-\int_0^L \hat E(\hat x) \, d\hat x\right), \qquad \hat M_c =\frac{1}{hL}\left(\Tot{M}L-\int_0^L \hat M(\hat x) \, d \hat x\right),
+\end{gather} 
+\end{subequations}
+Each of the species ECT-2 and myosin evolves by
+\begin{enumerate}[noitemsep, nolistsep]
+\item \emph{Advection by cortical flows.}  These are the terms $\Dx (v E)$ and $\Dx (v M)$.
+\item \emph{Diffusion in the cortex.} These are the terms $D_E \Dx^2 E$, and $D_M \Dx^2 M$.
+\item \emph{Binding to the cortex.} For ECT-2, there is a basal binding rate plus a linear enhancement by myosin. For myosin, the binding rate is proportional to the square of the ECT-2 concentration, without a basal binding rate. The motivation for this term is that myosin asymmetries are typically much stronger than ECT-2 asymmetries \cite{longhini2022aurora, munro2004cortical, mayer2010anisotropies}, and thus some nonlinearity is required. We choose the minimal such nonlinearity (see \cite[Eq.~(1)]{michaud2022versatile} for another choice, where Rho is represented explicitly). The binding rate is also proportional to the cytoplasmic concentration of each protein, defined in\ \eqref{eq:CytoDim}, where $L$ is the domain length and $h$ is the cytoplasmic ``thickness'' (so that $hL$ is the total area) \cite{lang2022oligomerization}.
+\item \emph{Unbinding from the cortex.} For ECT-2, the unbinding rate is composed of a basal rate expressing the fast exchange of ECT-2, plus inhibition by AIR-1 according to\ \eqref{eq:EctASat}. Myosin unbinds with a basal rate (expressing the combination of inactivation and unbinding), which is enhanced by delayed negative feedback (the $M^4$ term). The form of this term comes from \cite{michaux2018excitable}. The model there considered rho ($\rho$) and RhoGAP ($r$) as the unknowns, with the production of RhoGAP proportional to $\rho^3$ and the inhibition of $\rho$ proportional to $r \rho/(K+\rho)$. Here we coarse-grain this model into a single term, with the inhibition proportional to $M^4$. 
+\end{enumerate}
+Finally, the velocity equation \eqref{eq:veleqn} expresses the balance of active stress (which we assume is proportional to myosin concentration) with viscous stress and frictional resistance \cite{mayer2010anisotropies}. 
+
+\subsubsection{Non dimensionalization}
+Because absolute concentrations are unknown, it is easiest to assign values to unknown parameters when they are in dimensionless form. To do this, we non-dimensionalize so that length is in units of the embryo perimeter $L$, time is in units of the bound myosin lifetime $1/k^\text{off}_M$, velocity is in units of $\sigma_0/\left(\sqrt{\eta \gamma}\right)$ and concentration of species $A$ is in units of $\Tot{A}$. This gives new dimensionless variables 
+\begin{subequations}
+\label{eq:MySimple}
+\begin{equation}
+\label{eq:NDD}
+x = \hat{x}/ L \qquad t=  \hat t \koff_M \qquad M= \hat{M}/\Tot{M}  \qquad E= \hat{E}/\Tot{E} \qquad v = \hat{v}/\left( \frac{\hat \sigma_0}{\sqrt{\eta \gamma}}\right),
+\end{equation}
+and a corresponding set of equations
+\begin{gather}
+\Dt E + \sigma_0 \Dx \left( v E\right) = D_E \Dx^2 E +\Kon_E \left(1+\Kme M\right)E_c - \Koff_E  \left(1+\Kae \left(\frac{A}{A_c+A}\right)\right)E \\
+\label{eq:MyEq}
+\Dt M + \sigma_0 \Dx \left( v M \right) = D_M \Dx^2 M +K_\text{EM} E ^2M_c - M -\Kfb M^4 \\
+\label{eq:veleqn}
+v = \ell^2 \Dx^2 v +\ell \Dx M \\
+E_c = 1-\int_0^1 E(x) \, dx \qquad M_c = 1-\int_0^1 M(x) \, dx.
+\end{gather} 
+The conversion from dimensional to dimensionless form is straightforward for most of these parameters. Since some (e.g. $\Kae$, $\Kme$) are unknown anyway, it is not useful to report how they relate to the dimensional parameters. There are some important parameters to highlight, however. In flow patterns, $\ell=\left(\sqrt{\eta/\gamma}\right)/L$ is a hydrodynamic lengthsale (scaled by domain perimeter) expressing the connectivity of the cortex; local disturbances in myosin will typically propagate at most a distance $\ell$. The parameter $\sigma_0 = \hat \sigma_0/\left(L\koff_M \sqrt{\eta \gamma}\right)$ expresses the strength of the flows; the dimensional velocity in $\mu$m/s can be extracted by taking $v \times \sigma_0 L \koff_M$. 
+
+\end{subequations}
+
+
+\subsubsection{Parameter estimation}
+A simple set of assumptions, some of which are based on experimental data, allows us to reduce the dynamics in\ \eqref{eq:MySimple} to two unknown parameters. We do this as follows, 
+\begin{enumerate}[noitemsep, nolistsep]
+\item The embryo cross section is an ellipse with approximate radii 27 $\mu$m and 15 $\mu$m, which gives a perimeter $L=134.6$ $\mu$m \cite{goehring2011polarization} .
+\item The variable $\ell$ is the hydrodynamic lengthscale. In dimensional units, this was measured to be approximately 13 $\mu$m \cite{mayer2010anisotropies}, which means $\ell = 0.1$ in \eqref{eq:MySimple} (10\% domain length).  
+\item The myosin bound lifetime is about 15 s, so $\koff_M=1/15$ s$^{-1}$.
+\item We assume that all species have a dimensional diffusion coefficient $\hat D_{E/M}=0.1$ $\mu$m$^2$/s \cite{goehring2011polarization, gross2019guiding, robin2014single}. Rescaling length by $L$ and time by $\koff_M$ gives a dimensionless coefficient $D_E=D_M=0.1/(L^2 \koff_M)=4.6 \times 10^{-5}$. 
+\item The ECT-2 lifetime was measured using FRAP to be on the order of a few seconds \cite[Fig.~3D]{longhini2022aurora}. In cytokinesis, we set $\koff_E=0.33$/s, for a three second lifetime. Rescaling gives $\Koff_E=\koff_E/\koff_M=5$. Our data shows slightly faster recovery during polarization, so we increase $\koff_E$ by 20\% for those simulations.
+\item The value of $\Kme M$ determines what fraction of ECT-2 binding occurs from recruitment by myosin. We assume that 50\% of ECT-2 is recruited by myosin, so that $\Kme M = 1$. Because $M \approx 0.3$ (see assumption 7), we set $\Kme=1/0.3$. 
+%\item The value of $\Kem E$ determined what fraction of myosin activation occurs via the ECT-2 pathway. We assume that 2/3 of myosin is activated by ECT-2, so that $\Kem E=2$. Because $E \approx 0.1$ (see assumption 7), we set $\Kem=20$. 
+\item We assume that 10\% of ECT-2 is bound to the cortex, and 30\% of myosin is bound to the cortex \cite[Fig.~S3j]{gross2019guiding}. This sets $\Kon_E=0.34$ and $\Kem = 50$. 
+\item For the negative feedback of myosin, we use the parameters determined in \cite{michaux2018excitable}. The feedback strength is obtained by assuming an equilibrium of RhoGAP in the equations of \cite{michaux2018excitable} (neglecting the basal binding rate), which gives (in their notation) $\Kfb=k_\text{GAP}\left(k_r^\text{ass}/k_r^\text{diss}\right)=0.1(0.245/0.047)=0.52$/s. Rescaling by $\koff_M$ gives $\Kfb=7.8$ in our model. 
+\item According to our experimental data in Fig.\ \ref{fig:CytoSit}, the effect of the AIR-1 signal should saturate around $A \approx 0.2$. We therefore set $A_c=0.2$. 
+\end{enumerate}
+This systematic fitting procedure reduces the dynamics to two parameters: $\Kae$, which describes the rate at which AIR-1 inhibits ECT-2, and $\sigma_0$, which is the speed of flows induced by myosin gradients. By manipulating these two parameters, we can model situations where ECT-2 gradients are due to AIR-1 alone ($\sigma_0 = 0$), or where there is substantial amplification by flows (small $\Kae$). In the extreme case when $\Kae=0$ and $\sigma_0$ is sufficiently large, we will get oscillatory dynamics, with peaks of myosin occuring at random places, in accordance with the model of \cite{michaux2018excitable}. We need a sufficiently large $\Kae$ to ensure that the myosin peaks correspond to locations of AIR-1 depletion.
+
+Our approach is to start with a uniform concentration of ECT-2 and myosin, then apply the AIR-1 signal and watch the dynamics for ten minutes (long enough to reach a rough steady state, as shown in Fig.\ \ref{fig:CytoWFlow}). To find a combination of $\Kae$ and $\sigma_0$ that best satisfies the data, we start by fixing $\Kae$, then adjust $\sigma_0$ so that dhc-1 embryos have the experimental A/P ratio ($\approx 3.2$) of ECT-2 at the end of the simulation. We accept a pair of parameters $\left(\Kae,\sigma_0\right)$ if these same parameters give an A/P ratio around 1.7 in wild-type embryos as well. Figure\ \ref{fig:CytoWFlow} shows the dynamics over ten minutes with our chosen parameters $\Kae=0.6$ and $\sigma_0=0.2$. Note that $\Kae=0.6$ implies that AIR-1 is increasing the off-rate of ECT-2 by about 50\% in the posterior of dhc-1 (RNAi) embryos ($A \approx 1 \rightarrow A/(A+A_c) \approx 0.5$), and 30\% in the posterior of wild-type embryos ($A \approx 0.2 \rightarrow A/(A+A_c) \approx 0.3$).
+
+\subsubsection{Parameter adjustments: polarization \label{sec:EctTurnP}}
+In Section \ref{sec:EctTurn}, we modify the parameters to examine alternative hypotheses for the dynamics of polarization. We first consider what happens if ECT-2 is not recruited by myosin, in which case we adjust the on rate to $\Kon_E=0.68$ and $K_\text{ME}=0$. The flows are adjusted to 5 $\mu$m/min by setting $\sigma_0=0.5$. 
+
+Another alternative is that ECT-2 has a longer lifetime and can be advected by flows this way. We consider in particular $\koff_E=1/25$ s$^{-1}$ (25 s residence time instead of 2.5) and $\Kon_E=0.068$ to give a 10\% bound ECT-2, and $K_\text{ME}=0$, so that myosin doesn't recruit ECT-2. All other parameters take their default values (in particular, $\sigma=0.2$ again). 
 
 \end{appendix}
 

@@ -32,7 +32,7 @@ K_fb = 0.52/koffM;      % Delayed negative feedback  (Set from Ed's paper)
 
 %% Numerical parameters
 dt = 1e-2;
-tf = 1200*koffM;
+tf = 600*koffM;
 saveEvery = floor(60*koffM/dt+1e-3);
 nT = floor(tf/dt);
 N = 500;
@@ -68,7 +68,7 @@ E = 0.1*ones(N,1);
 
 iFrame=0;
 v=0;
-f=figure;
+%f=figure;
 %tiledlayout(3,3,'Padding', 'none', 'TileSpacing', 'compact');
 for iT=0:nT
     t = iT*dt;
@@ -87,7 +87,7 @@ for iT=0:nT
     Ect2Clearing(iT+1)=length(inds)*dx*2;
     if (mod(iT,saveEvery)==0)
         iFrame=iFrame+1;
-        plot(x,E,x,M)
+        %plot(x,E,x,M)
         title(strcat('$t=$',sprintf('%.2f', iT*dt/koffM),' s'))
         xlabel('\% egg length from posterior')
         xlim([0 1])
@@ -95,7 +95,7 @@ for iT=0:nT
         xticklabels({'-100','-50','0','50','100'})
         xlim([0.5 1])
         %legend('ECT-2','Rho','Actomyosin/RGA','Location','southoutside','numColumns',3)
-        movieframes(iFrame)=getframe(f);
+        %movieframes(iFrame)=getframe(f);
         AllMs(iFrame,:)=M;
         AllEs(iFrame,:)=E;
         Allvs(iFrame,:)=v;
