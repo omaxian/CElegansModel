@@ -1,8 +1,10 @@
 load('LateMaintenanceFlowBright_WT.mat')
-nEm = 10;
-MicronsPerPixel = 1/10;
 n1 = n2; OneBrt1=OneBrt2;
+%load('Ect2_30sec2.mat')
+nEm = size(n1,1);
+MicronsPerPixel = 1/10;
 xFlows = n1*MicronsPerPixel; % in microns/second
+xFlows = xFlows-mean(xFlows(:,1)); % Shifted
 % Replace first and last 10% embryo length to avoid artifacts
 nBins = size(n1,2)-1;
 nReplace = round(nBins/10);
@@ -21,7 +23,7 @@ MeanMy = mean(PerMy);
 MeanVel = mean(PerVel);
 xog = 0.25:1/(2*nBins):0.75;
 x = (0:2*nBins-1)/(2*nBins);
-Factor = 1/(sum(MeanMy)*0.025)*0.3;
+Factor = 1/(sum(MeanMy)*1/(2*nBins))*0.3;
 OneBrt1 = OneBrt1*Factor;
 PerMy = PerMy*Factor;
 MeanMy = MeanMy*Factor;
@@ -32,31 +34,9 @@ nnz = 3;
 MyHat(nnz+2:end-nnz)=0;
 kvals = [0:nModes/2 -nModes/2+1:-1]*2*pi;
 MyFilt=ifft(MyHat);
-%tiledlayout(1,2, 'Padding', 'none', 'TileSpacing', 'compact');
-subplot(1,2,1)
-h(1)=plot([x 1],[MeanMy MeanMy(1)]);
-hold on
-h(2)=plot([x 1],[MyFilt MyFilt(1)]);
-h(3)=errorbar(xog,mean(OneBrt1),std(OneBrt1)/sqrt(10),'-k','LineWidth',1.0);
-h(4) = plot([x 1],[SmoothStr SmoothStr(1)]);
-legend(h([3 1 2 4]), {'Raw data', 'Periodized','Fourier (3) fit','$\sigma_a/(0.0044)$+Shift'},...
-    'Location','Northwest')
-title('Myosin intensity')
-xlabel('$\hat x$')
-ylabel('$\hat M$')
 VelHat = fft(MeanVel);
 VelHat(nnz+2:end-nnz)=0;
 VelFilt = ifft(VelHat);
-subplot(1,2,2)
-h(1)=plot([x 1],60*[MeanVel MeanVel(1)]);
-hold on
-h(2)=plot([x 1],60*[VelFilt VelFilt(1)]);
-hold on
-h(3)=errorbar(xog,mean(xFlows*60),std(xFlows*60)/sqrt(nEm),'-k','LineWidth',1.0);
-title('Velocity')
-xlabel('$\hat x$')
-ylabel('$v$ ($\mu$m/min)')
-
 % Extract active stress
 gamma = 5e-4;
 eta = 0.1;
@@ -69,50 +49,40 @@ SmoothStr = SmoothStr-min(SmoothStr); % shift so on [0,1]
 % Now shift so it matches the myosin
 MeanMySc = mean(MeanMy);
 Rng = max(MeanMy)-min(MeanMy);
-Sigma0 = max(SmoothStr)/Rng;
+Sigma0 = max(SmoothStr)/Rng
+%Sigma0=4.4e-3;
 WouldBeVHat = Sigma0*MyHat.*(1i*kvals/L)./(gamma + eta/L^2*kvals.^2);
 WouldBeV = ifft(WouldBeVHat);
-h(4)=plot(x,WouldBeV*60)
-legend(h([3 1 2 4]), {'Raw data', 'Periodized','Fourier (3) fit','$\sigma_a=\sigma_0 M$'},'Location','Northwest')
+SmoothStr = SmoothStr/Sigma0;
+SmoothStr = SmoothStr-mean(SmoothStr)+mean(MeanMySc);% same range 
+
 figure
-tiledlayout(1,2, 'Padding', 'none', 'TileSpacing', 'compact');
-nexttile
-plot([x 1],[SmoothStr SmoothStr(1)])
+subplot(1,2,1)
+h(1)=plot([x 1],[MeanMy MeanMy(1)]);
 hold on
-xlabel('$\hat x$')
-title('Recovered stress')
-ylabel('$\sigma_a$ (Pa)')
-SmoothStr = SmoothStr/Sigma0+MeanMySc-mean(SmoothStr/Sigma0);
-nexttile
-plot([x 1],[SmoothStr SmoothStr(1)])
-hold on
-plot([x 1],[MyFilt MyFilt(1)])
-xlabel('$\hat x$')
-legend('$\sigma_a/(0.0044)$+Shift','$\hat M$','Location','Southwest')
-ylabel('$\hat \sigma_a$')
-title('Normalized stress')
-%end
-return
-close all;
-N=1000;
-tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
-nexttile
-plot(xog,OneBrt1')
-hold on
-errorbar(xog,mean(OneBrt1),std(OneBrt1)/sqrt(nEm),'-k','LineWidth',1.0);
-plot(0:1/N:1-1/N,circshift(M,-N/4),'-k')
-xlim([0.25 0.75])
-legend('Embryo','','','','','','','','','','Mean','Model')
+h(2)=plot([x 1],[MyFilt MyFilt(1)]);
+h(3)=errorbar(xog,mean(OneBrt1),std(OneBrt1)/sqrt(10),'-k','LineWidth',1.0);
+h(4) = plot([x 1],[SmoothStr SmoothStr(1)]);
+legend(h([3 1 2 4]), {'Raw data', 'Periodized','Fourier (3) fit','Fitted stress'},...
+    'Location','Northwest')
+title('Myosin intensity')
 xlabel('$\hat x$')
 ylabel('$\hat M$')
-title('Myosin intensity')
-nexttile
-plot(xog,xFlows'*60)
+%xlim([0.3 0.7])
+%xticks(0.3:0.1:0.7)
+%xticklabels(2*(xticks-0.25))
+
+subplot(1,2,2)
+h(1)=plot([x 1],60*[MeanVel MeanVel(1)]);
 hold on
-errorbar(xog,mean(xFlows*60),std(xFlows*60)/sqrt(nEm),'-k','LineWidth',1.0);
-vr=v*Sigma0/sqrt(eta*gamma)*60;
-plot(0:1/N:1-1/N,circshift(vr,-N/4),'-k')
-xlim([0.25 0.75])
+h(2)=plot([x 1],60*[VelFilt VelFilt(1)]);
+hold on
+h(3)=errorbar(xog,mean(xFlows*60),std(xFlows*60)/sqrt(nEm),'-k','LineWidth',1.0);
+h(4)=plot(x,WouldBeV*60);
+legend(h([3 1 2 4]), {'Raw data', 'Periodized','Fourier (3) fit','$\sigma_a=\sigma_0 M$'},'Location','Northwest')
+title('Velocity')
 xlabel('$\hat x$')
 ylabel('$v$ ($\mu$m/min)')
-title('Flow velocity')
+%xlim([0.3 0.7])
+%xticks(0.3:0.1:0.7)
+%xticklabels(2*(xticks-0.25))

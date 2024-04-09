@@ -1,7 +1,7 @@
 % Solving equation
 % u_t + (a(x)u)_x = 0
 % 
-N=1600;
+N=6400;
 L=1;
 h = 1/N;
 x = (0:N-1)'*h;
@@ -15,9 +15,9 @@ ODEfun = @(t,y) AdvectionRHS(t,y,h,aplus,order);
 %hold on
 plot(x,y(end,:));
 hold on
-%max(abs(y(end,:)'-u))
+max(abs(y(end,:)'-u))
 
 
 function v = a(x)
-    v = cos(x);
+    v = 1;%cos(x);
 end

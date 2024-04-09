@@ -66,9 +66,8 @@ RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
 CThresR = 0.25;
 RhatRR = 5;
 RhatRStress = 10;
-RhatRGamma = 0;
-RhatRMu = 12; % 12
-RhatRM = 2; % 2 Branched actin inhibiting myosin
+RhatRMu = 100; % 
+RhatRM = 0; % 2 Branched actin inhibiting myosin
 
 % Initialization
 dt=1e-2;
@@ -131,8 +130,10 @@ RsTime = zeros(nSave,N);
 KsTime = zeros(nSave,N);
 vsTime = zeros(nSave,N);
 vmaxes = zeros(nSave,1);
-SigmasTime = zeros(nSave,N);
-v =0;
+ActiveTenTime = zeros(nSave,N);
+ViscousTenTime = zeros(nSave,N);
+v =zeros(N,1);
+muHat = 1;
 Sigma_active=0;
 %f=figure;
 er = 1;
@@ -147,7 +148,8 @@ for iT=0:nT-1
         KsTime(iSave,:)=K;
         RsTime(iSave,:)=R;
         vsTime(iSave,:)=v;
-        SigmasTime(iSave,:)=Sigma_active;
+        ActiveTenTime(iSave,:)=Sigma_active;
+        ViscousTenTime(iSave,:)=muHat.*(DOneCenter*v);
         vmaxes(iSave)=max(abs(v));
         hold off
         plot(x,A,x,K,x,C,x,P,x,M,x,R)
@@ -177,9 +179,9 @@ for iT=0:nT-1
     % Flows
     Sigma_active = ActiveStress(M)./(1+RhatRStress*R);
     % Hyper-sensitivity of the drag coefficient on branched actin
-    gammaHat = 1 + RhatRGamma*R;
     muHat = 1 + RhatRMu*R;
-    v = (gammaHat.*speye(N)-LRatio^2*muHat.*DSq) \ (LRatio*DOneCenter*Sigma_active);
+    MatForV = speye(N) - LRatio^2*DOneCenter*spdiags(muHat,0,N,N)*DOneCenter;
+    v = MatForV \ (LRatio*DOneCenter*Sigma_active);
     vHalf = 1/2*(v+circshift(v,-1));
     % Advection (explicit)
     AllMinusdxAv = zeros(N,MaxOligSize);
@@ -290,7 +292,7 @@ legend('','','','','','','','$C$','','','','',...
 title('Concentration profiles')
 subplot(1,3,2)
 for iT=61:60:601
-plot(x,SigmasTime(iT,:),'Color',...
+plot(x,ActiveTenTime(iT,:),'Color',...
     [0.95 0.95 0.95]+(iT-1)/600*([0 0 0]-[0.95 0.95 0.95]))
 hold on
 end
