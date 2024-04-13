@@ -189,10 +189,12 @@ Ingredients
 \pause
 Wild type sequence
 \begin{itemize}
-\item Centrosomes $\rightarrow$ PAR-2 localized
+\item Centrosomes $\rightarrow$ pPARs loaded
 \item Sperm cue $\rightarrow$ Myosin inhibition
 \item Expansion of boundary to stable point (``establishment'')
+\visible<3->{
 \item ``Maintenance:'' boundary stays
+\item Focus: steady myosin/contractile asymmetry}
 \end{itemize}
 \end{column}
 
@@ -212,11 +214,64 @@ Wild type sequence
 \blfootnote{\tiny{Zonies et al. \emph{Development} (2010)}}
 \end{frame}
 
-\begin{frame}{Standard version of the story}
-No flows in maintenance?
+\begin{frame}{Standard version of the story: transient cues}
+Transient establishment phase cue generates myosin asymmetry, maintained at later times by PARs
 
-Gross paper
+\begin{center}
+\includegraphics[width=0.8\textwidth]{GrossFig1.png}
+\end{center}
+\blfootnote{\tiny{Gross et al. \emph{Nat.\ Phys.\ } (2019)}}
 \end{frame}
+
+\begin{frame}{Standard version of the story: steady flows?}
+Q1: Despite steady myosin asymmetry, no flows in model?
+
+\begin{center}
+\includegraphics[width=0.8\textwidth]{GrossFig2.png}
+\end{center}
+Q2: Experiment shows shifting flow pattern: what to make of this?
+\blfootnote{\tiny{Gross et al. \emph{Nat.\ Phys.\ } (2019)}}
+\end{frame}
+
+\begin{frame}{Standard version of the story: why there are no flows }
+Q1: Contractility is saturated \emph{everywhere}!
+\begin{center}
+\includegraphics[width=0.8\textwidth]{GrossFig3.png}
+\end{center}
+Q2: Shifting flow profile $\rightarrow$ new phase 
+\blfootnote{\tiny{Gross et al. \emph{Nat.\ Phys.\ } (2019)}}
+\end{frame}
+
+\begin{frame}{Distinction between establishment and maintenance}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+Establishment phase
+\begin{center}
+\includegraphics[width=\textwidth]{EstablishmentBC.pdf}
+\end{center}
+\begin{itemize}
+\item Pulsatile contractility (Michaux et al., 2018)
+\item Governed by rho
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{EstablishmentMyosin.jpg}
+\end{center}
+\end{column}
+\pause
+\begin{column}{0.5\textwidth}
+Maintenance phase
+\includegraphics[width=\textwidth]{MaintenanceBC.pdf}
+\begin{itemize}
+\item Diffuse myosin clusters
+\item Governed by CDC-42 (through MRCK)
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{MaintenanceMyosin.jpg}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
 
 \begin{frame}{Maintenance phase: a closer look}
 \begin{columns}
@@ -320,7 +375,6 @@ Establishment phase
 \includegraphics[width=0.8\textwidth]{EstablishmentMyosin.jpg}
 \end{center}
 \end{column}
-\pause
 \begin{column}{0.5\textwidth}
 Maintenance phase
 \includegraphics[width=\textwidth]{MaintenanceBC.pdf}
@@ -393,12 +447,6 @@ Starting from small asymmetry
 \end{center}
 \end{column}
 \end{columns}
-\pause
-\vspace{0.5 cm}
-Slow reaction-diffusion mechanism can ``pin'' boundary, but not in realistic time
-\begin{itemize}
-\item Consistent with experiment (MRCK = flows)
-\end{itemize}
 \end{frame}
 
 \begin{frame}{Maintenance model without flows: conclusions}
@@ -521,24 +569,121 @@ ect-2 ts
 
 \end{frame}
 
-
-\begin{frame}{Rescue dynamics: a closer look}
-
+\begin{frame}{Questions to answer}
+Late maintenance: more myosin on anterior, steady A-directed flow
+\begin{itemize}
+\item \lightgray{Is this a steady state? \checkmark}
+\item \lightgray{Is this an \emph{attractive} steady state? Or does it depend on establishment? \checkmark}
+\item \lightgray{Can we understand this with a simple model? \xmark}
+\item \lightgray{Can experiments identify the missing piece? \checkmark}
+\item Does a re-informed model make the correct predictions?
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Conclusions and future work}
-Maintenance phase ``rescue'' $\approx$ same pathway as establishment
+\begin{frame}{Rescue dynamics: a closer look}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{RescueSequence.pdf}
+\end{center}
+\vspace{-0.5 cm}
+Signature sequence of events
+\begin{enumerate}
+\item Sudden stalling and decrease of flow
+\item Myosin boundary stops
+\item Flow maximum fixed 
+\end{enumerate}
+No change in myosin peak!
+\end{frame}
+
+\begin{frame}{Modeling the effect of branched actin}
+Experiments suggest sudden relief of anterior tension
 \begin{itemize}
-\item PAR-3 intrinsically bistable
-\item PAR-2 ``invades'' based on excess cytoplasmic
-\item Myosin inhibition by PAR-2 $\rightarrow$ further expansion
-\item Boundary pinned when run low on PAR-2
+\item Model as CDC-42 threshold where branched actin is activated 
 \end{itemize}
-Flow and myosin profiles out of whack in WT vs.\ model
+\begin{center}
+\includegraphics[width=0.5\textwidth]{BranchedActModel.pdf}
+\end{center}
+\pause
 \begin{itemize}
-\item Better match: \emph{arx-2} (RNAi) embryos 
-\item Branched actin inhibits contractility
-\item Incorporate into model; match WT?
+\item Idea: threshold has to be between the A/P CDC-42 levels
+\end{itemize}
+\begin{center}
+\vspace{-0.1 cm}
+
+\movie[width=0.5\textwidth,loop]{\includegraphics[width=0.5\textwidth]{RescueBA06Still.pdf}}{PresentationFigsMovies/FlowRescueBA06.avi}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Changing the threshold alters state}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{center}
+Thres = 0.2$c_A$ (noncontractile)
+
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{RescueBA02Still.pdf}}{PresentationFigsMovies/FlowRescueBA02.avi}
+\end{center}
+\end{column}
+\begin{column}{0.5\textwidth}
+
+\begin{center}
+Thres = $c_A$ (hypercontractile)
+
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{RescueBA1Still.pdf}}{PresentationFigsMovies/FlowRescueBA1.avi}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Summary kymographs: polarity markers}
+\begin{center}
+\includegraphics[width=\textwidth]{PAR3KymosRescueBA.pdf}
+\end{center}
+\vspace{0.5 cm}
+Size of anterior domain regulated by CDC-42 threshold
+\end{frame}
+
+\begin{frame}{Summary kymographs: flows}
+\begin{center}
+\includegraphics[width=\textwidth]{FlowKymosRescueBA.pdf}
+\end{center}
+\vspace{0.5 cm}
+Steady A/P asymmetry in flow; dependent on size of threshold
+\begin{itemize}
+\item Advective flux balanced by diffusion at steady state
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Mid-threshold: comparing with experiments}
+\begin{center}
+\includegraphics[width=\textwidth]{FlowSpeedBAVsExp.pdf}
+\end{center}
+Not reproducing sharp dependence, but qualitatively right dynamics
+\end{frame}
+
+\begin{frame}{Conclusions}
+Maintenance phase encodes dynamically stable state
+\begin{itemize}
+\item Persistent A-directed flow
+\item Asymmetric myosin
+\item Can't be reproduced in simple models (runaway train)
+\end{itemize}
+\pause 
+
+Branched actin revealed as contractility inhibitor
+\begin{itemize}
+\item Depends on CDC-42 threshold higher than myosin
+\item Incoherent feed-forward loop
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.3\textwidth]{IncoherentFF.pdf}
+\end{center}
+
+\pause 
+\begin{itemize}
+\item Still a role for cytoplasmic balance / reaction-diffusion
+\item Branched actin slows the train down, slow process stops boundary
 \end{itemize} 
 \end{frame}
 
