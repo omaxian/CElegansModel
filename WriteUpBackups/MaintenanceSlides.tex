@@ -176,6 +176,7 @@ Spatial differences in protein concentration
 \begin{frame}{One-cell \emph{C.\ elegans} model system}
 \begin{columns}
 \begin{column}{0.6\textwidth}
+\visible<1->{
 Ingredients
 \begin{itemize}
 \item PAR proteins 
@@ -185,13 +186,13 @@ Ingredients
 \end{itemize}
 \item Actomyosin flows 
 \end{itemize}
-
-\pause
+}
+\visible<2->{
 Wild type sequence
 \begin{itemize}
 \item Centrosomes $\rightarrow$ pPARs loaded
 \item Sperm cue $\rightarrow$ Myosin inhibition
-\item Expansion of boundary to stable point (``establishment'')
+\item Expansion of boundary to stable point (``establishment'')}
 \visible<3->{
 \item ``Maintenance:'' boundary stays
 \item Focus: steady myosin/contractile asymmetry}
@@ -199,7 +200,11 @@ Wild type sequence
 \end{column}
 
 \begin{column}{0.5\textwidth}
-\includegraphics[width=\textwidth]{CElegansScheme-crop.pdf}
+\visible<1->{
+\includegraphics[width=\textwidth]{CElegansScheme1.pdf}}
+\vspace{0.25 cm}
+\visible<2->{
+\includegraphics[width=\textwidth]{CElegansScheme2.pdf}}
 \end{column}
 \end{columns}
 \end{frame}
@@ -240,6 +245,12 @@ Q1: Contractility is saturated \emph{everywhere}!
 \end{center}
 Q2: Shifting flow profile $\rightarrow$ new phase 
 \blfootnote{\tiny{Gross et al. \emph{Nat.\ Phys.\ } (2019)}}
+\end{frame}
+
+\begin{frame}{Equally disappointing? }
+\begin{center}
+\includegraphics[width=0.8\textwidth]{GoldenBatch.png}
+\end{center}
 \end{frame}
 
 \begin{frame}{Distinction between establishment and maintenance}
@@ -508,22 +519,24 @@ Late maintenance: more myosin on anterior, steady A-directed flow
 
 
 \begin{frame}{Depleting branched actin gives hypercontractile state}
-Treat with nocodazole to remove MT forces pulling on cap
-\begin{itemize}
-\item Hypothesis: branched actin halts myosin constriction
-\item \red{Update movies}
-\end{itemize}
+Hypothesis: branched actin halts myosin constriction
 
+\begin{columns}
+\begin{column}{0.5\textwidth}
 \begin{center}
 Wild type
 
-\movie[width=0.52\textwidth,loop]{\includegraphics[width=0.52\textwidth]{CDK1.png}}{PresentationFigsMovies/cdk-1RNAi_NMY2gfp.avi}
-
-
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{WildTypeMid.jpg}}{PresentationFigsMovies/WildType.avi}
+\end{center}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{center}
 \emph{arx-2} (RNAi)
 
-\movie[width=0.52\textwidth,loop]{\includegraphics[width=0.52\textwidth]{Arx2RNAi.png}}{PresentationFigsMovies/arxRNAi_NMY2gfp.avi}
+\movie[width=\textwidth,loop]{\includegraphics[width=\textwidth]{Arx2RNAi.png}}{PresentationFigsMovies/Arx2RNAi.avi}
 \end{center}
+\end{column}
+\end{columns}
 
 \end{frame}
 
@@ -682,8 +695,7 @@ Branched actin revealed as contractility inhibitor
 
 \pause 
 \begin{itemize}
-\item Still a role for cytoplasmic balance / reaction-diffusion
-\item Branched actin slows the train down, slow process stops boundary
+\item Flows transport boundary, branched actin slows down flows, reaction/diffusion sets final position
 \end{itemize} 
 \end{frame}
 
