@@ -139,46 +139,13 @@ In addition to stabilizing asymmetries that are set up during establishment phas
 Our goal in this section is to explore existing literature mechanisms for how maintenance phase biochemistry could set an attractive steady state. At first glance, it appears that the phenomenon of maintenance phase rescue is a consequence of an instability of the underlying system; a small perturbation in the myosin concentration could induce an anterior-directed flow, which drives the system to the polarized state. Here we systematically exclude this by considering a model of myosin alone and showing that spontaneous symmetry breaking is not possible with realistic parameters. We then consider PAR proteins, showing that, while the PAR circuit we consider can maintain a stable polarized state with a fixed boundary position, the time required to set up this state is prohibitively long, and myosin-directed flows are required. Finally, we consider a combination of myosin-driven flows \emph{and} PAR proteins. This model allows us to reproduce the initial stages of maintenance phase rescue, but it cannot explain the sudden slow-down in flow speeds and pinning of the myosin boundary.
 
 \subsubsection{Myosin without additional feedback cannot spontaneously polarize \label{sec:myosin}}
-We first explore the dynamics of myosin alone, which we describe in terms of a one-dimensional spatially and temporally varying field $M(x,t)$ which evolves according to the advection-diffusion-reaction equations \citep{bois2011pattern}
-\begin{subequations}
-\label{eq:MyOnly}
-\begin{gather}
-\Dt M + \Dx \left(v M\right) = D_M \Dx^2 M +\My{\kon}M_\text{cyto} - \My{\koff} M \\
-\label{eq:veleqndim}
-\gamma v = \eta \Dx^2 v + \Dx \sigma_a(M)
-\end{gather}
-\end{subequations}
-The velocity field\ \eqref{eq:veleqndim} comes from the assumption that myosin generates an active stress $\sigma_a(M)$, which combines with the viscous stress to give the total cortical stress $\sigma = \eta \Dx{v} + \sigma_a(M)$. The force balance equation in the fluid says that the force due to stress must be balanced by the drag force, $\gamma v = \Dx \sigma,$
-where $\gamma$ is the drag coefficient. Combining the force balance with the stress expression gives the velocity equation \eqref{eq:veleqndim}, which can also be rewritten in terms of the ``hydrodynamic lengthscale'' $\ell=\sqrt{\eta/\gamma} \approx 14$ $\mu$m, which is essentially the lengthscale on which a local increase in the myosin field will pull in neighboring molecules  \citep{mayer2010anisotropies}. As in \citep{bois2011pattern}, we ignore the elastic part of the stress, since the actomyosin cortex is purely viscous on timescales longer than the cortical turnover time \citep{mayer2010anisotropies}. 
-
 
 In the case when diffusion of myosin is negligible and all myosin is bound to the membrane, the stability analysis in the SI shows that the dynamics are unstable when the flow carries myosin molecules a distance larger than the hydrodynamic lengthscale, i.e., $v / \koff_M > \ell$. Substituting $\ell \approx$ 14 $\mu$m, we plot the velocity threshold for instability as a function of myosin lifetime in Fig.\ S4. For realistic lifetimes on the order 5--20 s, the minimum flow speed to generate instability is about 40 $\mu$m/min, which is much faster than ever observed \emph{in vivo}. Thus the dynamics of maintenance phase rescue are not due to myosin instabilities.\footnote{We note a distinction here between maintenance and establishment phase. In the latter, instabilities in the dynamics of rho combine with delayed negative feedback to yield pulsatile dynamics \citep{nishikawa2017controlling, michaux2018excitable, michaud2022versatile}. The connection between these pulsatile dynamics and the large-scale flows that establish polarity is still unknown.}
 
 
 \subsubsection{Basic maintenance-phase biochemistry circuit \label{sec:BCOnly}}
 
-Because the dynamics of myosin alone are insufficient to generate instability, PAR proteins must be essential for rescue to occur \citep{zonies2010symmetry}. We consequently introduce a model of maintenance phase biochemistry based on the diagram in Fig.\ \ref{fig:ModelSch}, which in turn comes from \citep[Fig.~2]{lang2017proteins}. On the anterior side, we have three distinct protein species: PAR-3 ($A$), CDC-42 ($C$), and PAR-6/PKC-3 ($K$), each of which has a separate function. The posterior PARs (PAR-2, PAR-1, and CHIN-1) can be lumped into one species (denoted by $P$), which antagonizes both PAR-3 and CDC-42. The dimensional equations which describe the circuit are 
-\begin{subequations}
-\label{eq:AllBC}
-\begin{align}
-\label{eq:P31}
-\Dt \MA & = D_A \Dx^2 \MA + \left(\kon_A+k^+_A f^+_A(A) \right)A_\text{cyto}- \koff_A \MA  \\  \nonumber
- &+ 2 \kdp_A(P) \hat{A}_2-2\kp_A \hat{\MA}^2+\sum_{n=3}^N \left(A_n-\kdp_A(P) A_1 A_{n-1}\right)  \\ 
-\Dt \PA & =\kp_{A}\MA (A_{n-1}-A_n) -\kdp_A(P)(A_n-A_{n+1})  \qquad N > n \geq 2 \\ 
-\label{eq:P33}
-\Dt A_N & =\kp_A \MA  A_{N-1}-\kdp_A(P) A_N \\
-%\end{align}
-%\begin{align}
-\label{eq:Ceqn}
-\Dt C& =D_C \Dx^2 {C} +\kon_C C_\text{cyto}  - \koff_C \left(1+r_\text{PC}P\right)C\\
-\label{eq:Keqn}
-\Dt {K}  &= D_K \Dx^2 {K} + {r}_\text{ACK} {C} \delta_{A > A_0}K_\text{cyto}-\koff_K K \\
-\Dt {P} & =D_P \Dx^2 {P} +\kon_P P_\text{cyto}  - \koff_P \left(1+{r}_\text{KP}{K}\right){P}
-\end{align}
-\end{subequations}
-The PAR-3 equations \eqref{eq:P31}--\eqref{eq:P33} describe the dynamics of PAR-3 oligomerization  (an oligomer of size $n$ denoted by $A_n$), for which we use the model developed in \citep{lang2023oligomerization}. As discussed in detail there, the combination of oligomerization and positive feedback (through the term $k^+_A f^+_A(A)$) imparts intrinsic bistability to the system. This bistability is strengthened when pPARs are included; through the term $\kdp_A(P)$, these posterior PARs promote depolymerization of PAR-3.
-
-PAR-3 also gates the association of CDC-42 with PAR-6/PKC-3 ($K$), which is a complex that inhibits all posterior PARs \citep{lang2017proteins}. To model this, we work off the observations in \citep{sailer2015dynamic}, which reveal that PAR-6/PKC-3 are recruited to the membrane by CDC-42, provided that there is a sufficient concentration (roughly 10\% of the enriched anterior level) of PAR-3 on the membrane. Thus the total loading term in\ \eqref{eq:Keqn} is proportional to the CDC-42 concentration times the cytoplasmic concentration of $K$, provided the PAR-3 concentration satisfies $A > A_0$. The other two equations (for CDC-42 and pPARs) are straightforward: we assume a basal rate of binding and unbinding, with an unbinding rate which is linearly enhanced by the inhibitor (pPARs for CDC-42 and PKC-3 for pPARs). In the supplemental appendix, we nondimensionalize\ \eqref{eq:AllBC}, then use sets of existing experimental observations about the relative amount of each species on the anterior/posterior side of the embryo, as well as estimates of the amounts in the cortex vs.\ cytoplasm, to constrain the unknown parameters. 
+Because the dynamics of myosin alone are insufficient to generate instability, PAR proteins must be essential for rescue to occur \citep{zonies2010symmetry}. We consequently introduce a model of maintenance phase biochemistry based on the diagram in Fig.\ \ref{fig:ModelSch}, which in turn comes from \citep[Fig.~2]{lang2017proteins}. On the anterior side, we have three distinct protein species: PAR-3 ($A$), CDC-42 ($C$), and PAR-6/PKC-3 ($K$), each of which has a separate function. The posterior PARs (PAR-2, PAR-1, and CHIN-1) can be lumped into one species (denoted by $P$), which antagonizes both PAR-3 and CDC-42. The equations which describe the circuit are given in the SI.
 
 \subsubsection{PAR proteins without contractility amplify asymmetries, but too slowly}
 
@@ -203,17 +170,6 @@ Our modeling so far identified two regimes of behavior, depending on the sensiti
 In Fig.\ \ref{fig:Ect2VsWT} we show the myosin intensity and flow speed over 30 second intervals of maintenance phase rescue, and compare the result to the steady myosin intensities and flow speeds observed in wild-type embryos \citep{sailer2015dynamic}. The myosin peak initially grows in size advances rapidly towards the anterior, but after about three minutes it stops growing and becomes pinned at about 40\% embryo length. The pinning of the myosin peak corresponds to a decrease in the maximum flow speed from about 4.5 $\mu$m/min (from 2:00 to 3:30) to 2 $\mu$m/min in the last 30 seconds of maintenance phase (3:30 to 4:00, see the inset of Fig.\ \ref{fig:Ect2VsWT}). In the last 30 seconds of maintenance phase, the flow profile in \emph{ts ect-2} embryos is roughly the same as that observed during late maintenance phase in wild-type embryos. The myosin intensity appears quantitatively different, but has the same fundamental shape: there is a gradient of myosin in both the anterior and posterior, with a maximum occurring at around 40\% of the embryo length. These results establish that the biochemical circuit governing maintenance phase can amplify small residual asymmetries from establishment phase, and that the resulting polarized state is independent of what comes before maintenance. 
 
 \subsection{Experiments in arx-2 (RNAi) embryos establish a hyper-contractile state}
-\red{Figure we want to make for this section:
-\begin{enumerate}[label=(\alph*),topsep=0pt,itemsep=-2ex]
-\item Pictures of wild-type vs.\ arx-2 (RNAi) embryos in late maintenance
-\item Measurements of myosin peak in maintenance (left panel of Fig.\ \ref{fig:Arp23Myosin}; put flows in SI if at all)
-\item Pictures of ect-2 (ts) with and without arx-2 (RNAi) in early and late maintenance
-\item Kymograph of rescue with and without arx-2 (RNAi) 
-\item Pictures of control vs.\ arx-2 (RNAi) for embryos \emph{with nocodozole} treatment 
-\item Myosin intensity \& flow in control vs.\ arx-2 (RNAi) \emph{with nocodozole} (Fig.\ \ref{fig:Arp23Noc} here)
-\end{enumerate}
-}
-
 
 We hypothesize that branched actin might stop the anterior cap from becoming hyper-contractile. To test this hypothesis, we deplete wild type embryos of arx-2, a protein which activates the arp 2/3 complex and the assembly of branched actin. Figure\ \ref{fig:Arp23Myosin} shows the average myosin intensity and flow profiles over the last three minutes of maintenance phase in wild-type (red) and arx-2 (RNAi) treated embryos (blue). While the wild-type intensity seems to be roughly stalled at a boundary position 40\% of the embryo length, the arx-2 (RNAi) embryos demonstrate hyper-contractility, with a myosin peak that shifts to the anterior (and increases) over time.
 
@@ -224,15 +180,6 @@ We hypothesized that the chaotic and noisy flow speeds in \emph{arx-2} (RNAi) em
 In \emph{arx-2} (RNAi) embryos, nocodazole treatment significantly improved the patterns of flow, confining them to the A/P axis and allowing us to extract meaningful information. Similar to the case without nocodazole, embryos treated with arx-2 (RNAi) and nocodazole showed a hypercontractile anterior myosin cap (Fig.\ \ref{fig:Arp23Noc}), with the cap continuing to contract over time to the very edge of the anterior domain. The contraction of the cap corresponded with marked increases in flow speed during maintenance, so that flows went from 1.5 $\mu$m/min during the third minute before anaphase onset to 3--4 $\mu$m/min, with the point of maximum flow occuring at 40\% embryo length instead of 60\% (Fig.\ \ref{fig:Arp23Noc}). Thus, regardless of the presence of microtubules, depletion of arx-2 by RNAi leads to a hypercontractile state with a larger velocity and a cap which tends to fall of the edge of the embryo, similar to what we observed in simulations in Fig.\ \ref{fig:RescueNoBA}. We now propose a model for how branched actin could inhibit contractility and lead to the formation of a stable boundary.
 
 \subsection{Model of branched actin correctly reproduces rescue dynamics}
-\red{Figure we want to make for this section:
-\begin{enumerate}[label=(\alph*),topsep=0pt,itemsep=-2ex]
-\item Schematic showing ways we consider branched actin working
-\item Simulation with tension reduction showing boundary stops (and remaining issues; Fig.\ \ref{fig:BAInStr} here)
-\item ``Best'' simulation reproducing all trends (Fig.\ \ref{fig:BABest} here).
-\end{enumerate}
-}
-
-
 To model branched actin, we work off the following two important observations from our maintenance-phase rescue experiments: first, the pinning of the myosin domain and drop in velocity happen quite abruptly, and second, the rapid drop in velocity is \emph{not} accompanied by strong changes in the myosin concentration profile (Fig.\ \ref{fig:Ect2VsWT}). These observations together suggest that there is an ultra-sensitive dependence of contractility (not myosin concentration) on branched actin. As rescue progresses, branched actin becomes active on the anterior, providing a ``brake'' which slows down contractility and progression of the boundary.
 
 To translate our hypothesis into our model, we make the following assumptions, 
@@ -243,47 +190,11 @@ To translate our hypothesis into our model, we make the following assumptions,
 \item While branched actin does not diffuse in the cortex, polymerization of actin leads to a spreading out of the branched network, and so we include nonzero diffusivity. 
 \item Branched actin inhibits contractility. 
 \end{enumerate}
-The first four assumptions lead to the advection-diffusion-reaction equation
-\begin{subequations}
-\begin{equation}
-\label{eq:BA}
-\Dt R + \Dx (v R) =  D_R \Dx^2 R + \left(r_\text{CR}\max{\left(C-C_R,0\right)}+r_\text{RR} R\right) R_\text{cyto}-\koff_R R
-\end{equation}
-for the evolution of branched actin ($R$) in time and space. For the fifth assumption, we postulate a simple relationship for how branched actin impacts contractile stress 
-\begin{equation}
-\label{eq:SigR}
-\sigma_a = \frac{\sigma_0 M}{1+r_\text{R$\sigma$}R}.
-\end{equation}
-We use division of the stress instead of subtraction because, as the branched actin concentration goes to infinity, we expect the tension to approach zero, as was shown to be the case \emph{in vitro} using laser ablation \citep{muresan2022f}. %In our model, negative stress corresponds to an expansive force, which has never been seen experimentally.
-In the SI, we give the dimensionless form of \eqref{eq:BA} and \eqref{eq:SigR} and estimate the unknown parameters. 
-\end{subequations}
+The first four assumptions lead to the advection-diffusion-reaction equation for branched actin given in the SI. For the fifth assumption, we postulate a simple relationship for how branched actin impacts contractile stress, given in the SI. 
 
 The dynamics of rescue in this case are shown in Fig.\ \ref{fig:BAInStr}. In the early stages of rescue, we see a concentration of myosin and CDC-42 into an interior peak which grows over time. Once the concentration of CDC-42 at the peak exceeds the threshold $C_R=0.25$, branched actin is produced. This causes an immediate drop in contractility within the peak (see the active stress profile at intermediate times), which leads to a leveling out of the anterior profiles of CDC-42 and myosin (weaker flows in the anterior allow CDC-42 to diffuse over). Following this, branched actin builds up on the anterior. The boundary stops moving when the tension on the anterior balances the tension on the posterior, leaving an intermediate zone of contractility at around 60\% embryo length. 
 
-A necessary feature of our simulations is the threshold dependence of branched actin production on CDC-42 activity. In the SI, we demonstrate that simulations without a threshold give velocity profiles which build up from zero at $t=0$ to a plateau value later in time. That is, without a threshold dependence, it is impossible to reproduce the experimental result of a velocity which suddenly \emph{decreases} when the boundary penetrates the interior.
-
-Nevertheless, while simulations with a threshold qualitatively reproduce what we observe in maintenance phase rescue (the anterior boundary progresses and then stops), there are two details that do not match the experiments. First, as soon as branched actin inhibits contractility, the myosin concentration profile tends to flatten out in the anterior (it is no longer peaked). This is not what we see in the rescue experiments (data in Fig.\ \ref{fig:Ect2VsWT}), where myosin stays peaked after the boundary stops moving. Second, the flow profile from simulations is symmetric about the myosin peak with a flow of about 1 $\mu$m/min coming from \emph{both} the anterior and posterior into the zone of contractility. This is also not what we observe in experiments, where the flow profile is essentially flat in the anterior (up to 40\% embryo length), and anterior-directed in the posterior (see Fig.\ \ref{fig:Ect2VsWT}). In the following sections, we add to our model to try to address these two issues.
-
-\subsubsection{Detail 1: reproducing the myosin profile}
-Let us consider first the issue of the myosin concentration profile. What is missing from our inhibition model that causes myosin to be flat in the anterior? We previously saw that inhibition of tension by branched actin inhibits flows in the anterior, which allows diffusion to level out the anterior CDC-42 profile, which in turn levels out the anterior myosin profile. At steady state, there is a compressive flow in the middle of the embryo, but the speed of the flow (at most 2 $\mu$m/min as measured in experiments) is insufficient to concentrate myosin or CDC-42. \red{Some statement about myosin and CDC-42 distributions.}
-
-We propose two possible explanations to address this issue. First, a simple explanation is that myosin could have a longer lifetime than 8 s, as we can track the large clusters for some 30 s before they disappear. A second possibility is that branched actin could also inhibit myosin directly in the anterior, for example by thickening the cortex and forcing myosin unbinding (which was shown to occur in mouse oocytes \citep{chaigne2015narrow}). As shown in the SI, both of these models show a better fit to the data as far as the myosin profile, but neither have a velocity which matches that obtained from experiments, as there is still a backflow in the anterior which results from the reduction of tension and myosin inhibition. 
-
-\subsubsection{Detail 2: reproducing the (lack of) flow on the anterior}
-Because there is an enrichment of myosin at the midline relative to the anterior pole, and because branched actin inhibits tension, the results in Fig.\ \ref{fig:BAInStr} show an anterior gradient in tension and a flow from the anterior to the midline. However, in wild-type and \emph{ect-2} (ts) embryos in late maintenance, we never detect a substantial (larger than 1 $\mu$m/min) flow in the anterior (see Fig.\ \ref{fig:Ect2VsWT}), despite the gradient in myosin (and presumably in tension). Put another way, gradients in tension do not translate to flows the same way in the anterior as they do in the posterior, presumably because of branched actin.
-
-Our model equation for velocity\ \eqref{eq:veleqndim} has two addition parameters that model how flow responds to changes in contractility. The parameter that controls the magnitude of the flow obtained for a fixed tension gradient is the drag or friction coefficient $\gamma$, and the parameter that controls the response to a given rate of strain ($\Dx v$) is $\eta$. We propose that branched actin could modulate each of these parameters according to the linear relationships
-\begin{gather*}
-\gamma(R)=\gamma_0 \left(1+r_\text{R$\gamma$}R\right) \qquad \eta(R)=\eta_0\left(1+r_\text{R$\eta$} R\right).
-\end{gather*}
-These two models, while superficially similar, are at a deeper level quite different. In the case of increased friction, we are proposing that the velocity can rapidly change from negative (in the posterior) to positive (in the anterior), but that the magnitude of the positive velocity in the anterior is necessarily smaller because the same force on that side generates a smaller velocity than on the posterior. Increased viscosity, by contrast, says that the branched actin network resists changes in strain rate (sharp changes in velocity). By increasing viscosity, we are proposing that the changes in tension on the anterior side cannot induce compressive flows because of viscous resistance.
-
-In the SI, we analyze both of these models, and conclude that either a moderate increase (a factor of 2) in the viscous resistance, or a large increase in the frictional resistance (a factor of 10) in the anterior is sufficient to reproduce the dynamics observed experimentally. A large increase in viscosity results in an anterior flow that cannot rapidly respond to changes in tension, and as such cannot stop the boundary from progressing by slowing the flow. A small increase in friction is simply not large enough to reproduce the experimental flow profile (it still retains the compressive flow in the anterior). 
-
-\subsubsection{Best case parameters}
-
-Our best attempt to reproduce the experimental data is shown in Fig.\ \ref{fig:BABest}. In this simulation, we add direct inhibition of myosin by branched actin, so that branched actin in the anterior increases the off rate by about 50\%. Likewise, we add a viscosity enhancement, so that the viscous resistance in the anterior (with branched actin) is roughly 3 times the posterior (see SI for exact parameters). The dynamics in Fig.\ \ref{fig:BABest} (myosin and flow profiles) agree well with those observed experimentally, 
-
+A necessary feature of our simulations is the threshold dependence of branched actin production on CDC-42 activity.
 
 
 \section{Discussion}
