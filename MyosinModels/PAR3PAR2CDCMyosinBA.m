@@ -66,13 +66,13 @@ RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
 CThresR = 0.25;
 RhatRR = 5;
 RhatRStress = 10;
-RhatRMu = 100; % 
+RhatRMu = 0; % 
 RhatRM = 0; % 2 Branched actin inhibiting myosin
 
 % Initialization
 dt=1e-2;
 tf = 192;
-saveEvery=0.16/dt;
+saveEvery=0.8/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
 N=1000;
@@ -135,7 +135,7 @@ ViscousTenTime = zeros(nSave,N);
 v =zeros(N,1);
 muHat = 1;
 Sigma_active=0;
-%f=figure;
+f=figure;
 er = 1;
 for iT=0:nT-1
     t = iT*dt;
@@ -152,18 +152,32 @@ for iT=0:nT-1
         ViscousTenTime(iSave,:)=muHat.*(DOneCenter*v);
         vmaxes(iSave)=max(abs(v));
         hold off
-        plot(x,A,x,K,x,C,x,P,x,M,x,R)
+        plot(x,A,'Color',[0 0.5 0])
+        hold on
+        plot(x,K,'--','Color',[0.47 0.67 0.19])
+        plot(x,C,'-.','Color',[0.49 0.18 0.56])
+        plot(x,P,':','Color',[0.64 0.08 0.18])
+        plot(x,M,'-','Color',[0 0.45 0.74])
+        plot(x,R,'-.','Color',[0.87 0.49 0])
         xlim([0.5 1])
-        %legend('$A$ (PAR-3)','$K$ (PAR-6)','$C$ (CDC-42)',...
-        %    '$P$ (pPARs)','$M$ (Myosin)','$R$ (Br Act)','Location','North','NumColumns',2)
+        legend('PAR-3','PAR-6/PKC-3','CDC-42','pPARs','Myosin','Br Act','NumColumns',2,...
+            'Location','Northeast')
         %ylim([0 1.5])
-        %xlabel('Distance from anterior')
-        %ylabel('Protein density')
-        %xticks(0:0.25:1);
-        %xticklabels(-0.5:0.25:0.5)
-        %title(strcat('$t=$',sprintf('%.2f', iT*dt/kdpA),' s'))
-        %movieframes(iSave)=getframe(f);
-        drawnow
+        xlabel('Embryo length')
+        ylabel('Concentration')
+        xticks([0.5 0.75 1])
+        xticklabels([0 0.5 1])
+        RealTime = iT*dt/kdpA;
+        MinTime = floor(RealTime/60);
+        SecTime = rem(RealTime,60);
+        if (SecTime <10)
+            title(strcat(sprintf('%.0f', MinTime),':0',sprintf('%.0f', SecTime)))
+        else
+            title(strcat(sprintf('%.0f', MinTime),':',sprintf('%.0f', SecTime)))
+        end
+        ylim([0 1.2])
+        movieframes(iSave)=getframe(f);
+        %drawnow
     end
     
     % Initialization and cytoplasmic
@@ -235,9 +249,6 @@ for iT=0:nT-1
     R = RDiff_U\ (RDiff_L\(RDiff_P*(R/dt+RHS_R)));
     %chk = (R-Rprev)/dt- (DR_Hat*DSq*R + RHS_R);
 end
-set(gca,'ColorOrderIndex',1)
-plot(x,A,x,K,x,C,x,P,x,M,x,R)
-xlim([0.5 1])
 end
 %title(strcat('$A^\textrm{(Tot)}=$',num2str(ATot),', $P^\textrm{(Tot)}=$',num2str(PTot)))
 % Post process to get aPAR and pPAR sizes
