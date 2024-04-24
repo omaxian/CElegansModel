@@ -10,7 +10,7 @@ D = 0.1/(L^2*koffM);    % In membrane diffusion
 pol=1;
 load('AIR1Diffusion.mat')
 if (pol)
-load('PolarizationDistances.mat')
+load('PolarizationDistances_OnlyAx.mat')
 end
 for iP=1
 Air = AlluBd(:,iP);
@@ -23,19 +23,19 @@ if (pol)
 end
 % Myosin params
 ell = 0.1;              % Fixed from Grill paper
-Sigma0 = 0.2;             % Velocity strength (VARIABLE)
+Sigma0 = 0.25;             % Velocity strength (VARIABLE)
 % Reactions
-K_AE = 0.6;             % ECT-2 inactivation by AIR-1 (VARIABLE)
+K_AE = 0%.6;             % ECT-2 inactivation by AIR-1 (VARIABLE)
 K_EM = 50;              % Myosin activation by ECT-2 
 K_ME = 10/3;            % Myosin recuiting ECT-2     (Assume = basal rate)
 K_fb = 0.52/koffM;      % Delayed negative feedback  (Set from Ed's paper)
 
 %% Numerical parameters
 dt = 1e-2;
-tf = 600*koffM;
-saveEvery = floor(6*koffM/dt+1e-3);
+tf = 2400*koffM;
+saveEvery = floor(60*koffM/dt+1e-3);
 nT = floor(tf/dt);
-N = 500;
+N = 2000;
 dx = 1/N;
 x = (0:N-1)'*dx;
 A = zeros(N,1);
@@ -62,6 +62,7 @@ Allvs = zeros(nSave,N);
 
 % Initial guess
 M = 0.3*ones(N,1);
+M = M + 0.01*sin(2*pi*6*x);
 %M(x > 0.45 & x < 0.55)=0;
 E = 0.1*ones(N,1);
 %E(x > 0.45 & x < 0.55)=0;
@@ -133,6 +134,7 @@ val
 AllMRatios(iP,:)=MaxMyTime./MinMyTime;
 AllERatios(iP,:)=MaxEctTime./MinEctTime;
 FinalEct(iP,:)=E;
+FinalMy(iP,:)=M;
 AllMaxVs(iP,:)=MaxvTime*Sigma0*L*koffM*60;
 AlllEctClear(iP,:)=Ect2Clearing;
 end
