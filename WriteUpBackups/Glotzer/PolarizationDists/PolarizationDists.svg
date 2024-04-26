@@ -1886,15 +1886,15 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.60338px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.246609"
-       x="89.910667"
-       y="-135.16016"
+       x="-128.29315"
+       y="138.28677"
        id="text3156-8-7"
-       transform="rotate(90)"><tspan
+       transform="rotate(-90)"><tspan
          sodipodi:role="line"
          id="tspan3154-3-5"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.60338px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.246609"
-         x="89.910667"
-         y="-135.16016">ECT-2 concentration</tspan></text>
+         x="-128.29315"
+         y="138.28677">ECT-2 concentration</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.60338px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.246609"
@@ -1999,27 +1999,27 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.60338px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.246609"
-       x="146.57526"
-       y="-135.24728"
+       x="-186.90204"
+       y="137.45007"
        id="text3156-8-7-6"
-       transform="rotate(90)"><tspan
+       transform="rotate(-90)"><tspan
          sodipodi:role="line"
          id="tspan3154-3-5-9"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.60338px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.246609"
-         x="146.57526"
-         y="-135.24728">Myosin concentration</tspan></text>
+         x="-186.90204"
+         y="137.45007">Myosin concentration</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.60338px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.246609"
-       x="208.97501"
-       y="-132.78369"
+       x="-245.76608"
+       y="134.98648"
        id="text3156-8-7-6-8"
-       transform="rotate(90)"><tspan
+       transform="rotate(-90)"><tspan
          sodipodi:role="line"
          id="tspan3154-3-5-9-7"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.60338px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.246609"
-         x="208.97501"
-         y="-132.78369">Flow speed μm/min</tspan></text>
+         x="-245.76608"
+         y="134.98648">Flow speed μm/min</tspan></text>
     <g
        id="g22833"
        transform="matrix(0.64131574,0,0,0.64131574,1.3553854,32.390198)">
