@@ -35,7 +35,8 @@ M12 = K_EM*2*E0*(1-M0);
 M21 = (2*pi*k)^2*ell*Sigma0*E0/(1+(2*pi*k*ell)^2) + KonE*K_ME*(1-E0);
 M22 = -D*(2*pi*k)^2 - KoffE;
 AllDets(k)=det([M11 M12; M21 M22]);
+AllTraces(k)=trace([M11 M12; M21 M22]);
 end
-Stable(iL,iS)=sum(AllDets<0);
+Stable(iL,iS)=sum(AllDets<0 | AllTraces > 0);
 end
 end

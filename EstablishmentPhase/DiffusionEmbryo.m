@@ -1,16 +1,25 @@
 load('LonghiniData.mat')
-for iP=1
+Dists =1:10;
+pol = 1;
+for iP=1:length(Dists)
 close all;
 rx=27;
 ry=15;
-%CLocs = [-rx+Data(iP,1) 0; rx-Data(iP,3) 0];
-CLocs = [0 ry-10; 0 ry-10];
-CSize = 0.1;
-CScale = 0.01;
+if (pol)
+CSize = 0.175; % Gaussian SD
+CScale = 1/32;
+MeshSize = 0.2;
+CLocs = [rx-Dists(iP) 0; rx-Dists(iP) 0];
+else
+CSize = 0.7; % Gaussian SD
+CScale = 1;
+MeshSize = 0.5;
+CLocs = [-rx+Data(iP,1) 0; rx-Data(iP,3) 0];
+end
 if (iP==1)
 % Finite element mesh on ellipsoidal embryo
 fd=@(p) p(:,1).^2/rx^2+p(:,2).^2/ry^2-1;
-[p,t]=distmesh2d(fd,@huniform,0.125,[-rx,-ry;rx,ry],[]);
+[p,t]=distmesh2d(fd,@huniform,MeshSize,[-rx,-ry;rx,ry],[]);
 N=length(p);
 Nt = length(t);
 % Finite element mass and stiffness matrix
@@ -52,18 +61,18 @@ BdPts = BdPts(inds,:);
 uBd = uBd(inds);
 fell = @(t) sqrt(rx^2*sin(t).^2 + ry^2*cos(t).^2); 
 arcLengths = arrayfun(@(t2) integral(fell,0,t2), Theta);
-% if (iP==1)
-% tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
-% nexttile
-% trisurf(t, p(:,1), p(:,2), f);
-% shading interp
-% view(2)
-% nexttile
-% trisurf(t, p(:,1), p(:,2), u);
-% shading interp
-% view(2)
-% colorbar
-% end
+if (iP==-1)
+tiledlayout(1,2,'Padding', 'none', 'TileSpacing', 'compact');
+nexttile
+trisurf(t, p(:,1), p(:,2), f);
+shading interp
+view(2)
+nexttile
+trisurf(t, p(:,1), p(:,2), u);
+shading interp
+view(2)
+colorbar
+end
 AlluBd(:,iP)=uBd;
 end
 %plot(arcLengths,AlluBd(:,5))
