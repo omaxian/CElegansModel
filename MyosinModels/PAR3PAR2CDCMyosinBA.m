@@ -6,10 +6,10 @@ h = 9.5;
 DA = 0.1;
 koffA = 3;
 kdpA = 0.16; 
-KonA_Hat = 0.6;
-KpA_Hat = 15; 
-KfA_Hat = 4.2;
-Asat = 0.3332; % 80% of uniform state
+KonA_Hat = 0.34;
+KpA_Hat = 25; 
+KfA_Hat = 4.9;
+Asat = 0.2092; % 80% of uniform state
 MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
@@ -60,19 +60,19 @@ RhatPA = 2;
 RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.1;    
-AcForK = 0.06;
+AcForK = 0.05;
 RhatCM = 8;    % CDC-42 promotes myosin (fitting parameter)
-RhatCR = 1; % CDC-42 making branched actin (arbitrary - don't change)
-CThresR = 0.25;
+RhatCR = 0; % CDC-42 making branched actin (arbitrary - don't change)
+CThresR = 0.3;
 RhatRR = 5;
 RhatRStress = 10;
 RhatRMu = 0; % 
 RhatRM = 0; % 2 Branched actin inhibiting myosin
 
 % Initialization
-dt=1e-2;
-tf = 192;
-saveEvery=0.8/dt;
+dt=2e-2;
+tf = 144;
+saveEvery=1.6/dt;
 nT = tf/dt+1;
 nSave = (nT-1)/saveEvery;
 N=1000;
@@ -116,8 +116,8 @@ for iP=1:MaxOligSize
     AllAs(:,iP)=alpha.^(iP-1).*A1;
 end
 A = sum((1:MaxOligSize).*AllAs,2);
-C = 0.1*ones(N,1);
-K = zeros(N,1);
+C = 0.1*Inside;%ones(N,1);
+K = 0.4*Inside;%zeros(N,1);
 P = ~Inside;
 M = 0.3*ones(N,1);
 R = zeros(N,1);
@@ -135,7 +135,7 @@ ViscousTenTime = zeros(nSave,N);
 v =zeros(N,1);
 muHat = 1;
 Sigma_active=0;
-f=figure;
+f=figure('Position', [100 100 560 700]);
 er = 1;
 for iT=0:nT-1
     t = iT*dt;
@@ -152,19 +152,18 @@ for iT=0:nT-1
         ViscousTenTime(iSave,:)=muHat.*(DOneCenter*v);
         vmaxes(iSave)=max(abs(v));
         hold off
+        tiledlayout(2,1,'Padding', 'none', 'TileSpacing', 'compact');
+        nexttile
         plot(x,A,'Color',[0 0.5 0])
         hold on
         plot(x,K,'--','Color',[0.47 0.67 0.19])
-        plot(x,C,'-.','Color',[0.49 0.18 0.56])
+        hold on
+        plot(x,C,'-','Color',[0.49 0.18 0.56])
         plot(x,P,':','Color',[0.64 0.08 0.18])
-        plot(x,M,'-','Color',[0 0.45 0.74])
-        plot(x,R,'-.','Color',[0.87 0.49 0])
-        xlim([0.5 1])
-        legend('PAR-3','PAR-6/PKC-3','CDC-42','pPARs','Myosin','Br Act','NumColumns',2,...
-            'Location','Northeast')
-        %ylim([0 1.5])
-        xlabel('Embryo length')
         ylabel('Concentration')
+        legend('aPARs','CDC-42','pPARs','NumColumns',1,...
+            'Location','Northwest')
+        xlim([0.5 1])
         xticks([0.5 0.75 1])
         xticklabels([0 0.5 1])
         RealTime = iT*dt/kdpA;
@@ -176,6 +175,22 @@ for iT=0:nT-1
             title(strcat(sprintf('%.0f', MinTime),':',sprintf('%.0f', SecTime)))
         end
         ylim([0 1.2])
+        nexttile
+        plot(x,M,'-.','Color',[0 0.45 0.74])
+        hold on
+        plot(x,R,'-','Color',[0.87 0.49 0])
+        plot(x,Sigma_active,':','Color',[0 0 0])
+        xlim([0.5 1])
+        %legend('PAR-3','PAR-6/PKC-3','CDC-42','pPARs','Myosin','Br Act','NumColumns',2,...
+        %    'Location','Northeast')
+        legend('Myosin','Br Act','Tension','NumColumns',1,...
+            'Location','Northeast')
+        %ylim([0 1.5])
+        xlabel('Embryo length')
+        ylabel('Concentration')
+        xticks([0.5 0.75 1])
+        xticklabels([0 0.5 1])
+        ylim([0 1])
         movieframes(iSave)=getframe(f);
         %drawnow
     end
@@ -253,13 +268,16 @@ end
 %title(strcat('$A^\textrm{(Tot)}=$',num2str(ATot),', $P^\textrm{(Tot)}=$',num2str(PTot)))
 % Post process to get aPAR and pPAR sizes
 PAR3Size = zeros(nSave,1);
+PAR6Size = zeros(nSave,1);
 PAR3Ratio = zeros(nSave,1);
 PAR2Size = zeros(nSave,1);
 PAR2Ratio = zeros(nSave,1);
 for iT=1:nSave
     MyA = AsTime(iT,:);
+    MyK = KsTime(iT,:);
     PAR3Ratio(iT) = max(MyA)/min(MyA); 
     PAR3Size(iT) = sum(MyA > 2*min(MyA))*dx;
+    PAR6Size(iT) = sum(MyK > 0.1);
     MyP = PsTime(iT,:);
     PAR2Ratio(iT) = max(MyP)/min(MyP);
     PAR2Size(iT) = sum(MyP > 0.5*max(MyP))*dx;
