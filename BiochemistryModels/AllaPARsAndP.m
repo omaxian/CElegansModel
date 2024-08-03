@@ -1,15 +1,18 @@
 % Rxn-diffusion model of PAR-2 and PAR-3 with dimerization on cortex
-% Parameters 
+% Parameters
+RhatPAs=2;
+for iF=1:length(RhatPAs)
+RhatPA = RhatPAs(iF);
 L = 134.6;
 h = 9.5;
 % PAR-3
 DA = 0.1;
 koffA = 3;
 kdpA = 0.16; 
-KonA_Hat = 0.6;
-KpA_Hat = 15; 
-KfA_Hat = 4.2;
-Asat = 0.3332; % 80% of uniform state
+KonA_Hat = 0.34;
+KpA_Hat = 25; 
+KfA_Hat = 4.9;
+Asat = 0.2092; % 80% of uniform state
 MaxOligSize = 50;
 %PAR-2
 DP = 0.15;
@@ -36,11 +39,11 @@ KoffC_Hat = koffC*Timescale;
 DK_Hat = DK/L^2*Timescale;
 KoffK_Hat = koffK*Timescale;
 % Reaction networks
-RhatPA = 2;
+%RhatPA = 0;
 RhatKP = 50;
 RhatPC = 13.3*(konC+h*koffC)/(koffC*h); % This is set from Sailer (2015)
 RhatACK = 0.1;    
-AcForK = 0.06;
+AcForK = 0.05;
 
 % Initialization
 dt = 2e-2;
@@ -97,8 +100,16 @@ for iT=0:nT-1
         CsTime(iSave,:)=C;
         KsTime(iSave,:)=K;
         hold off
-        %plot(x,A,x,K,x,C,x,P)
-        %drawnow
+        plot(x,A,'Color',[0 0.5 0])
+        hold on
+        plot(x,K,'--','Color',[0.47 0.67 0.19])
+        hold on
+        plot(x,C,'-','Color',[0.49 0.18 0.56])
+        plot(x,P,':','Color',[0.64 0.08 0.18])
+        %ylabel('Concentration')
+        %legend('aPARs','CDC-42','pPARs','NumColumns',1,...
+        %    'Location','Northwest')
+        drawnow
     end
     
     % Initialization and cytoplasmic
@@ -139,17 +150,27 @@ for iT=0:nT-1
     A = sum((1:MaxOligSize).*AllAs,2);
     %chk = (C-Cprev)/dt- (DC_Hat*DSq*C + RHS_C);
 end
-set(gca,'ColorOrderIndex',1)
-plot(x,A,x,K,x,C,x,P)
+%set(gca,'ColorOrderIndex',1)
+%plot(x,A,x,K,x,C,x,P)
+[~,ind] = max(A);
+AllMeanOligsA(iF) = sum((1:50).*AllAs(ind,:))/sum(AllAs(ind,:));
+PercentMonsA(iF) = AllAs(ind,1)./sum((1:MaxOligSize).*AllAs(ind,:));
+[~,ind] = min(A);
+AllMeanOligsP(iF) = sum((1:50).*AllAs(ind,:))/sum(AllAs(ind,:));
+PercentMonsP(iF) = AllAs(ind,1)./sum((1:MaxOligSize).*AllAs(ind,:));
+RecrAsym(iF)=max(AttRate)/min(AttRate);
 % Post process to get aPAR and pPAR sizes
 PAR3Size = zeros(nSave,1);
+PAR6Size = zeros(nSave,1);
 PAR3Ratio = zeros(nSave,1);
 PAR2Size = zeros(nSave,1);
 PAR2Ratio = zeros(nSave,1);
 for iT=1:nSave
     MyA = AsTime(iT,:);
+    MyK = KsTime(iT,:);
+    PAR6Size(iT) = sum(MyK > 0.75*max(MyK));
     PAR3Ratio(iT) = max(MyA)/min(MyA); 
-    PAR3Size(iT) = sum(MyA > 0.8*max(MyA))*dx;
+    PAR3Size(iT) = sum(MyA > 2*min(MyA))*dx;
     MyP = PsTime(iT,:);
     PAR2Ratio(iT) = max(MyP)/min(MyP);
     PAR2Size(iT) = sum(MyP > 0.8*max(MyP))*dx;
@@ -158,4 +179,5 @@ AllP3Sizes(:,iS)=PAR3Size;
 AllP2Sizes(:,iS)=PAR2Size;
 AllP3Ratios(:,iS)=PAR3Ratio;
 AllP2Ratios(:,iS)=PAR2Ratio;
+end
 end
