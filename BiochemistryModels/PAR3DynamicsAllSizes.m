@@ -1,5 +1,6 @@
 % Main file for PAR-3 simulations
 % Parameters
+addpath('../Functions')
 DA = 0.1;
 L = 134.6;
 koffA = 3;
