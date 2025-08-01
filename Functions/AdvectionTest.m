@@ -1,7 +1,7 @@
 % Solving equation
 % u_t + (a(x)u)_x = 0
 % 
-N=6400;
+N=12800;
 L=1;
 h = 1/N;
 x = (0:N-1)'*h;

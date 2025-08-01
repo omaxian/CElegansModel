@@ -1,7 +1,7 @@
 load('LonghiniData.mat')
-Dists =1:10;
-pol = 1;
-for iP=1:length(Dists)
+Dists =[];
+pol = 0;
+for iP=5
 close all;
 rx=27;
 ry=15;
@@ -15,8 +15,9 @@ CSize = 0.7; % Gaussian SD
 CScale = 1;
 MeshSize = 0.5;
 CLocs = [-rx+Data(iP,1) 0; rx-Data(iP,3) 0];
+%CLocs(1,1)=CLocs(1,1)+8;
 end
-if (iP==1)
+if (iP==5)
 % Finite element mesh on ellipsoidal embryo
 fd=@(p) p(:,1).^2/rx^2+p(:,2).^2/ry^2-1;
 [p,t]=distmesh2d(fd,@huniform,MeshSize,[-rx,-ry;rx,ry],[]);

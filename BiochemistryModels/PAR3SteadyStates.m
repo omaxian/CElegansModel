@@ -3,12 +3,13 @@
 koffA = 3;
 kdpA = 0.16;
 Koff_Hat = koffA/kdpA;
-AsatFrac = 0.8;
+AsatFrac =  0.8;
+DesiredAu = 0.1;
 warning('The saturation is set to 80\% of the uniform state')
-Kons = 0.34;
-Kfs = 4.9;
+%Kons = 0.1;%5e-3:5e-3:0.2;
+Kfs = 14.5;
 beta = 0;
-Kps = 25;
+Kps = 62;
 Kdp_Hat = 1;
 tol = 1e-4;
 doplot=0;
@@ -17,39 +18,29 @@ if (length(Kps)==1 && length(Kfs)==1)
 end
 Roots=[];
 
-for iKon=1:length(Kons)
 for iKp=1:length(Kps)
 for iKf=1:length(Kfs)
-Kon_Hat = Kons(iKon);
+%Kon_Hat = Kons(iKon);
 Kp_Hat = Kps(iKp);
 Kf_Hat = Kfs(iKf);
+
 % Find roots by graphing
 Atots=(tol:tol:2)';
-RHSfcn = RHS(Atots,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,AsatFrac,beta);
+Art=0.1;
+KonHats = tol:tol:10;
+RHSfcn = RHS(KonHats,Art,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,AsatFrac,beta);
 Signs = RHSfcn(1:end-1).*RHSfcn(2:end);
 SignLocs = find(Signs<0 | Signs==0);
-RootsUSt = 1/2*(Atots(SignLocs)+Atots(SignLocs+1));
+RootsUSt = 1/2*(KonHats(SignLocs)+KonHats(SignLocs+1));
 % Find root nearest desired A
 %[~,ind] = min(abs(DesiredAu-RootsUSt));
-Art = RootsUSt(end);
+Kon_Hat = RootsUSt;
+%for jRt=1:length(RootsUSt)
 Ac0 = 1-Art;
 Asat = AsatFrac*Art;
 % Compute mean oligomer size
-%alpha = 1-1./MeanOligs;
-%Kps = (2*alpha-alpha.^2)./(2*Art*(1-alpha).^4);
 AttRate = AttachmentPAR3(Atots,Kon_Hat,Kf_Hat,Asat,-1);
 DetRate = DetachmentPAR3(Atots,Koff_Hat,Kdp_Hat,Kp_Hat,beta);
-% Find point on det rate curve where alpha = 3.5
-%Mons = AMon(Atots,Kp_Hat);
-%[~,aind]=min(abs(Kp_Hat*Mons-0.73));
-% for j=1:length(Atots)
-%     [Mons(j),MeanOligSizes(j),DetRate(j)] = A1WithDet(Atots(j),Kp_Hat,Koff_Hat,0.25);
-% end
-%load('DetachBeta025.mat')
-%[~,aind]=min(abs(MeanOligSizes-3.7));
-%Aa = Atots(aind);
-%Ap = Aa/7.5;
-%[~,pind]=min(abs(Atots-Ap));
 %RecrAsym = DetRate(aind)/DetRate(pind)
 if (doplot)
 plot(Atots,AttRate,':')
@@ -65,7 +56,7 @@ if (doplot)
 set(gca,'ColorOrderIndex',1)
 plot(Atots,AttRate)
 %title(strcat('$F=$',num2str(Facs(iF))))
-xlim([0 1])
+xlim([0 0.2])
 end
 %xlabel('$\hat A$')
 NetFluxAtEq = AttRate-DetRate;
@@ -92,16 +83,14 @@ end
 alpha=Kp_Hat*AMon(Art,Kp_Hat);
 MeanOligs = 1/(1-alpha);
 PRecr = Kf_Hat*PAR3FeedbackFcn(Art,Asat);
-if (MeanOligs <=4 && PRecr <=5)
+%if (MeanOligs>1 && MeanOligs<5)
 Roots=[Roots;Kon_Hat Kf_Hat Art MeanOligs HighRoot MedRoot LowRoot PRecr Kp_Hat];
-else
-break
+%end
 end
 end
-end
-end
+%end
 
-function val = RHS(Atot,Kon_Hat,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,AsatFrac,beta)
+function val = RHS(Kon_Hat,Atot,Koff_Hat,Kf_Hat,Kdp_Hat,Kp_Hat,AsatFrac,beta)
     Asat = AsatFrac*Atot;
     OnRate = AttachmentPAR3(Atot,Kon_Hat,Kf_Hat,Asat,-1);
     OffRate = DetachmentPAR3(Atot,Koff_Hat,Kdp_Hat,Kp_Hat,beta);

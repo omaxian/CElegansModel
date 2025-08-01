@@ -6,13 +6,14 @@ L = 134.6;
 koffA = 3;
 kdpA = 0.16;
 D_Hat = DA/(L^2*kdpA);
-Factors = 0.5:0.01:1;
-Kon_Hat = 0.34;
-Kf_Hat = 4.9;
-Kp_Hat = 25;
+Factors = 1;
+for j = 1%:length(Roots)
+Kon_Hat = 0.10435;
+Kf_Hat = 14.5;%Roots(j,2);
+Kp_Hat = 62;%Roots(j,9);
 Koff_Hat = koffA/kdpA;
-Asat = 0.2092;
-AunifWT =  0.2616;
+AunifWT =  0.1 ;%Roots(j,3);
+Asat = 0.08;
 AllAVals=[];
 AllPVals=[];
 RecrAsymp1 =[];
@@ -33,8 +34,8 @@ for iis=1:length(iSizes)
 InitialSize=iSizes(iis);
 Inside=(x >= 0.5-InitialSize/2 & x < 0.5+InitialSize/2 );
 A = zeros(N,1);
-A(Inside) = (0.5/(0.1+0.9*InitialSize))*Factors(iF);
-A(~Inside)=(0.05/(0.1+0.9*InitialSize))*Factors(iF);
+A(Inside) = 1*Factors(iF)/(1*InitialSize+0.1*(1-InitialSize))*0.15;
+A(~Inside) = 0.1*Factors(iF)/(1*InitialSize+0.1*(1-InitialSize))*0.15;
 %A = AunifWT*(1+0.2*cos(10*pi*x)+0.1*sin(4*pi*x));
 A1 = AMon(A,Kp_Hat);
 alpha = A1*Kp_Hat;
@@ -57,7 +58,7 @@ for iT=0:nT-1
     if (mod(iT,saveEvery)==0)
         iSave = iT/saveEvery+1;
         AllAsTime(iSave,:)=A;
-        Locs = find(A > 0.2);
+        Locs = find(A > AunifWT);
         try
             EnrichSize(iSave)=(Locs(end)-Locs(1)+1)*dx;
         catch
@@ -65,9 +66,9 @@ for iT=0:nT-1
         end
         AValues(iSave)=max(A);
         PValues(iSave)=min(A);
-        hold off
-        plot(x,A)
-        drawnow
+        % hold off
+        % plot(x,A)
+        % drawnow
     end
     Aprev = A; 
     Ac = Factors(iF) - sum(A)*dx;
@@ -78,7 +79,7 @@ for iT=0:nT-1
     NewAllAs = AllAs;
     A1 = AllAs(:,1);
     AttRate =  AttachmentPAR3(A,Kon_Hat,Kf_Hat,Asat,Ac);
-    %AttRate(Inside)=1.7*AttRate(Inside); % for recr asym model
+    %AttRate(Inside)=1.72*AttRate(Inside); % for recr asym model
     RHS_1 = AttRate - Koff_Hat*A1 - 2*Kp_Hat*A1.^2 + 2*AllAs(:,2);
     for iN=3:MaxOligSize
         RHS_1 = RHS_1 + AllAs(:,iN) - Kp_Hat*A1.*AllAs(:,iN-1);
@@ -114,8 +115,8 @@ AllMeanOligsA(iF) = sum((1:50).*AllAs(ind,:))/sum(AllAs(ind,:));
 [~,ind] = min(A);
 AllMeanOligsP(iF) = sum((1:50).*AllAs(ind,:))/sum(AllAs(ind,:));
 FBStrength = Kf_Hat*PAR3FeedbackFcn(A,Asat);
-%Roots(SimIndex,10:15)=[max(A) min(A) max(FBStrength) min(FBStrength) ...
-%    AllMeanOligsA(iF) AllMeanOligsP(iF)];
+Roots(j,10:16)=[max(A) min(A) max(FBStrength) min(FBStrength) ...
+    AllMeanOligsA(iF) AllMeanOligsP(iF) RecrAsymp1(end)];
 end
 end
-plot(AllMeanOligsA,AllAPRatios,'-o')
+end

@@ -5,41 +5,61 @@
 % inactivation by AIR-1. Try to obtain some parameters that match all
 % embryos in cytokinesis
 L = 134.6;
-koffM = 1/15; % set timescale
-D = 0.1/(L^2*koffM);    % In membrane diffusion
+koffM = 1/15; 
+D_E = 0.1/(L^2*koffM);    % In membrane diffusion
+D_M = 0.1/(L^2*koffM);    % In membrane diffusion
+D_P = 1/(L^2*koffM);
 pol=0;
 load('AIR1Diffusion.mat')
 if (pol)
 load('PolarizationDistances.mat')
 end
-for iP=1:9%length(Dists)
+for iP=3
 Air = AlluBd(:,iP);
+%load('PolarizationAllDistances.mat')
+%Air = [Air AlluBd(:,3:10)];
+%Air = airMove;
 xa = arcLengths/L+1/2;
 % ECT-2 parameters
-KonE = 0.34;           % Fixed for 10% bound
 KoffE = 0.33/koffM;    % 3 s lifetime
 if (pol)
     KoffE=KoffE*1.2;
 end
 % Myosin params
 ell = 0.1;              % Hydrodynamic lengthscale from Grill paper
-Sigma0 = 0.2;           % Velocity strength 
+Sigma0 = 0.6;           % Velocity strength 
 % Reactions
-K_AE = 0.5;             % ECT-2 inactivation by AIR-1 (VARIABLE)
+K_AE = 1.3;             % ECT-2 inactivation by AIR-1 (VARIABLE)
 Ac = 0.25;              % Saturation of AIR-1 inhibition
-K_EM = 50;              % Myosin activation by ECT-2 
-K_ME = 10/3;            % Myosin recuiting ECT-2     (Assume = basal rate)
-K_fb = 0.52/koffM;      % Delayed negative feedback  (Set from Ed's paper)
+% Values
+% Myosin parameters
+expfb=2;
+if (expfb==2)
+    K_EM=9;
+    K_fb=3.6;
+    K_ME=2.5;
+elseif (expfb==3)
+    K_EM=6.5;
+    K_fb=5.25;
+    K_ME=1.5;
+elseif (expfb==4)
+    K_EM=5.9;
+    K_fb=10.8;
+end
+% Adjust KonE so that you get 10% bound protein
+KonE = 1.05*KoffE*0.1/((1 + K_ME*0.3)*0.9);
+KoffPAR = (1/100)*1/koffM;
+KonPAR = 0.3/(1-0.3)*KoffPAR;
 
 %% Numerical parameters
 dt = 1e-2;
 tf = 600*koffM;
 saveEvery = floor(6*koffM/dt+1e-3);
 nT = floor(tf/dt);
-N = 500;
+N = 1000;
 dx = 1/N;
 x = (0:N-1)'*dx;
-A = zeros(N,1);
+AllA = zeros(N,9);
 % Interpolate the AIR-1 signal
 for iX=1:N
     xn = x(iX);
@@ -48,14 +68,21 @@ for iX=1:N
     if (indb==0)
         indb=length(xa);
     end
-    A(iX) = (Air(ind)-Air(indb))/(xa(ind)-xa(indb))*(xn-xa(indb))+Air(indb);
+    AllA(iX,:) = (Air(ind,:)-Air(indb,:))/(xa(ind)-xa(indb))...
+        *(xn-xa(indb))+Air(indb,:);
 end
+A=AllA(:,1);
 advorder = 1;
-% Second derivative matrix
-DSq = SecDerivMat(N,dx);
-DOneCenter = FirstDerivMatCenter(N,dx);
-DiffMat = (speye(N)/dt-D*DSq);
-[Diff_L,Diff_U,Diff_P]=lu(DiffMat);
+% Fourier wave numbers
+kvals = [0:N/2 -N/2+1:-1]'*2*pi;
+kDeriv = kvals;
+kDeriv(N/2+1)=0; % zero out unpaired mode
+ksq=kvals.^2;
+DivFacFourier_E = (1/dt+D_E*ksq);
+DivFacFourier_M = (1/dt+D_M*ksq);
+DivFacFourier_PAR = (1/dt+D_P*ksq);
+DivFacFourier_Hydro = 1+ell^2*ksq;
+
 nSave = floor(nT/saveEvery);
 AllMs = zeros(nSave,N);
 AllEs = zeros(nSave,N);
@@ -66,13 +93,15 @@ M = 0.3*ones(N,1);
 %M(x > 0.45 & x < 0.55)=0;
 E = 0.1*ones(N,1);
 E2 = 0.1*ones(N,1); % Non-phosphorylatable ECT-2
+PAR = 0.3*ones(N,1);
 %E(x > 0.45 & x < 0.55)=0;
 
 iFrame=0;
 v=0;
-f=figure;
+%f=figure(3);
 %tiledlayout(3,3,'Padding', 'none', 'TileSpacing', 'compact');
 TimeSB=-1;
+AllAsTime=zeros(N,nT);
 for iT=0:nT
     t = iT*dt;
     MaxEctTime(iT+1)=max(E);
@@ -88,120 +117,106 @@ for iT=0:nT
     Ordered=(1:length(inds))';
     inds(inds>Ordered)=[];
     Ect2Clearing(iT+1)=length(inds)*dx*2;
-    %E = 0.12*(x<0.25 | x>0.75)+0.08*(x>=0.25 & x <=0.75); % Fix ECT
-    %M = 0.4*(x<0.25 | x >0.75) + 0.2*(x>=0.25 & x <=0.75);
     if (mod(iT,saveEvery)==0)
         iFrame=iFrame+1;
-        plot(x,E,x,E2,x,M)
-        title(strcat('$t=$',sprintf('%.2f', iT*dt/koffM),' s'))
-        xlabel('\% egg length from posterior')
-        xlim([0 1])
-        xticks([0 1/4 1/2 3/4 1])
-        xticklabels({'-100','-50','0','50','100'})
-        xlim([0.5 1])
-        %legend('ECT-2','Rho','Actomyosin/RGA','Location','southoutside','numColumns',3)
-        movieframes(iFrame)=getframe(f);
+        % plot(x,E,x,M,x,PAR)
+        % title(strcat('$t=$',sprintf('%.2f', iT*dt/koffM),' s'))
+        % xlabel('\% egg length from posterior')
+        % xlim([0 1])
+        % xticks([0 1/4 1/2 3/4 1])
+        % xticklabels({'-100','-50','0','50','100'})
+        % legend('ECT-2','Myosin','``X"','Location','South',...
+        %     'Orientation','Horizontal')
+        % xlim([0 0.5])
+        % movieframes(iFrame)=getframe(f);
         AllMs(iFrame,:)=M;
         AllEs(iFrame,:)=E;
+        AllE2s(iFrame,:)=E2;
         Allvs(iFrame,:)=v;
         vmaxes(iFrame)=max(abs(v));
-        pause(0.1)
     end
+    %E=EctFilt'/(sum(EctFilt)*dx)*0.1;
+    %M=MyFilt'/(sum(MyFilt)*dx)*0.3;
     % 0) Cytoplasmic concentrations
     Ec = 1-sum(E)*dx;
     E2c = 1-sum(E2)*dx;
     Mc = 1-sum(M)*dx;
+    PARc = 1-sum(PAR)*dx;
     % 1) Solve for velocity
     Sigma_active = M;
-    v = (speye(N)-ell^2*DSq) \ (ell*DOneCenter*Sigma_active);
+    v = ifft(ell*1i*kDeriv.*fft(Sigma_active)./DivFacFourier_Hydro);
     vHalf = 1/2*(v+circshift(v,-1));
     % 2) Advection (explicit)
     MinusdxMv = Sigma0*AdvectionRHS(t,M,dx,vHalf,advorder);
     MinusdxEv = Sigma0*AdvectionRHS(t,E,dx,vHalf,advorder);
     MinusdxE2v = Sigma0*AdvectionRHS(t,E2,dx,vHalf,advorder);
+    MinusdxPARv = Sigma0*AdvectionRHS(t,PAR,dx,vHalf,advorder);
     % 3) Reaction (check these!)
-    RHS_E = MinusdxEv + KonE*(1 + K_ME*M)*Ec - KoffE*(1+K_AE*A./(Ac+A)).*E;
+    if (t/koffM>inf)
+        % Interpolate
+        Coord=8*(t/koffM-300)/(tf/koffM-300); % on [0,8]
+        Lo = floor(Coord); %[0,7]
+        Hi = Lo+1; %[1,8]
+        Wt = (Coord-Lo);
+        if (Wt==0)
+            A=AllA(:,Lo+1);
+        else
+            A = Wt*AllA(:,Hi+1)+(1-Wt)*AllA(:,Lo+1);
+        end
+        A=0;
+    else
+        A = AllA(:,1);
+    end
+    AllAsTime(:,iT+1)=A;
+    RHS_E = MinusdxEv + KonE*(1 + K_ME*M)*Ec - KoffE*(1+K_AE*A./(A+Ac)).*E;
     RHS_E2 = MinusdxE2v + KonE*(1 + K_ME*M)*E2c - KoffE*E2;
-    RHS_M = MinusdxMv + K_EM*E.^2*Mc - M - K_fb*M.^4;
-    M = Diff_U\ (Diff_L\(Diff_P*(M/dt+RHS_M)));
-    E = Diff_U\ (Diff_L\(Diff_P*(E/dt+RHS_E)));
-    E2= Diff_U\ (Diff_L\(Diff_P*(E2/dt+RHS_E2)));
+    RHS_M = MinusdxMv + K_EM*E*Mc - M - K_fb*M.^expfb;
+    RHS_PAR = MinusdxPARv + KonPAR*PARc - KoffPAR*PAR;
+    RHSHat_E = fft(E/dt+RHS_E);
+    EHatNew = RHSHat_E./(DivFacFourier_E);
+    E = ifft(EHatNew);
+    RHSHat_E2 = fft(E2/dt+RHS_E2);
+    EHat2New = RHSHat_E2./(DivFacFourier_E);
+    E2 = ifft(EHat2New);
+    RHSHat_M = fft(M/dt+RHS_M);
+    MHatNew = RHSHat_M./(DivFacFourier_M);
+    M = ifft(MHatNew);
+    RHSHat_PAR = fft(PAR/dt+RHS_PAR);
+    PARHatNew = RHSHat_PAR./(DivFacFourier_PAR);
+    PAR = ifft(PARHatNew);
     aEctsTime(iT+1)=E(1);
-    pEctsTime(iT+1)=E(N/2+1);
-    if (M(251) < 0.27 && TimeSB < 0)
+    pEctsTime(iT+1)=E(N/2);
+    if (M(N/2+1) <0.29 && TimeSB < 0)
         TimeSB=(iT+1)*dt/koffM;
     end
 end
+Ec
+% figure(2)
+% plot(x,E,'-')
+% hold on
+% hold on
+% plot(x,MyFilt/(sum(MyFilt)*dx)*0.3)
+% hold off
+% err=M-MyFilt'/(sum(MyFilt)*dx)*0.3;
+% er(jj,kk)=sum(err.*err);
+% end
+% end
+%return
+
+% sqrt(sum(er.*er))
+%
 % Time of max asymmetry
 [val,ind]=max(aEctsTime./pEctsTime);
-aEct(iP)=aEctsTime(ind);
-pEct(iP)=pEctsTime(ind);
+aEct(iP)=aEctsTime(end);
+pEct(iP)=pEctsTime(end);
 SymTimes(iP)=TimeSB;
 val
+%return
 % Statistics for polarization
-AllMRatios(iP,:)=MaxMyTime./MinMyTime;
-AllERatios(iP,:)=MaxEctTime./MinEctTime;
+AllMRatios(iP,:)=M(N/2+1)/M(1);
+AllERatios(iP,:)=E(N/2+1)/E(1);
 FinalEct(iP,:)=E;
 FinalMy(iP,:)=M;
 AllMaxVs(iP,:)=MaxvTime*Sigma0*L*koffM*60;
 AlllEctClear(iP,:)=Ect2Clearing;
 end
-%ts=(0:nSave)*dt*saveEvery;
-%plot(ts,AllEs(:,N/2),ts,AllPInActs(:,N/2),ts,AllPActs(:,N/2),ts,AllMs(:,N/2))
-%hold on
-%set(gca,'ColorOrderIndex',1)
-%plot(ts,AllEs(:,1),':',ts,AllPs(:,1),':',ts,AllRs(:,1),':',ts,AllMs(:,N/2),':')
-vr=v*Sigma0*L*koffM*60;
-[EndInd,~]=size(AllEs);
-%c1 = [0.92 0.8 1];  % purple
-%c1 = [0.84 0.91 0.95]; % green
-c1 = [0.8 0.91 0.98]; %blue
-%c1 = [0.93 0.84 0.84]; %red
-%c2 = [0.29 0 0.48]; % purple
-%c2 = [0.16 0.38 0.27]; % green
-c2 = [0 0.42 0.69]; % blue
-%c2 = [0.6 0 0.2]; %red
-subplot(1,3,1)
-for iT=1:EndInd
-plot([x;1],[AllEs(iT,:) AllEs(iT,1)],'Color',c1+(iT-1)/(EndInd-1)*(c2-c1))
-hold on
-end
-xlabel('\% length from posterior')
-xticks(0:1/8:1)
-xticklabels({'-100','-75','-50','-25','0','25','50','75','100'})
-xlim([0.5 1])
-title('ECT-2 concentration')
-hold on
-subplot(1,3,2)
-for iT=1:EndInd
-plot([x;1],[AllMs(iT,:) AllMs(iT,1)],'Color',c1+(iT-1)/(EndInd-1)*(c2-c1))
-hold on
-end
-xlabel('\% length from posterior')
-xticks(0:1/8:1)
-xticklabels({'-100','-75','-50','-25','0','25','50','75','100'})
-xlim([0.5 1])
-title('Myosin concentration')
-hold on
-subplot(1,3,3)
-for iT=1:EndInd
-plot([x;1],[Allvs(iT,:) Allvs(iT,1)]*Sigma0*L*koffM*60,'Color',c1+(iT-1)/(EndInd-1)*(c2-c1))
-hold on
-end
-xlabel('\% length from posterior')
-xlim([0.5 1])
-xticks(0:1/8:1)
-xticklabels({'-100','-75','-50','-25','0','25','50','75','100'})
-title('Flow speed $\mu$m/min')
-hold on
-
-close all;
-load('LonghiniData.mat')
-for iP=1:9
-%CLocs = [-rx+Data(iP,1) 0; rx-Data(iP,3) 0];
-plot(Data(iP,3),pEct(iP)*16,'o')
-hold on
-set(gca,'ColorOrderIndex',iP)
-plot(Data(iP,1),aEct(iP)*16,'^')
-end
-
